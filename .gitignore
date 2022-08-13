@@ -5,5 +5,5 @@
 .vscode
 
 # data
-partitioncloud/partitioncloud.db
-
+instance/partitioncloud.sqlite
+partitioncloud/partitions

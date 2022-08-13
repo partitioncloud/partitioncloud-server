@@ -1,12 +1,13 @@
 #!/bin/bash
 
 init () {
-    if [ ! -x partitioncloud/partitioncloud.db ]; then
+    mkdir -p "instance"
+    if [ ! -x instance/partitioncloud.sqlite ]; then
         printf "Souhaitez vous supprimer la base de données existante ? [y/n] "
         read -r CONFIRMATION
     fi
     [[ $CONFIRMATION == y ]] || exit 1
-    sqlite3 "partitioncloud/partitioncloud.db" '.read partitioncloud/schema.sql'
+    sqlite3 "instance/partitioncloud.sqlite" '.read partitioncloud/schema.sql'
     echo "Base de données initialisée"
 }
 
@@ -27,4 +28,4 @@ else
 	usage
 	echo $(type "$1")
 	exit 1
-fi;
+fi

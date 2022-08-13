@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Albums{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if albums|length != 0 %}
+  {% for album in albums %}
+  <a href="{{ album['uuid'] }}">
+      <div class="album-cover" id="album-{{ album['id'] }}">
+          {{ album["name"] }}
+      </div>
+  </a>
+  {% endfor %}
+{% else %}
+  <div>Aucun album disponible</div>
+{% endif %}
+<a href="create-album">
+    <button id="new-album">Nouvel Album</button>
+</a>
+{% endblock %}

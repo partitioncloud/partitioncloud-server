@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}{{ album["name"] }}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if partitions|length != 0 %}
+  {% for partition in partitions %}
+  <a href="{{ album['uuid'] }}/{{ partition['uuid'] }}">
+      <div class="partition-cover" id="partition-{{ partition['uuid'] }}">
+          {{ partition["name"] }}
+      </div>
+  </a>
+  {% endfor %}
+{% else %}
+  <div>Aucune partition disponible</div>
+{% endif %}
+{% endblock %}
