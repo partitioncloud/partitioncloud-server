@@ -1,0 +1,9 @@
+# cache
+**/__pycache__
+
+# config
+.vscode
+
+# data
+partitioncloud/partitioncloud.db
+
