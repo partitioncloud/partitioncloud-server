@@ -7,3 +7,4 @@
 # data
 instance/partitioncloud.sqlite
 partitioncloud/partitions
+partitioncloud/thumbnails
