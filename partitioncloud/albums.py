@@ -191,7 +191,7 @@ def delete_album(uuid):
     elif len(users) == 1 and users[0]["id"] != session.get("user_id"):
         error = "Vous ne possédez pas cet album."
     
-    if user.access_level(session.get("user-id")) == 1:
+    if user.access_level(session.get("user_id")) == 1:
         error = None
 
     if error is not None:
