@@ -5,6 +5,11 @@
 {% endblock %}
 
 {% block content %}
+{% if not_participant %}
+  <a href="/albums/{{ album['uuid'] }}/join">
+    <button id="join-album">Rejoindre</button>
+  </a>
+{% endif %}
 {% if partitions|length != 0 %}
   {% for partition in partitions %}
   <a href="{{ album['uuid'] }}/{{ partition['uuid'] }}">

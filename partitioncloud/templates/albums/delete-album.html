@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Supprimer {{ album["name"] }}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  Êtes vous sûr de vouloir supprimer cet album ?
+  <form method="post">
+    <input type="submit" value="Supprimer">
+  </form>
+  <a href="/albums/{{ album['uuid'] }}"><button>Annuler</button></a>
+{% endblock %}
