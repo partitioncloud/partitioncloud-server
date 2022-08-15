@@ -4,6 +4,12 @@
 <h1>{% block title %}Albums{% endblock %}</h1>
 {% endblock %}
 
+{% block header_actions %}
+<a href="create-album">
+  <button id="new-album">Nouvel Album</button>
+</a>
+{% endblock %}
+
 {% block content %}
 {% if albums|length != 0 %}
   {% for album in albums %}
@@ -16,7 +22,4 @@
 {% else %}
   <div>Aucun album disponible</div>
 {% endif %}
-<a href="create-album">
-    <button id="new-album">Nouvel Album</button>
-</a>
 {% endblock %}

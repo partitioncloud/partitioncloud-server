@@ -240,6 +240,8 @@ def delete_album(uuid):
     )
     for partition in partitions.fetchall():
         os.remove(f"partitioncloud/partitions/{partition['uuid']}.pdf")
+        if os.path.exists(f"partitioncloud/static/thumbnails/{partition['uuid']}.jpg"):
+            os.remove(f"partitioncloud/static/thumbnails/{partition['uuid']}.jpg")
     
     partitions = db.execute(
         """
@@ -256,3 +258,94 @@ def delete_album(uuid):
     db.commit()
     flash("Album supprimé.")
     return redirect("/albums")
+
+
+@bp.route("/<album_uuid>/add-partition", methods=["GET", "POST"])
+def add_partition(album_uuid):
+    user_id = session.get("user_id")
+    db = get_db()
+    if user_id is None:
+        flash("Vous n'êtes pas connecté.")
+        return redirect(f"/albums/{album_uuid}")
+
+    if (not user.is_participant(user_id, album_uuid)) and (user.access_level(user_id) != 1):
+        flash("Vous ne participez pas à cet album.")
+        return redirect(f"/albums/{album_uuid}")
+
+    if request.method == "GET":
+        album =  db.execute(
+            """
+            SELECT * FROM album
+            WHERE uuid = ?
+            """,
+            (album_uuid,)
+        ).fetchone()
+        return render_template("albums/add-partition.html", album=album)
+
+    error = None
+
+    if "file" not in request.files:
+        error = "Aucun fichier n'a été fourni."
+    elif "name" not in request.form:
+        error = "Un titre est requis."
+
+    if error is not None:
+        flash(error)
+        return redirect(f"/albums/{album_uuid}")
+
+    if "author" in request.form:
+        author = request.form["author"]
+    else:
+        author = ""
+    if "body" in request.form:
+        body = request.form["body"]
+    else:
+        body = ""
+
+    while True:
+        try:
+            partition_uuid = str(uuid4())
+
+            db.execute(
+                """
+                INSERT INTO partition (uuid, name, author, body)
+                VALUES (?, ?, ?, ?)
+                """,
+                (partition_uuid, request.form["name"], author, body),
+            )
+            db.commit()
+
+            file = request.files["file"]
+            file.save(f"partitioncloud/partitions/{partition_uuid}.pdf")
+
+            os.system(
+                f'/usr/bin/convert -thumbnail\
+                "178^>" -background white -alpha \
+                remove -crop 178x178+0+0 \
+                partitioncloud/partitions/{partition_uuid}.pdf[0] \
+                partitioncloud/static/thumbnails/{partition_uuid}.jpg'
+            )
+
+            album_id = db.execute(
+                """
+                SELECT id FROM album
+                WHERE uuid = ?
+                """,
+                (album_uuid,)
+            ).fetchone()["id"]
+
+            db.execute(
+                """
+                INSERT INTO contient_partition (partition_uuid, album_id)
+                VALUES (?, ?)
+                """,
+                (partition_uuid, album_id),
+            )
+            db.commit()
+
+            break
+        except db.IntegrityError:
+            pass
+
+    flash(f"Partition {request.form['name']} ajoutée")
+    return redirect(f"/albums/{album_uuid}")

@@ -5,7 +5,7 @@ Main file
 import os
 from flask import Flask, render_template, request, send_file, g, redirect
 
-from . import auth, albums, partition
+from . import auth, albums
 
 app = Flask(__name__)
 
@@ -18,7 +18,6 @@ app.config.from_mapping(
 
 app.register_blueprint(auth.bp)
 app.register_blueprint(albums.bp)
-app.register_blueprint(partition.bp)
 
 
 @app.route("/")

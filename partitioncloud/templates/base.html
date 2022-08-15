@@ -16,7 +16,11 @@
 <section class="content">
   <header>
     {% block header %}{% endblock %}
+    <div id="header-actions">
+      {% block header_actions %}{% endblock %}
+    </div>
   </header>
+  <br/>
   {% for message in get_flashed_messages() %}
     <div class="flash">{{ message }}</div>
   {% endfor %}
