@@ -1,0 +1,16 @@
+@media (max-width: 1024px) {
+    html {
+        font-size: 13px;
+        padding: 0;
+    }
+
+    body {
+        margin: 0;
+        max-width: none;
+    }
+
+    nav {
+        padding: 0;
+        width: 100vw;
+    }
+}
