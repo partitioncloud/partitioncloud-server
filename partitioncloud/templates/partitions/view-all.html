@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Liste des partitions{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if partitions|length != 0 %}
+<div id="partitions-grid">
+  {% for partition in partitions %}
+  <a href="/partition/{{ partition['uuid'] }}">
+    <div class="partition" id="partition-{{ partition['uuid'] }}">
+      <img class="partition-thumbnail" src="/static/thumbnails/{{ partition['uuid'] }}.jpg">
+      <div class="partition-description">
+        <div class="partition-name">{{ partition["name"] }}</div>
+        <div class="partition-author">{{ partition["author"] }}</div>
+      </div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div>Aucune partition disponible</div>
+{% endif %}
+{% endblock %}

@@ -17,6 +17,7 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db import get_db
+from .utils import User
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -28,6 +29,23 @@ def login_required(view):
     def wrapped_view(**kwargs):
         if g.user is None:
             return redirect(url_for("auth.login"))
+
+        return view(**kwargs)
+
+    return wrapped_view
+
+
+def admin_required(view):
+    """View decorator that redirects anonymous users to the login page."""
+
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for("auth.login"))
+
+        user = User(session.get("user_id"))
+        if user.access_level != 1:
+            return redirect("/albums")
 
         return view(**kwargs)
 

@@ -93,7 +93,7 @@ def create_album():
         db = get_db()
         error = None
 
-        if not name:
+        if not name or name.strip() == "":
             error = "Un nom est requis."
 
         if error is None:
