@@ -191,3 +191,13 @@ class Album():
             """
         )
         db.commit()
+
+
+def get_all_partitions():
+    db = get_db()
+    partitions = db.execute(
+        """
+        SELECT * FROM partition
+        """
+    )
+    return partitions

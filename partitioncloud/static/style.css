@@ -181,3 +181,8 @@ input[type=submit] {
 #cancel-deletion {
     width: 133.333px;
 }
+
+#search-bar {
+    max-width: 50%;
+    margin-left: 25%;
+  }

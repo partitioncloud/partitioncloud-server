@@ -11,6 +11,9 @@
 {% endblock %}
 
 {% block content %}
+<form action="/albums/search" method="post" id="search">
+  <input id="search-bar" type="search" name="query" placeholder="Rechercher" required>
+</form>
 {% if albums|length != 0 %}
   {% for album in albums %}
   <a href="{{ album['uuid'] }}">
