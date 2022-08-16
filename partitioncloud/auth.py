@@ -13,6 +13,7 @@ from flask import (
     request,
     session,
     url_for,
+    flash
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -28,6 +29,7 @@ def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
+            flash("Vous devez être connecté pour accéder à cette page.")
             return redirect(url_for("auth.login"))
 
         return view(**kwargs)
@@ -41,10 +43,12 @@ def admin_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
+            flash("Vous devez être connecté pour accéder à cette page.")
             return redirect(url_for("auth.login"))
 
         user = User(session.get("user_id"))
         if user.access_level != 1:
+            flash("Droits insuffisants.")
             return redirect("/albums")
 
         return view(**kwargs)

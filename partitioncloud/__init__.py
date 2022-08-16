@@ -3,9 +3,13 @@
 Main file
 """
 import os
-from flask import Flask, render_template, request, send_file, g, redirect
 
-from . import auth, albums, partition
+from flask import Flask, g, redirect, render_template, request, send_file, flash
+from werkzeug.security import generate_password_hash
+
+from . import albums, auth, partition
+from .auth import admin_required
+from .db import get_db
 
 app = Flask(__name__)
 
@@ -25,6 +29,43 @@ app.register_blueprint(partition.bp)
 def home():
     """Redirect to home"""
     return redirect("/albums/")
+
+
+@app.route("/add-user", methods=["GET", "POST"])
+@admin_required
+def add_user():
+    """
+    Ajouter un utilisateur en tant qu'administrateur
+    """
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        db = get_db()
+        error = None
+
+        if not username:
+            error = "Un nom d'utilisateur est requis."
+        elif not password:
+            error = "Un mot de passe est requis."
+
+        if error is None:
+            try:
+                db.execute(
+                    "INSERT INTO user (username, password) VALUES (?, ?)",
+                    (username, generate_password_hash(password)),
+                )
+                db.commit()
+            except db.IntegrityError:
+                # The username was already taken, which caused the
+                # commit to fail. Show a validation error.
+                error = f"Le nom d'utilisateur {username} est déjà pris."
+            else:
+                # Success, go to the login page.
+                flash(f"Utilisateur {username} crée")
+                return redirect("/albums")
+
+        flash(error)
+    return render_template("auth/register.html")
 
 
 if __name__ == "__main__":
