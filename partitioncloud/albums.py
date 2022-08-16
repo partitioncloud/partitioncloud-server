@@ -10,7 +10,7 @@ from flask import (Blueprint, abort, flash, redirect, render_template, request,
 
 from .auth import login_required
 from .db import get_db
-from . import user
+from .utils import User, Album
 
 bp = Blueprint("albums", __name__, url_prefix="/albums")
 
@@ -18,7 +18,8 @@ bp = Blueprint("albums", __name__, url_prefix="/albums")
 @bp.route("/")
 @login_required
 def index():
-    albums = user.get_albums(session.get("user_id"))
+    user = User(session.get("user_id"))
+    albums = user.get_albums()
 
     return render_template("albums/index.html", albums=albums)
 
@@ -28,35 +29,25 @@ def album(uuid):
     """
     Album page
     """
-    db = get_db()
-    album = db.execute(
-        """
-        SELECT id, name, uuid FROM album
-        WHERE uuid = ?
-        """,
-        (uuid,),
-    ).fetchone()
+    try:
+        album = Album(uuid=uuid)
+        user = User(session.get("user_id"))
+        partitions = album.get_partitions()
+        if user.id is None:
+            # On ne propose pas aux gens non connectés de rejoindre l'album
+            not_participant = False
+        else:
+            not_participant = not user.is_participant(album.uuid)
 
-    if album is None:
+        return render_template(
+            "albums/album.html",
+            album=album,
+            partitions=partitions,
+            not_participant=not_participant
+        )
+
+    except LookupError:
         return abort(404)
-
-    partitions = db.execute(
-        """
-        SELECT partition.uuid, partition.name, partition.author FROM partition
-        JOIN contient_partition ON partition_uuid = partition.uuid
-        JOIN album ON album.id = album_id
-        WHERE album.uuid = ?
-        """,
-        (uuid,),
-    ).fetchall()
-
-    if session.get("user_id") is None:
-        # On ne propose pas aux gens non connectés de rejoindre l'album
-        not_participant = False
-    else:
-        not_participant = not user.is_participant(session.get("user_id"), uuid)
-
-    return render_template("albums/album.html", album=album, partitions=partitions, not_participant=not_participant)
 
 
 @bp.route("/<album_uuid>/<partition_uuid>")
@@ -106,21 +97,13 @@ def create_album():
                         (uuid, name),
                     )
                     db.commit()
-
-                    album_id = db.execute(
-                        """
-                        SELECT id FROM album
-                        WHERE uuid = ?
-                        """,
-                        (uuid,),
-                    ).fetchone()["id"]
-
+                    album = Album(uuid=uuid)
                     db.execute(
                         """
                         INSERT INTO contient_user (user_id, album_id)
                         VALUES (?, ?)
                         """,
-                        (session.get("user_id"), album_id),
+                        (session.get("user_id"), album.id),
                     )
                     db.commit()
 
@@ -137,149 +120,61 @@ def create_album():
 
 
 @bp.route("/<uuid>/join")
+@login_required
 def join_album(uuid):
-    if session.get("user_id") is None:
-        flash("Vous n'êtes pas connecté.")
-        return redirect(f"/albums/{uuid}")
-    
-    db = get_db()
-    album_id = db.execute(
-        """
-        SELECT id FROM album
-        WHERE uuid = ?
-        """,
-        (uuid,)
-    ).fetchone()["id"]
-
-    if album_id is None:
+    user = User(session.get("user_id"))
+    try:
+        user.join_album(uuid)
+    except LookupError:
         flash("Cet album n'existe pas.")
         return redirect(f"/albums/{uuid}")
 
-    db.execute(
-        """
-        INSERT INTO contient_user (user_id, album_id)
-        VALUES (?, ?)
-        """,
-        (session.get("user_id"), album_id)
-    )
-    db.commit()
     flash("Album ajouté à la collection.")
     return redirect(f"/albums/{uuid}")
 
 
 @bp.route("/<uuid>/delete", methods=["GET", "POST"])
+@login_required
 def delete_album(uuid):
     db = get_db()
-    if session.get("user_id") is None:
-        flash("Vous n'êtes pas connecté.")
-        return redirect(f"/albums/{uuid}")
+    album = Album(uuid=uuid)
 
     if request.method == "GET":
-        album =  db.execute(
-            """
-            SELECT * FROM album
-            WHERE uuid = ?
-            """,
-            (uuid,)
-        ).fetchone()
         return render_template("albums/delete-album.html", album=album)
     
     error = None
-    users = user.get_users(uuid)
+    users = album.get_users()
+    user = User(session.get("user_id"))
     if len(users) > 1:
         error = "Vous n'êtes pas seul dans cet album."
-    elif len(users) == 1 and users[0]["id"] != session.get("user_id"):
+    elif len(users) == 1 and users[0]["id"] != user.id:
         error = "Vous ne possédez pas cet album."
     
-    if user.access_level(session.get("user_id")) == 1:
+    if user.access_level == 1:
         error = None
 
     if error is not None:
         flash(error)
         return redirect(f"/albums/{uuid}")
 
-    album_id = db.execute(
-        """
-        SELECT id FROM album
-        WHERE uuid = ?
-        """,
-        (uuid,)
-    ).fetchone()["id"]
+    album.delete()
 
-    db.execute(
-        """
-        DELETE FROM album
-        WHERE uuid = ?
-        """,
-        (uuid,)
-    )
-    db.execute(
-        """
-        DELETE FROM contient_user
-        WHERE album_id = ?
-        """,
-        (album_id,)
-    )
-    db.execute(
-        """
-        DELETE FROM contient_partition
-        WHERE album_id = ?
-        """,
-        (album_id,)
-    )
-    db.commit()
-    # Delete orphan partitions
-    partitions = db.execute(
-        """
-        SELECT partition.uuid FROM partition
-        WHERE NOT EXISTS (
-            SELECT NULL FROM contient_partition 
-            WHERE partition.uuid = partition_uuid
-        )
-        """
-    )
-    for partition in partitions.fetchall():
-        os.remove(f"partitioncloud/partitions/{partition['uuid']}.pdf")
-        if os.path.exists(f"partitioncloud/static/thumbnails/{partition['uuid']}.jpg"):
-            os.remove(f"partitioncloud/static/thumbnails/{partition['uuid']}.jpg")
-    
-    partitions = db.execute(
-        """
-        DELETE FROM partition
-        WHERE uuid IN (
-            SELECT partition.uuid FROM partition
-            WHERE NOT EXISTS (
-                SELECT NULL FROM contient_partition 
-                WHERE partition.uuid = partition_uuid
-            )
-        )
-        """
-    )
-    db.commit()
     flash("Album supprimé.")
     return redirect("/albums")
 
 
 @bp.route("/<album_uuid>/add-partition", methods=["GET", "POST"])
+@login_required
 def add_partition(album_uuid):
-    user_id = session.get("user_id")
     db = get_db()
-    if user_id is None:
-        flash("Vous n'êtes pas connecté.")
-        return redirect(f"/albums/{album_uuid}")
+    user = User(session.get("user_id"))
+    album = Album(uuid=album_uuid)
 
-    if (not user.is_participant(user_id, album_uuid)) and (user.access_level(user_id) != 1):
+    if (not user.is_participant(album.uuid)) and (user.access_level != 1):
         flash("Vous ne participez pas à cet album.")
-        return redirect(f"/albums/{album_uuid}")
+        return redirect(f"/albums/{album.uuid}")
 
     if request.method == "GET":
-        album =  db.execute(
-            """
-            SELECT * FROM album
-            WHERE uuid = ?
-            """,
-            (album_uuid,)
-        ).fetchone()
         return render_template("albums/add-partition.html", album=album)
 
     error = None
@@ -291,7 +186,7 @@ def add_partition(album_uuid):
 
     if error is not None:
         flash(error)
-        return redirect(f"/albums/{album_uuid}")
+        return redirect(f"/albums/{album.uuid}")
 
     if "author" in request.form:
         author = request.form["author"]
@@ -331,7 +226,7 @@ def add_partition(album_uuid):
                 SELECT id FROM album
                 WHERE uuid = ?
                 """,
-                (album_uuid,)
+                (album.uuid,)
             ).fetchone()["id"]
 
             db.execute(
@@ -339,7 +234,7 @@ def add_partition(album_uuid):
                 INSERT INTO contient_partition (partition_uuid, album_id)
                 VALUES (?, ?)
                 """,
-                (partition_uuid, album_id),
+                (partition_uuid, album.id),
             )
             db.commit()
 
@@ -348,4 +243,4 @@ def add_partition(album_uuid):
             pass
 
     flash(f"Partition {request.form['name']} ajoutée")
-    return redirect(f"/albums/{album_uuid}")
+    return redirect(f"/albums/{album.uuid}")

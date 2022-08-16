@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}{{ album["name"] }}{% endblock %}</h1>
+<h1>{% block title %}{{ album.name }}{% endblock %}</h1>
 {% endblock %}
 
 {% block header_actions %}
 {% if not_participant %}
-<a href="/albums/{{ album['uuid'] }}/join">
+<a class="button-href" href="/albums/{{ album.uuid }}/join">
   <button id="join-album">Rejoindre</button>
 </a>
 {% endif %}
 {% if g.user %}
-<a href="/albums/{{ album['uuid'] }}/add-partition">
+<a class="button-href" href="/albums/{{ album.uuid }}/add-partition">
   <button id="add-partition">Ajouter une partition</button>
 </a>
 {% endif %}
@@ -21,15 +21,15 @@
 {% if partitions|length != 0 %}
 <div id="partitions-grid">
   {% for partition in partitions %}
-  <div class="partition" id="partition-{{ partition['uuid'] }}">
-    <a href="{{ album['uuid'] }}/{{ partition['uuid'] }}">
-      <img src="/static/thumbnails/{{ partition['uuid'] }}.jpg">
+  <a href="{{ album.uuid }}/{{ partition['uuid'] }}">
+    <div class="partition" id="partition-{{ partition['uuid'] }}">
+      <img class="partition-thumbnail" src="/static/thumbnails/{{ partition['uuid'] }}.jpg">
       <div class="partition-description">
         <div class="partition-name">{{ partition["name"] }}</div>
         <div class="partition-author">{{ partition["author"] }}</div>
       </div>
-    </a>
-  </div>
+    </div>
+  </a>
   {% endfor %}
 </div>
 {% else %}

@@ -1,16 +1,21 @@
 <!doctype html>
-<title>{% block title %}{% endblock %} - PartitionCloud</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}{% endblock %} - PartitionCloud</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='mobile.css') }}">
+</head>
 <nav>
   <h1><a href="{{ url_for('albums.index') }}">PartitionCloud</a></h1>
   <ul>
     {% if g.user %}
-      <li><span>{{ g.user['username'] }}</span>
-      <li><a href="{{ url_for('auth.logout') }}">Déconnexion</a>
-    {% else %}
-      <li><a href="{{ url_for('auth.register') }}">Créer un compte</a>
-      <li><a href="{{ url_for('auth.login') }}">Se connecter</a>
-    {% endif %}
+    <li><span>{{ g.user['username'] }}</span>
+    <li><a href="{{ url_for('auth.logout') }}">Déconnexion</a>
+      {% else %}
+    <li><a href="{{ url_for('auth.register') }}">Créer un compte</a>
+    <li><a href="{{ url_for('auth.login') }}">Se connecter</a>
+      {% endif %}
   </ul>
 </nav>
 <section class="content">
@@ -20,9 +25,9 @@
       {% block header_actions %}{% endblock %}
     </div>
   </header>
-  <br/>
   {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
+  <div class="flash">{{ message }}</div>
   {% endfor %}
+  <br />
   {% block content %}{% endblock %}
 </section>
