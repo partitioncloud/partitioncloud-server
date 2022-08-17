@@ -3,7 +3,9 @@
 init () {
     mkdir -p "instance"
     mkdir -p "partitioncloud/partitions"
+    mkdir -p "partitioncloud/search-partitions"
     mkdir -p "partitioncloud/static/thumbnails"
+    mkdir -p "partitioncloud/static/search-thumbnails"
     if [ ! -x instance/partitioncloud.sqlite ]; then
         printf "Souhaitez vous supprimer la base de données existante ? [y/n] "
         read -r CONFIRMATION
