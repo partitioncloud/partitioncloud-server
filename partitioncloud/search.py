@@ -87,8 +87,8 @@ def online_search(query):
                 print(e)
                 db.execute(
                     """
-                    DELETE FROM search_results (uuid)
-                    VALUES (?)
+                    DELETE FROM search_results
+                    WHERE uuid = ?
                     """,
                     (uuid,)
                 )
