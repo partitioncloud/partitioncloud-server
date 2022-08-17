@@ -2,8 +2,16 @@
 """
 Module implémentant la recherche de partitions par mots-clés
 """
+from uuid import uuid4
+import urllib.request
+import os
 
-def search(query, partitions):
+import googlesearch
+
+from .db import get_db
+
+
+def local_search(query, partitions):
     """
     Renvoie les 5 résultats les plus pertinents parmi une liste donnée
     """
@@ -30,3 +38,75 @@ def search(query, partitions):
         else:
             break
     return sorted_partitions[:min(5,len(sorted_partitions))]
+
+
+def online_search(query):
+    """
+    Renvoie les 5 résultats les plus pertinents depuis google
+    """
+    db = get_db()
+    query = f"partition filetype:pdf {query}"
+    partitions = []
+    results = googlesearch.search(
+        query,
+        num=5,
+        stop=5,
+        pause=1
+    )
+    for element in results:
+        while True:
+            try:
+                uuid = str(uuid4())
+                db.execute(
+                    """
+                    INSERT INTO search_results (uuid)
+                    VALUES (?)
+                    """,
+                    (uuid,)
+                )
+                urllib.request.urlretrieve(element, f"partitioncloud/search-partitions/{uuid}.pdf")
+
+                os.system(
+                    f'/usr/bin/convert -thumbnail\
+                    "178^>" -background white -alpha \
+                    remove -crop 178x178+0+0 \
+                    partitioncloud/search-partitions/{uuid}.pdf[0] \
+                    partitioncloud/static/search-thumbnails/{uuid}.jpg'
+                )
+                partitions.append(
+                    {
+                        "name": element.split("://")[1].split("/")[0],
+                        "uuid": uuid
+                    }
+                )
+                db.commit()
+                break
+            except db.IntegrityError:
+                pass
+            except urllib.error.HTTPError as e:
+                print(e)
+    return partitions
+
+
+def flush_cache():
+    """
+    Supprimer les résultats de recherche datant de plus de 15 minutes
+    """
+    db = get_db()
+    expired_cache = db.execute(
+        """
+        SELECT uuid FROM search_results 
+        WHERE creation_time <= datetime('now', '-15 minutes', 'localtime')
+        """
+    ).fetchall()
+    for element in expired_cache:
+        uuid = element["uuid"]
+        os.remove(f"partitioncloud/search-partitions/{uuid}.pdf")
+        os.remove(f"partitioncloud/static/search-thumbnails/{uuid}.jpg")
+
+    db.execute(
+        """
+        DELETE FROM search_results
+        WHERE creation_time <= datetime('now', '-15 minutes', 'localtime')
+        """
+    )

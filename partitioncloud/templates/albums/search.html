@@ -6,6 +6,7 @@
 
 {% block content %}
 {% if partitions|length != 0 %}
+<h4>Résultats dans la bibliothèque locale</h4>
 <div id="partitions-grid">
   {% for partition in partitions %}
   <a href="/partition/{{ partition['uuid'] }}">
@@ -19,7 +20,20 @@
   </a>
   {% endfor %}
 </div>
-{% else %}
-  <div>Aucune partition ne correspond aux termes de votre requête</div>
+{% endif %}
+{% if google_results|length != 0 %}
+<h4>Résultats de la recherche en ligne</h4>
+<div id="partitions-grid">
+  {% for partition in google_results %}
+  <a href="/partition/search/{{ partition['uuid'] }}">
+    <div class="partition" id="partition-{{ partition['uuid'] }}">
+      <img class="partition-thumbnail" src="/static/search-thumbnails/{{ partition['uuid'] }}.jpg">
+      <div class="partition-description">
+        <div class="partition-name">{{ partition["name"] }}</div>
+      </div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
 {% endif %}
 {% endblock %}

@@ -29,6 +29,23 @@ def partition(uuid):
     return send_file(os.path.join("partitions", f"{uuid}.pdf"))
 
 
+@bp.route("/search/<uuid>")
+@login_required
+def partition_search(uuid):
+    db = get_db()
+    partition = db.execute(
+        """
+        SELECT * FROM search_results
+        WHERE uuid = ?
+        """,
+        (uuid,)
+    ).fetchone()
+
+    if partition is None:
+        abort(404)
+    return send_file(os.path.join("search-partitions", f"{uuid}.pdf"))
+
+
 @bp.route("/")
 @admin_required
 def index():

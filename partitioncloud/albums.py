@@ -11,7 +11,7 @@ from flask import (Blueprint, abort, flash, redirect, render_template, request,
 from .auth import login_required
 from .db import get_db
 from .utils import User, Album, get_all_partitions
-from .search import search as srch
+from . import search
 
 bp = Blueprint("albums", __name__, url_prefix="/albums")
 
@@ -27,14 +27,16 @@ def index():
 
 @bp.route("/search", methods=["POST"])
 @login_required
-def search():
+def search_page():
     if "query" not in request.form or request.form["query"] == "":
         flash("Aucun terme de recherche spécifié.")
         return redirect("/albums")
 
     query = request.form["query"]
-    partitions = srch(query, get_all_partitions())
-    return render_template("albums/search.html", partitions=partitions, query=query)
+    search.flush_cache()
+    partitions_local = search.local_search(query, get_all_partitions())
+    google_results = search.online_search(query)
+    return render_template("albums/search.html", partitions=partitions_local, google_results=google_results, query=query)
 
 @bp.route("/<uuid>")
 def album(uuid):

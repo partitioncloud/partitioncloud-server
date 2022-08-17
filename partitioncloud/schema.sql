@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS partition;
 DROP TABLE IF EXISTS album;
 DROP TABLE IF EXISTS contient_partition;
 DROP TABLE IF EXISTS contient_user;
+DROP TABLE IF EXISTS search_results;
 
 CREATE TABLE user (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,4 +35,9 @@ CREATE TABLE contient_user (
 	user_id INTEGER NOT NULL,
 	album_id INTEGER NOT NULL,
 	PRIMARY KEY (user_id, album_id)
+);
+
+CREATE TABLE search_results (
+	uuid TEXT(36) PRIMARY KEY,
+	creation_time TEXT NULL DEFAULT (datetime('now', 'localtime'))
 );

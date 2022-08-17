@@ -174,6 +174,11 @@ input[type=submit] {
     overflow-x: scroll;
 }
 
+#search-partitions-grid {
+    display: flex;
+    overflow-x: scroll;
+}
+
 #header-actions {
     margin-bottom: 5px;
 }
