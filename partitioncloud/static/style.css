@@ -189,5 +189,22 @@ input[type=submit] {
 
 #search-bar {
     max-width: 50%;
-    margin-left: 25%;
-  }
+    margin-bottom: .25rem;
+}
+
+#search-form {
+    display: block;
+    text-align: center;
+}
+
+.add-to-album {
+    width: 100%;
+    width: -moz-available;
+    width: -webkit-fill-available;
+    width: stretch;
+}
+
+#online-search-label {
+    font-size: .7rem;
+    font-weight: lighter;
+}

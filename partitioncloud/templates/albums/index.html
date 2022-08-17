@@ -11,8 +11,11 @@
 {% endblock %}
 
 {% block content %}
-<form action="/albums/search" method="post" id="search">
+<form action="/albums/search" method="post" id="search-form">
   <input id="search-bar" type="search" name="query" placeholder="Rechercher" required>
+  <br/>
+  <input type="checkbox" id="online-search" name="online-search" value="online-search" checked="on">
+    <label for="online-search" id="online-search-label">Recherche en ligne</label>
 </form>
 {% if albums|length != 0 %}
   {% for album in albums %}

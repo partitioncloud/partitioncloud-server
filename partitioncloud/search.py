@@ -42,16 +42,16 @@ def local_search(query, partitions):
 
 def online_search(query):
     """
-    Renvoie les 5 résultats les plus pertinents depuis google
+    Renvoie les 3 résultats les plus pertinents depuis google
     """
     db = get_db()
     query = f"partition filetype:pdf {query}"
     partitions = []
     results = googlesearch.search(
         query,
-        num=5,
-        stop=5,
-        pause=1
+        num=3,
+        stop=3,
+        pause=0.2
     )
     for element in results:
         while True:

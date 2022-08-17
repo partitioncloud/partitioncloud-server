@@ -25,6 +25,8 @@ class User():
 
     def is_participant(self, album_uuid):
         db = get_db()
+        if self.access_level == 1:
+            return True
         return len(db.execute(
                 """
                 SELECT album.id FROM album
@@ -189,6 +191,21 @@ class Album():
                 )
             )
             """
+        )
+        db.commit()
+
+
+    def add_partition(self, partition_uuid):
+        """
+        Ajoute une partition à l'album à partir de son uuid
+        """
+        db = get_db()
+        db.execute(
+            """
+            INSERT INTO contient_partition (partition_uuid, album_id)
+            VALUES (?, ?)
+            """,
+            (partition_uuid, self.id),
         )
         db.commit()
 

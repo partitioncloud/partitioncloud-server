@@ -9,15 +9,27 @@
 <h4>Résultats dans la bibliothèque locale</h4>
 <div id="partitions-grid">
   {% for partition in partitions %}
-  <a href="/partition/{{ partition['uuid'] }}">
-    <div class="partition" id="partition-{{ partition['uuid'] }}">
-      <img class="partition-thumbnail" src="/static/thumbnails/{{ partition['uuid'] }}.jpg">
-      <div class="partition-description">
-        <div class="partition-name">{{ partition["name"] }}</div>
-        <div class="partition-author">{{ partition["author"] }}</div>
+  <div class="partition-container">
+    <a href="/partition/{{ partition['uuid'] }}">
+      <div class="partition" id="partition-{{ partition['uuid'] }}">
+        <img class="partition-thumbnail" src="/static/thumbnails/{{ partition['uuid'] }}.jpg">
+        <div class="partition-description">
+          <div class="partition-name">{{ partition["name"] }}</div>
+          <div class="partition-author">{{ partition["author"] }}</div>
+        </div>
       </div>
-    </div>
-  </a>
+    </a>
+    <form action="/albums/add-partition" method="post">
+      <select name="album-uuid">
+        {% for album in albums %}
+        <option value="{{ album['uuid'] }}">{{ album["name"] }}</option>
+        {% endfor %}
+      </select>
+      <input type="hidden" value="{{ partition['uuid'] }}" name="partition-uuid">
+      <input type="hidden" value="local_file" name="partition-type">
+      <input type="submit" value="Ajouter à l'album" class="add-to-album">
+    </form>
+  </div>
   {% endfor %}
 </div>
 {% endif %}
@@ -25,14 +37,26 @@
 <h4>Résultats de la recherche en ligne</h4>
 <div id="partitions-grid">
   {% for partition in google_results %}
-  <a href="/partition/search/{{ partition['uuid'] }}">
-    <div class="partition" id="partition-{{ partition['uuid'] }}">
-      <img class="partition-thumbnail" src="/static/search-thumbnails/{{ partition['uuid'] }}.jpg">
-      <div class="partition-description">
-        <div class="partition-name">{{ partition["name"] }}</div>
+  <div class="partition-container">
+    <a href="/partition/search/{{ partition['uuid'] }}">
+      <div class="partition" id="partition-{{ partition['uuid'] }}">
+        <img class="partition-thumbnail" src="/static/search-thumbnails/{{ partition['uuid'] }}.jpg">
+        <div class="partition-description">
+          <div class="partition-name">{{ partition["name"] }}</div>
+        </div>
       </div>
-    </div>
-  </a>
+    </a>
+    <form action="/albums/add-partition" method="post">
+      <select name="album-uuid">
+        {% for album in albums %}
+        <option value="{{ album['uuid'] }}">{{ album["name"] }}</option>
+        {% endfor %}
+      </select>
+      <input type="hidden" value="{{ partition['uuid'] }}" name="partition-uuid">
+      <input type="hidden" value="online_search" name="partition-type">
+      <input type="submit" value="Ajouter à l'album">
+    </form>
+  </div>
   {% endfor %}
 </div>
 {% endif %}

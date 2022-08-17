@@ -3,6 +3,7 @@
 Albums module
 """
 import os
+import shutil
 from uuid import uuid4
 
 from flask import (Blueprint, abort, flash, redirect, render_template, request,
@@ -35,8 +36,19 @@ def search_page():
     query = request.form["query"]
     search.flush_cache()
     partitions_local = search.local_search(query, get_all_partitions())
-    google_results = search.online_search(query)
-    return render_template("albums/search.html", partitions=partitions_local, google_results=google_results, query=query)
+    if "online-search" in request.form:
+        google_results = search.online_search(query)
+    else:
+        google_results = []
+    user = User(session.get("user_id"))
+
+    return render_template(
+        "albums/search.html",
+        partitions=partitions_local,
+        google_results=google_results,
+        query=query,
+        albums=user.get_albums()
+    )
 
 @bp.route("/<uuid>")
 def album(uuid):
@@ -193,10 +205,25 @@ def add_partition(album_uuid):
 
     error = None
 
-    if "file" not in request.files:
-        error = "Aucun fichier n'a été fourni."
-    elif "name" not in request.form:
+    if "name" not in request.form:
         error = "Un titre est requis."
+    elif "file" not in request.files:
+        if "partition-uuid" not in request.form:
+            error = "Aucun fichier n'a été fourni."
+        else:
+            partition_type = "uuid"
+            search_uuid = request.form["partition-uuid"]
+            data = db.execute(
+                """
+                SELECT * FROM search_results
+                WHERE uuid = ?
+                """,
+                (search_uuid,)
+            ).fetchone()
+            if data is None:
+                error = "Les résultats de la recherche ont expiré."
+    else:
+        partition_type = "file"
 
     if error is not None:
         flash(error)
@@ -224,8 +251,11 @@ def add_partition(album_uuid):
             )
             db.commit()
 
-            file = request.files["file"]
-            file.save(f"partitioncloud/partitions/{partition_uuid}.pdf")
+            if partition_type == "file":
+                file = request.files["file"]
+                file.save(f"partitioncloud/partitions/{partition_uuid}.pdf")
+            else:
+                shutil.copyfile(f"partitioncloud/search-partitions/{search_uuid}.pdf", f"partitioncloud/partitions/{partition_uuid}.pdf")
 
             os.system(
                 f'/usr/bin/convert -thumbnail\
@@ -242,15 +272,9 @@ def add_partition(album_uuid):
                 """,
                 (album.uuid,)
             ).fetchone()["id"]
-
-            db.execute(
-                """
-                INSERT INTO contient_partition (partition_uuid, album_id)
-                VALUES (?, ?)
-                """,
-                (partition_uuid, album.id),
-            )
             db.commit()
+
+            album.add_partition(partition_uuid)
 
             break
         except db.IntegrityError:
@@ -258,3 +282,54 @@ def add_partition(album_uuid):
 
     flash(f"Partition {request.form['name']} ajoutée")
     return redirect(f"/albums/{album.uuid}")
+
+
+@bp.route("/add-partition", methods=["POST"])
+@login_required
+def add_partition_from_search():
+    user = User(session.get("user_id"))
+    error = None
+    db = get_db()
+
+    if "album-uuid" not in request.form:
+        error = "Il est nécessaire de sélectionner un album."
+    elif "partition-uuid" not in request.form:
+        error = "Il est nécessaire de sélectionner une partition."
+    elif "partition-type" not in request.form:
+        error = "Il est nécessaire de spécifier un type de partition."
+    elif not user.is_participant(request.form["album-uuid"]):
+        error = "Vous ne participez pas à cet album."
+    
+    if error is not None:
+        flash(error)
+        return redirect("/albums")
+
+    album = Album(request.form["album-uuid"])
+    if request.form["partition-type"] == "local_file":
+        data = db.execute(
+            """
+            SELECT * FROM contient_partition
+            WHERE album_id = ?
+            AND partition_uuid = ?
+            """,
+            (album.id, request.form["partition-uuid"])
+        ).fetchone()
+
+        if data is None:
+            album.add_partition(request.form["partition-uuid"])
+            flash("Partition ajoutée.")
+        else:
+            flash("Partition déjà dans l'album.")
+
+        return redirect(f"/albums/{album.uuid}")
+
+    elif request.form["partition-type"] == "online_search":
+        return render_template(
+            "albums/add-partition.html",
+            album=album,
+            partition_uuid=request.form["partition-uuid"]
+        )
+
+    else:
+        flash("Type de partition inconnu.")
+        return redirect("/albums")

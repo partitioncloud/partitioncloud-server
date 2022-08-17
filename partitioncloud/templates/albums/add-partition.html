@@ -5,14 +5,18 @@
 {% endblock %}
 
 {% block content %}
-<form method="post" enctype="multipart/form-data">
+<form action="/albums/{{ album.uuid }}/add-partition" method="post" enctype="multipart/form-data">
   Titre*
   <input name="name" type="text" required />
   Auteur
   <input name="author" type="text" />
   Paroles
   <textarea name="body" type="text"></textarea>
-  <input name="file" type="file" required />
+  {% if partition_uuid %}
+    <input name="partition-uuid" value="{{ partition_uuid }}" type="hidden">
+  {% else %}
+    <input name="file" type="file" required />
+  {% endif %}
   <input type="submit" value="Ajouter" />
 </form>
 {% endblock %}
