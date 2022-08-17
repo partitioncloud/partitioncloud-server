@@ -64,6 +64,7 @@ def online_search(query):
                     """,
                     (uuid,)
                 )
+                db.commit()
                 urllib.request.urlretrieve(element, f"partitioncloud/search-partitions/{uuid}.pdf")
 
                 os.system(
@@ -79,12 +80,19 @@ def online_search(query):
                         "uuid": uuid
                     }
                 )
-                db.commit()
                 break
             except db.IntegrityError:
                 pass
             except urllib.error.HTTPError as e:
                 print(e)
+                db.execute(
+                    """
+                    DELETE FROM search_results (uuid)
+                    VALUES (?)
+                    """,
+                    (uuid,)
+                )
+                db.commit()
                 break
     return partitions
 
