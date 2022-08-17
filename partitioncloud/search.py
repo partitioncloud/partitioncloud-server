@@ -85,6 +85,7 @@ def online_search(query):
                 pass
             except urllib.error.HTTPError as e:
                 print(e)
+                break
     return partitions
 
 
@@ -101,8 +102,14 @@ def flush_cache():
     ).fetchall()
     for element in expired_cache:
         uuid = element["uuid"]
-        os.remove(f"partitioncloud/search-partitions/{uuid}.pdf")
-        os.remove(f"partitioncloud/static/search-thumbnails/{uuid}.jpg")
+        try:
+            os.remove(f"partitioncloud/search-partitions/{uuid}.pdf")
+        except FileNotFoundError:
+            pass
+        try:
+            os.remove(f"partitioncloud/static/search-thumbnails/{uuid}.jpg")
+        except FileNotFoundError:
+            pass
 
     db.execute(
         """
