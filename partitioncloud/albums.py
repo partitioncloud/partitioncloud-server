@@ -57,6 +57,7 @@ def album(uuid):
     """
     try:
         album = Album(uuid=uuid)
+        album.users = [User(i["id"]) for i in album.get_users()]
         user = User(session.get("user_id"))
         partitions = album.get_partitions()
         if user.id is None:

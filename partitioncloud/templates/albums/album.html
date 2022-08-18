@@ -5,6 +5,13 @@
 {% endblock %}
 
 {% block header_actions %}
+<div id="users-list">
+  {% for user in album.users %}
+  <div class="user-profile-picture" style="background-color:{{ user.color }};" title="{{ user.username }}">
+    {{ user.username[0] | upper }}
+  </div>
+  {% endfor %}
+</div>
 {% if not_participant %}
 <a class="button-href" href="/albums/{{ album.uuid }}/join">
   <button id="join-album">Rejoindre</button>

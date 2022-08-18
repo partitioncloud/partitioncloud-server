@@ -208,3 +208,18 @@ input[type=submit] {
     font-size: .7rem;
     font-weight: lighter;
 }
+
+.user-profile-picture {
+    width: 25px;
+    height: 22px;
+    text-align: center;
+    padding-top: 3px;
+    border-radius: 20px;
+    border-width: 1px;
+    border-color: black;
+    margin: 1px;
+}
+
+#users-list {
+    display: flex;
+}

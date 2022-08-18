@@ -21,6 +21,7 @@ class User():
             ).fetchone()
             self.username = data["username"]
             self.access_level = data["access_level"]
+            self.color = self.get_color()
 
 
     def is_participant(self, album_uuid):
@@ -71,6 +72,11 @@ class User():
         db.commit()
 
 
+    def get_color(self):
+        integer = int.from_bytes(self.username.encode(), "little") % 16777215
+        return "#" + str(hex(integer))[2:]
+
+
 
 class Album():
     def __init__(self, uuid=None, id=None):
@@ -105,6 +111,8 @@ class Album():
 
         else:
             raise LookupError
+        
+        self.users = None
 
 
     def get_users(self):
