@@ -218,6 +218,9 @@ input[type=submit] {
     border-width: 1px;
     border-color: black;
     margin: 1px;
+    color: white;
+    text-shadow: 1px 1px 4px #000000;
+    font-size: 18px;
 }
 
 #users-list {

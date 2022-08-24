@@ -27,7 +27,7 @@
 {% block content %}
 {% if partitions|length != 0 %}
 <div id="partitions-grid">
-  {% for partition in partitions %}
+  {% for partition in partitions | reverse %}
   <a href="{{ album.uuid }}/{{ partition['uuid'] }}">
     <div class="partition" id="partition-{{ partition['uuid'] }}">
       <img class="partition-thumbnail" src="/static/thumbnails/{{ partition['uuid'] }}.jpg">
