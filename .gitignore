@@ -5,7 +5,7 @@
 .vscode
 
 # data
-instance/partitioncloud.sqlite
+instance
 partitioncloud/partitions
 partitioncloud/search-partitions
 partitioncloud/static/thumbnails

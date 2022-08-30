@@ -16,7 +16,13 @@ init () {
 }
 
 start () {
-    flask run
+    flask run --port=$PORT
+}
+
+production () {
+    FLASK_APP=partitioncloud /usr/bin/gunicorn \
+    wsgi:app \
+    --bind 0.0.0.0:$PORT
 }
 
 
@@ -27,7 +33,10 @@ usage () {
 }
 
 if [[ $1 && $(type "$1") = *"is a"*"function"* || $(type "$1") == *"est une fonction"* ]]; then
-	$1 ${*:2} # Call the function
+	# Import config
+    source "default_config.py"
+    [[ ! -x instance/config.py ]] && source "instance/config.py"
+    $1 ${*:2} # Call the function
 else
 	usage
 	echo $(type "$1")

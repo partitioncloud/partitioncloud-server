@@ -14,11 +14,13 @@ from .db import get_db
 app = Flask(__name__)
 
 app.config.from_mapping(
-    # a default secret that should be overridden by instance config
-    SECRET_KEY="dev",
-    # store the database in the instance folder
     DATABASE=os.path.join(app.instance_path, f"{__name__}.sqlite"),
 )
+app.config.from_object('default_config')
+if os.path.exists("instance/config.py"):
+    app.config.from_object('instance.config')
+else:
+    print("[WARNING] Using default config")
 
 app.register_blueprint(auth.bp)
 app.register_blueprint(albums.bp)
