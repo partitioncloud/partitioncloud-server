@@ -70,7 +70,8 @@ def album(uuid):
             "albums/album.html",
             album=album,
             partitions=partitions,
-            not_participant=not_participant
+            not_participant=not_participant,
+            user=user
         )
 
     except LookupError:
@@ -158,6 +159,25 @@ def join_album(uuid):
 
     flash("Album ajouté à la collection.")
     return redirect(f"/albums/{uuid}")
+
+
+@bp.route("/<uuid>/quit")
+@login_required
+def quit_album(uuid):
+    user = User(session.get("user_id"))
+    album = Album(uuid=uuid)
+    users = album.get_users()
+    if user.id not in [u["id"] for u in users]:
+        flash("Vous ne faites pas partie de cet album")
+        return redirect(f"/albums/{uuid}")
+
+    if len(users) == 1:
+        flash("Vous êtes seul dans cet album, le quitter entraînera sa suppression.")
+        return redirect(f"/albums/{uuid}/delete")
+
+    user.quit_album(uuid)
+    flash("Album quitté.")
+    return redirect(f"/albums")
 
 
 @bp.route("/<uuid>/delete", methods=["GET", "POST"])
@@ -298,7 +318,7 @@ def add_partition_from_search():
         error = "Il est nécessaire de sélectionner une partition."
     elif "partition-type" not in request.form:
         error = "Il est nécessaire de spécifier un type de partition."
-    elif not user.is_participant(request.form["album-uuid"]):
+    elif (not user.is_participant(request.form["album-uuid"])) and (user.access_level != 1):
         error = "Vous ne participez pas à cet album."
     
     if error is not None:

@@ -6,15 +6,24 @@
 
 {% block header_actions %}
 <div id="users-list">
-  {% for user in album.users %}
-  <div class="user-profile-picture" style="background-color:{{ user.color }};" title="{{ user.username }}">
-    {{ user.username[0] | upper }}
+  {% for album_user in album.users %}
+  <div class="user-profile-picture" style="background-color:{{ album_user.color }};" title="{{ album_user.username }}">
+    {{ album_user.username[0] | upper }}
   </div>
   {% endfor %}
 </div>
+{% if user.access_level == 1 %}
+<a class="button-href" href="/albums/{{ album.uuid }}/delete">
+  <button id="delete-album">Supprimer</button>
+</a>
+{% endif %}
 {% if not_participant %}
 <a class="button-href" href="/albums/{{ album.uuid }}/join">
   <button id="join-album">Rejoindre</button>
+</a>
+{% else %}
+<a class="button-href" href="/albums/{{ album.uuid }}/quit">
+  <button id="quit-album">Quitter</button>
 </a>
 {% endif %}
 {% if g.user %}

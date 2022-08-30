@@ -26,8 +26,7 @@ class User():
 
     def is_participant(self, album_uuid):
         db = get_db()
-        if self.access_level == 1:
-            return True
+        
         return len(db.execute(
                 """
                 SELECT album.id FROM album
@@ -66,6 +65,20 @@ class User():
             """
             INSERT INTO contient_user (user_id, album_id)
             VALUES (?, ?)
+            """,
+            (self.id, album.id)
+        )
+        db.commit()
+
+    def quit_album(self, album_uuid):
+        db = get_db()
+        album = Album(uuid=album_uuid)
+
+        db.execute(
+            """
+            DELETE FROM contient_user
+            WHERE user_id = ?
+            AND album_id = ?
             """,
             (self.id, album.id)
         )
