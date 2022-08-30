@@ -181,6 +181,7 @@ input[type=submit] {
 
 #header-actions {
     margin-bottom: 5px;
+    display: inherit;
 }
 
 #cancel-deletion {
@@ -225,4 +226,54 @@ input[type=submit] {
 
 #users-list {
     display: flex;
+    margin-right: 15px;
+    margin-top: 1px;
+}
+
+.dropbtn {
+    width: 30px;
+    height: 30px;
+    background-image: radial-gradient(circle, #373737 2px, lightgray 3px);
+    background-size: 100% 33.33%;
+    border: none;
+    border-radius: 3px;
+}
+
+.dropdown {
+    position: relative;
+    float: right;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 5px;
+    transform: translate(-130px);
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+    border-radius: 5px;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    border-radius: 5px;
+}
+
+#delete-album {
+    background-color: #c61918;
+    border-radius: 5px;
+    color: whitesmoke;
 }
