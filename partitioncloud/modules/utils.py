@@ -5,6 +5,7 @@ from .db import get_db
 class User():
     def __init__(self, user_id):
         self.id = user_id
+        self.albums = None
 
         db = get_db()
         if self.id is None:

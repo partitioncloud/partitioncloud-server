@@ -10,15 +10,23 @@
 </head>
 <nav>
   <h1><a href="{{ url_for('albums.index') }}">PartitionCloud</a></h1>
-  <ul>
-    {% if g.user %}
-    <li><span>{{ g.user['username'] }}</span>
-    <li><a href="{{ url_for('auth.logout') }}">Déconnexion</a>
+    <div class="dropdown">
+      {% if g.user %}
+      <button class="userdropbtn">{{ g.user['username'] }}</button>
       {% else %}
-    <li><a href="{{ url_for('auth.register') }}">Créer un compte</a>
-    <li><a href="{{ url_for('auth.login') }}">Se connecter</a>
+      <button class="userdropbtn">Connexion</button>
       {% endif %}
-  </ul>
+      <div class="dropdown-content">
+        {% if not g.user %}
+          <a href="{{ url_for('auth.register') }}">Créer un compte</a>
+          <a href="{{ url_for('auth.login') }}">Se connecter</a>
+        {% else %}
+          {% if g.user.access_level == 1 %}
+            <a href="/admin">Panneau Admin</a>
+          {% endif %}
+          <a href="{{ url_for('auth.logout') }}">Déconnexion</a>
+        {% endif %}
+    </div>
 </nav>
 <section class="content">
   <header>

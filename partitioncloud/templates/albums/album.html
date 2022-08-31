@@ -23,7 +23,7 @@
     {% else %}
     <a href="/albums/{{ album.uuid }}/quit">Quitter</a>
     {% endif %}
-    {% if user.access_level == 1 %}
+    {% if g.user.access_level == 1 %}
     <a id="delete-album" href="/albums/{{ album.uuid }}/delete">Supprimer</a>
     {% endif %}
   </div>

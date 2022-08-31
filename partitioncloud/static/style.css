@@ -215,13 +215,12 @@ input[type=submit] {
     height: 22px;
     text-align: center;
     padding-top: 3px;
-    border-radius: 20px;
-    border-width: 1px;
-    border-color: black;
+    border-radius: 50%;
     margin: 1px;
     color: white;
     text-shadow: 1px 1px 4px #000000;
     font-size: 18px;
+    border: 1px solid black;
 }
 
 #users-list {
@@ -235,6 +234,13 @@ input[type=submit] {
     height: 30px;
     background-image: radial-gradient(circle, #373737 2px, lightgray 3px);
     background-size: 100% 33.33%;
+    border: none;
+    border-radius: 3px;
+}
+
+.userdropbtn {
+    background-color: lightgray;
+    height: 30px;
     border: none;
     border-radius: 3px;
 }
@@ -276,4 +282,26 @@ input[type=submit] {
     background-color: #c61918;
     border-radius: 5px;
     color: whitesmoke;
+}
+
+table {
+    border: medium solid #b9c6dd;
+    border-collapse: collapse;
+    text-align: center;
+    width: 80%;
+    margin: 10%;
+}
+
+.user-profile {
+    display: inline-flex;
+    width: 80%;
+}
+
+.table-username {
+    margin-left: 10px;
+}
+
+td {
+    border-color: black;
+    border: thin solid;
 }

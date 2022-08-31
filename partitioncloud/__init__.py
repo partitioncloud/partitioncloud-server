@@ -7,9 +7,9 @@ import os
 from flask import Flask, g, redirect, render_template, request, send_file, flash
 from werkzeug.security import generate_password_hash
 
-from . import albums, auth, partition
-from .auth import admin_required
-from .db import get_db
+from .modules import albums, auth, partition, admin
+from .modules.auth import admin_required
+from .modules.db import get_db
 
 app = Flask(__name__)
 
@@ -23,6 +23,7 @@ else:
     print("[WARNING] Using default config")
 
 app.register_blueprint(auth.bp)
+app.register_blueprint(admin.bp)
 app.register_blueprint(albums.bp)
 app.register_blueprint(partition.bp)
 

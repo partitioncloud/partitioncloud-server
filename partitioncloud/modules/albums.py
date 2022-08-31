@@ -70,8 +70,7 @@ def album(uuid):
             "albums/album.html",
             album=album,
             partitions=partitions,
-            not_participant=not_participant,
-            user=user
+            not_participant=not_participant
         )
 
     except LookupError:

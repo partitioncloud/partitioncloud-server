@@ -50,4 +50,4 @@ def partition_search(uuid):
 @admin_required
 def index():
     partitions = get_all_partitions().fetchall()
-    return render_template("partitions/view-all.html", partitions=partitions)
+    return render_template("admin/partitions.html", partitions=partitions)
