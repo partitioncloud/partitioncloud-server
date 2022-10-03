@@ -26,7 +26,10 @@ def partition(uuid):
 
     if partition is None:
         abort(404)
-    return send_file(os.path.join("partitions", f"{uuid}.pdf"))
+    return send_file(
+        os.path.join("partitions", f"{uuid}.pdf"),
+        download_name = f"{partition['name']}.pdf"
+    )
 
 
 @bp.route("/search/<uuid>")

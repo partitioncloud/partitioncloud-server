@@ -97,7 +97,10 @@ def partition(album_uuid, partition_uuid):
     if partition is None:
         return abort(404)
 
-    return send_file(os.path.join("partitions", f"{partition_uuid}.pdf"))
+    return send_file(
+        os.path.join("partitions", f"{partition_uuid}.pdf"),
+        download_name = f"{partition['name']}.pdf"
+    )
 
 
 @bp.route("/create-album", methods=["GET", "POST"])
