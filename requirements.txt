@@ -1,0 +1,4 @@
+flask
+sqlite3
+urllib
+googlesearch

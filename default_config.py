@@ -7,3 +7,4 @@ SECRET_KEY="dev"
 
 # Port to run on
 PORT="5000"
+MAX_ONLINE_QUERIES=3

@@ -205,7 +205,7 @@ input[type=submit] {
     width: stretch;
 }
 
-#online-search-label {
+#nb-queries-label {
     font-size: .7rem;
     font-weight: lighter;
 }

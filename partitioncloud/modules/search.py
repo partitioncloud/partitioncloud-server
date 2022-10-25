@@ -40,7 +40,7 @@ def local_search(query, partitions):
     return sorted_partitions[:min(5,len(sorted_partitions))]
 
 
-def online_search(query):
+def online_search(query, num_queries):
     """
     Renvoie les 3 résultats les plus pertinents depuis google
     """
@@ -49,8 +49,8 @@ def online_search(query):
     partitions = []
     results = googlesearch.search(
         query,
-        num=3,
-        stop=3,
+        num=num_queries,
+        stop=num_queries,
         pause=0.2
     )
     for element in results:
@@ -83,8 +83,8 @@ def online_search(query):
                 break
             except db.IntegrityError:
                 pass
-            except urllib.error.HTTPError as e:
-                print(e)
+            except (urllib.error.HTTPError, urllib.error.URLError) as e:
+                print(e, element)
                 db.execute(
                     """
                     DELETE FROM search_results

@@ -14,8 +14,12 @@
 <form action="/albums/search" method="post" id="search-form">
   <input id="search-bar" type="search" name="query" placeholder="Rechercher" required>
   <br/>
-  <input type="checkbox" id="online-search" name="online-search" value="online-search" checked="on">
-    <label for="online-search" id="online-search-label">Recherche en ligne</label>
+  <select id="nb-queries" name="nb-queries">
+    {% for i in range(0, MAX_QUERIES+1) %}
+      <option value="{{ i }}">{{ i }}</option>
+    {% endfor %}
+  </select>
+    <label for="nb-queries" id="nb-queries-label">Recherches en ligne</label>
 </form>
 <section id="albums">
   {% if albums|length != 0 %}

@@ -7,7 +7,7 @@ import shutil
 from uuid import uuid4
 
 from flask import (Blueprint, abort, flash, redirect, render_template, request,
-                   send_file, session)
+                   send_file, session, current_app)
 
 from .auth import login_required
 from .db import get_db
@@ -23,7 +23,12 @@ def index():
     user = User(session.get("user_id"))
     albums = user.get_albums()
 
-    return render_template("albums/index.html", albums=albums)
+    if user.access_level == 1:
+        max_queries = 10
+    else:
+        max_queries = current_app.config["MAX_ONLINE_QUERIES"]
+
+    return render_template("albums/index.html", albums=albums, MAX_QUERIES=max_queries)
 
 
 @bp.route("/search", methods=["POST"])
@@ -34,13 +39,20 @@ def search_page():
         return redirect("/albums")
 
     query = request.form["query"]
+    nb_queries = abs(int(request.form["nb-queries"]))
     search.flush_cache()
     partitions_local = search.local_search(query, get_all_partitions())
-    if "online-search" in request.form:
-        google_results = search.online_search(query)
+
+    user = User(session.get("user_id"))
+
+    if nb_queries > 0:
+        if user.access_level != 1:
+            nb_queries = min(current_app.config["MAX_ONLINE_QUERIES"], nb_queries)
+        else:
+            nb_queries = min(10, nb_queries) # Query limit is 10 for an admin
+        google_results = search.online_search(query, nb_queries)
     else:
         google_results = []
-    user = User(session.get("user_id"))
 
     return render_template(
         "albums/search.html",
