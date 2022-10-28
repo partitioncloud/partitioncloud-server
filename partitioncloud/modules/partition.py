@@ -3,7 +3,7 @@
 Partition module
 """
 import os
-from flask import Blueprint, abort, send_file, render_template
+from flask import Blueprint, abort, send_file, render_template, request, redirect
 
 from .db import get_db
 from .auth import login_required, admin_required
@@ -38,7 +38,7 @@ def partition_search(uuid):
     db = get_db()
     partition = db.execute(
         """
-        SELECT * FROM search_results
+        SELECT uuid, url FROM search_results
         WHERE uuid = ?
         """,
         (uuid,)
@@ -46,6 +46,8 @@ def partition_search(uuid):
 
     if partition is None:
         abort(404)
+    if request.args.get("redirect") == "true" and partition["url"] is not None:
+        return redirect(partition["url"])
     return send_file(os.path.join("search-partitions", f"{uuid}.pdf"))
 
 

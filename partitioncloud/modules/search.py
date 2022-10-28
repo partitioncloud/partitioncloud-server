@@ -59,10 +59,10 @@ def online_search(query, num_queries):
                 uuid = str(uuid4())
                 db.execute(
                     """
-                    INSERT INTO search_results (uuid)
-                    VALUES (?)
+                    INSERT INTO search_results (uuid, url)
+                    VALUES (?, ?)
                     """,
-                    (uuid,)
+                    (uuid, element,)
                 )
                 db.commit()
                 urllib.request.urlretrieve(element, f"partitioncloud/search-partitions/{uuid}.pdf")

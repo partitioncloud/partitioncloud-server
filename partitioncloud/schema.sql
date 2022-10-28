@@ -39,5 +39,6 @@ CREATE TABLE contient_user (
 
 CREATE TABLE search_results (
 	uuid TEXT(36) PRIMARY KEY,
+	url TEXT,
 	creation_time TEXT NULL DEFAULT (datetime('now', 'localtime'))
 );
