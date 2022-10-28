@@ -44,7 +44,6 @@ def online_search(query, num_queries):
     """
     Renvoie les 3 résultats les plus pertinents depuis google
     """
-    db = get_db()
     query = f"partition filetype:pdf {query}"
     partitions = []
     results = googlesearch.search(
@@ -57,6 +56,7 @@ def online_search(query, num_queries):
         while True:
             try:
                 uuid = str(uuid4())
+                db = get_db()
                 db.execute(
                     """
                     INSERT INTO search_results (uuid)
@@ -65,8 +65,8 @@ def online_search(query, num_queries):
                     (uuid,)
                 )
                 db.commit()
+                db.close()
                 urllib.request.urlretrieve(element, f"partitioncloud/search-partitions/{uuid}.pdf")
-
                 os.system(
                     f'/usr/bin/convert -thumbnail\
                     "178^>" -background white -alpha \
@@ -85,6 +85,8 @@ def online_search(query, num_queries):
                 pass
             except (urllib.error.HTTPError, urllib.error.URLError) as e:
                 print(e, element)
+
+                db = get_db()
                 db.execute(
                     """
                     DELETE FROM search_results
@@ -93,6 +95,7 @@ def online_search(query, num_queries):
                     (uuid,)
                 )
                 db.commit()
+                db.close()
                 break
     return partitions
 
@@ -125,3 +128,4 @@ def flush_cache():
         WHERE creation_time <= datetime('now', '-15 minutes', 'localtime')
         """
     )
+    db.close()
