@@ -16,7 +16,8 @@ CREATE TABLE partition (
 	uuid TEXT(36) PRIMARY KEY,
 	name TEXT NOT NULL,
 	author TEXT,
-	body TEXT
+	body TEXT,
+	user_id INTEGER
 );
 
 CREATE TABLE album (

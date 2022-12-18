@@ -279,10 +279,10 @@ def add_partition(album_uuid):
 
             db.execute(
                 """
-                INSERT INTO partition (uuid, name, author, body)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO partition (uuid, name, author, body, user_id)
+                VALUES (?, ?, ?, ?, ?)
                 """,
-                (partition_uuid, request.form["name"], author, body),
+                (partition_uuid, request.form["name"], author, body, user.id),
             )
             db.commit()
 

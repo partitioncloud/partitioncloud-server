@@ -87,7 +87,7 @@ class User():
 
 
     def get_color(self):
-        integer = int.from_bytes(self.username.encode(), "little") % 16777215
+        integer = hash(self.username) % 16777215
         return "#" + str(hex(integer))[2:]
 
 
@@ -151,7 +151,7 @@ class Album():
         db = get_db()
         return db.execute(
             """
-            SELECT partition.uuid, partition.name, partition.author FROM partition
+            SELECT partition.uuid, partition.name, partition.author, partition.user_id FROM partition
             JOIN contient_partition ON partition_uuid = partition.uuid
             JOIN album ON album.id = album_id
             WHERE album.uuid = ?

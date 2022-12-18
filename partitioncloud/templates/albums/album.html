@@ -39,6 +39,9 @@
     <div class="partition" id="partition-{{ partition['uuid'] }}">
       <img class="partition-thumbnail" src="/static/thumbnails/{{ partition['uuid'] }}.jpg">
       <div class="partition-description">
+        {% if partition["user_id"] == g.user.id or g.user.access_level == 1 %}
+        <a href="/partition/{{ partition['uuid'] }}/edit"><div class="edit-button">✏️</div></a>
+        {% endif %}
         <div class="partition-name">{{ partition["name"] }}</div>
         <div class="partition-author">{{ partition["author"] }}</div>
       </div>
