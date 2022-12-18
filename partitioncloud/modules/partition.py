@@ -3,11 +3,11 @@
 Partition module
 """
 import os
-from flask import Blueprint, abort, send_file, render_template, request, redirect
+from flask import Blueprint, abort, send_file, render_template, request, redirect, flash, session
 
 from .db import get_db
 from .auth import login_required, admin_required
-from .utils import get_all_partitions
+from .utils import get_all_partitions, User, Partition
 
 
 bp = Blueprint("partition", __name__, url_prefix="/partition")
@@ -30,6 +30,68 @@ def partition(uuid):
         os.path.join("partitions", f"{uuid}.pdf"),
         download_name = f"{partition['name']}.pdf"
     )
+
+@bp.route("/<uuid>/edit", methods=["GET", "POST"])
+@login_required
+def edit(uuid):
+    db = get_db()
+    try:
+        partition = Partition(uuid=uuid)
+    except LookupError:
+        abort(404)
+
+    user = User(session.get("user_id"))
+    if user.access_level != 1 and partition.user_id != user.id:
+        flash("Vous n'êtes pas autorisé à modifier cette partition.")
+        return redirect("/albums")
+
+    if request.method == "GET":
+        return render_template("partition/edit.html", partition=partition)
+
+    error = None
+
+    if "name" not in request.form or request.form["name"].strip() == "":
+        error = "Un titre est requis."
+    elif "author" not in request.form:
+        error = "Un nom d'auteur est requis (à minima nul)"
+    elif "body" not in request.form:
+        error = "Des paroles sont requises (à minima nulles)"
+
+    if error is not None:
+        flash(error)
+        return redirect(f"/partition/{ uuid }/edit")
+    
+    partition.update(
+        name=request.form["name"],
+        author=request.form["author"],
+        body=request.form["body"]
+    )
+
+    flash(f"Partition {request.form['name']} modifiée avec succès.")
+    return redirect("/albums")
+
+
+@bp.route("/<uuid>/delete", methods=["GET", "POST"])
+@login_required
+def delete(uuid):
+    try:
+        partition = Partition(uuid=uuid)
+    except LookupError:
+        abort(404)
+
+    user = User(session.get("user_id"))
+
+    if user.access_level != 1 and partition.user_id != user.id:
+        flash("Vous n'êtes pas autorisé à supprimer cette partition.")
+        return redirect("/albums")
+
+    if request.method == "GET":
+        return render_template("partition/delete.html", partition=partition)
+
+    partition.delete()
+
+    flash("Partition supprimée.")
+    return redirect("/albums")
 
 
 @bp.route("/search/<uuid>")

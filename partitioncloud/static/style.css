@@ -325,4 +325,9 @@ td {
     border-width: 1px;
     
     box-shadow: 1px 2px 2px #7f7f7f;
-  }
+}
+
+#paroles {
+    font-family: inherit;
+    font-size: 0.8rem;
+}

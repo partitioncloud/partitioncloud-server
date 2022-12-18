@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Edit - {{ partition.name }}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<br/>
+<a href="/partition/{{ partition.uuid }}"><div>voir le fichier ↗</div></a>
+
+<form action="/partition/{{ partition.uuid }}/edit" method="post" enctype="multipart/form-data">
+  Titre*
+  <input name="name" type="text" value="{{ partition.name }}" required />
+  Auteur
+  <input name="author" type="text" value="{{ partition.author }}" />
+  Paroles
+  <textarea id="paroles" name="body" type="text">{{ partition.body }}</textarea>
+  <input type="submit" value="Mettre à jour" />
+</form>
+<a href="/partition/{{ partition.uuid }}/delete">
+  <button id="supprimer-partition" style="width: 132px;">Supprimer</button>
+</a>
+
+{% endblock %}
