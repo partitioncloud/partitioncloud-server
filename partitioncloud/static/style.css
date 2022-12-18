@@ -147,12 +147,14 @@ input[type=submit] {
     border-width: 1px;
     margin: 3px;
     width: 178px;
+    box-shadow: 1px 1px 1px #7f7f7f;
 }
 
 .partition-thumbnail {
     width: 178px;
     height: 178px;
     background-color: white;
+    border-radius: 5px;
 }
 
 .partition-description {
@@ -212,15 +214,16 @@ input[type=submit] {
 
 .user-profile-picture {
     width: 25px;
-    height: 22px;
+    height: 23px;
     text-align: center;
-    padding-top: 3px;
+    padding-top: 2px;
     border-radius: 50%;
     margin: 1px;
     color: white;
     text-shadow: 1px 1px 4px #000000;
     font-size: 18px;
     border: 1px solid black;
+    box-shadow: 1px 2px 2px #d0d0d0;
 }
 
 #users-list {
@@ -234,7 +237,11 @@ input[type=submit] {
     height: 30px;
     background-image: radial-gradient(circle, #373737 2px, lightgray 3px);
     background-size: 100% 33.33%;
-    border: none;
+    box-shadow: 1px 2px 2px #7f7f7f;
+
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
     border-radius: 3px;
 }
 
@@ -259,6 +266,7 @@ input[type=submit] {
     z-index: 1;
     border-radius: 5px;
     transform: translate(-130px);
+    font-size: 0.7rem;
 }
 
 .dropdown-content a {
@@ -305,3 +313,16 @@ td {
     border-color: black;
     border: thin solid;
 }
+
+.edit-button {
+    float: right;
+    transform: translateX(-10%);
+    padding: 2%;
+
+    border-color: black;
+    border-style: solid;
+    border-radius: 3px;
+    border-width: 1px;
+    
+    box-shadow: 1px 2px 2px #7f7f7f;
+  }
