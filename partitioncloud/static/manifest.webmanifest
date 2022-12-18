@@ -1,16 +1,15 @@
 {
-    "background_color": "white",
-    "description": "Partitioncloud",
-    "display": "fullscreen",
-    "icons": [
-      {
-        "src": "static/icon.png",
-        "sizes": "2000x2000",
-        "type": "image/png"
-      }
-    ],
-    "name": "PartitionCloud",
-    "short_name": "PartitionCloud",
-    "start_url": "/"
-  }
-  
+  "background_color": "white",
+  "description": "Partitioncloud",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "static/icon.png",
+      "sizes": "2000x2000",
+      "type": "image/png"
+    }
+  ],
+  "name": "PartitionCloud",
+  "short_name": "PartitionCloud",
+  "start_url": "/"
+}
