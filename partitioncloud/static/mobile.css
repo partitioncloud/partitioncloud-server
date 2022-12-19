@@ -14,3 +14,22 @@
         width: 100vw;
     }
 }
+
+@media (max-width: 750px) {
+    #partitions-grid {
+        grid-template-columns: repeat(auto-fill, 170px);
+    }
+    
+    .partition {
+        width: 160px;
+    }
+        
+    .partition-thumbnail {
+        width: 160px;
+        height: 160px;
+    }
+
+    .edit-button {
+        transform: translateX(-65%) translateY(-150%);
+    }
+}
