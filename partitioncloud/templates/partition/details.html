@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Détails - {{ partition.name }}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<br />
+{% if user is not none %}
+Auteur: <div class="user-profile">
+  <div class="username" style="margin-top: 6px;">{{ user.username }}</div>
+  <div class="user-profile-picture" style="background-color:{{ user.color }};" title="{{ user.username }}">
+    {{ user.username[0] | upper }}
+  </div>
+</div>
+{% else %}
+Auteur: inconnu
+{% endif %}
+<div id="albums-list">
+  Albums:
+  <ul>
+    {% for album in albums %}
+    <li><a href="/albums/{{ album.uuid }}">{{ album.name }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+Fichier: <a href="/partition/{{ partition.uuid }}">voir le fichier ↗</a>
+
+<form action="/partition/{{ partition.uuid }}/edit" method="post" enctype="multipart/form-data" id="edit-form">
+  Titre*
+  <input name="name" type="text" value="{{ partition.name }}" required />
+  Auteur
+  <input name="author" type="text" value="{{ partition.author }}" />
+  Paroles
+  <textarea id="paroles" name="body" type="text">{{ partition.body }}</textarea>
+  <input type="submit" value="Mettre à jour" />
+</form>
+<a href="/partition/{{ partition.uuid }}/delete">
+  <button id="supprimer-partition" style="width: 132px;">Supprimer</button>
+</a>
+
+{% endblock %}

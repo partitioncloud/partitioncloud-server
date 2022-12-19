@@ -40,7 +40,7 @@ def edit(uuid):
     except LookupError:
         abort(404)
 
-    user = User(session.get("user_id"))
+    user = User(user_id=session.get("user_id"))
     if user.access_level != 1 and partition.user_id != user.id:
         flash("Vous n'êtes pas autorisé à modifier cette partition.")
         return redirect("/albums")
@@ -71,6 +71,52 @@ def edit(uuid):
     return redirect("/albums")
 
 
+@bp.route("/<uuid>/details", methods=["GET", "POST"])
+@admin_required
+def details(uuid):
+    db = get_db()
+    try:
+        partition = Partition(uuid=uuid)
+    except LookupError:
+        abort(404)
+
+    user = User(user_id=session.get("user_id"))
+    try:
+        partition_user = partition.get_user()
+    except LookupError:
+        partition_user = None
+
+    if request.method == "GET":
+        return render_template(
+            "partition/details.html",
+            partition=partition,
+            user=partition_user,
+            albums=partition.get_albums()
+        )
+
+    error = None
+
+    if "name" not in request.form or request.form["name"].strip() == "":
+        error = "Un titre est requis."
+    elif "author" not in request.form:
+        error = "Un nom d'auteur est requis (à minima nul)"
+    elif "body" not in request.form:
+        error = "Des paroles sont requises (à minima nulles)"
+
+    if error is not None:
+        flash(error)
+        return redirect(f"/partition/{ uuid }/details")
+    
+    partition.update(
+        name=request.form["name"],
+        author=request.form["author"],
+        body=request.form["body"]
+    )
+
+    flash(f"Partition {request.form['name']} modifiée avec succès.")
+    return redirect("/albums")
+
+
 @bp.route("/<uuid>/delete", methods=["GET", "POST"])
 @login_required
 def delete(uuid):
@@ -79,7 +125,7 @@ def delete(uuid):
     except LookupError:
         abort(404)
 
-    user = User(session.get("user_id"))
+    user = User(user_id=session.get("user_id"))
 
     if user.access_level != 1 and partition.user_id != user.id:
         flash("Vous n'êtes pas autorisé à supprimer cette partition.")
@@ -116,5 +162,5 @@ def partition_search(uuid):
 @bp.route("/")
 @admin_required
 def index():
-    partitions = get_all_partitions().fetchall()
+    partitions = get_all_partitions()
     return render_template("admin/partitions.html", partitions=partitions)

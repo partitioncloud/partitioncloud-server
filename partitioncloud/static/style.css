@@ -337,3 +337,24 @@ td {
     font-family: inherit;
     font-size: 0.8rem;
 }
+
+.button:hover {
+    background-color: #ddd;
+}
+
+.button {
+    display: inline;
+    background-color: lightgray;
+    padding: 2px;
+    margin: 2px;
+    border-radius: 2px;
+    font-size: 0.9rem;
+}
+
+#actions-rapides {
+    text-align: center;
+}
+
+#actions-rapides a {
+    text-decoration: none;
+}

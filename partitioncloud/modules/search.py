@@ -125,3 +125,4 @@ def flush_cache():
         WHERE creation_time <= datetime('now', '-15 minutes', 'localtime')
         """
     )
+    db.commit()

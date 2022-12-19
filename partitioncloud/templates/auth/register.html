@@ -5,11 +5,18 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post">
+  <form method="post" id="add-user-form">
     <label for="username">Nom d'utilisateur</label>
     <input name="username" id="username" required>
     <label for="password">Mot de passe</label>
     <input type="password" name="password" id="password" required>
     <input type="submit" value="Créer un compte">
   </form>
+<label for="album_uuid">Ajouter à un album: </label>
+<select name="album_uuid" id="album_uuid" form="add-user-form">
+  <option value="">Aucun</option>
+  {% for album in albums %}
+  <option value="{{ album['uuid'] }}">{{ album["name"] }}</option>
+  {% endfor %}
+</select>
 {% endblock %}

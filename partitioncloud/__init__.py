@@ -7,6 +7,7 @@ import os
 from flask import Flask, g, redirect, render_template, request, send_file, flash
 from werkzeug.security import generate_password_hash
 
+from .modules.utils import User, Album, get_all_albums
 from .modules import albums, auth, partition, admin
 from .modules.auth import admin_required
 from .modules.db import get_db
@@ -43,6 +44,7 @@ def add_user():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        album_uuid = request.form["album_uuid"]
         db = get_db()
         error = None
 
@@ -64,11 +66,17 @@ def add_user():
                 error = f"Le nom d'utilisateur {username} est déjà pris."
             else:
                 # Success, go to the login page.
-                flash(f"Utilisateur {username} crée")
-                return redirect("/albums")
+                user = User(name=username)
+                try:
+                    user.join_album(album_uuid)
+                    flash(f"Utilisateur {username} créé")
+                    return redirect("/albums")
+                except LookupError:
+                    flash(f"Cet album n'existe pas. L'utilisateur {username} a été créé")
+                    return redirect("/albums")
 
         flash(error)
-    return render_template("auth/register.html")
+    return render_template("auth/register.html", albums=get_all_albums())
 
 
 if __name__ == "__main__":

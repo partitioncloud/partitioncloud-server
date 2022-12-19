@@ -8,11 +8,16 @@
 {% endblock %}
 
 {% block content %}
+<div id="actions-rapides">
+    <a href="/add-user"><div class="button">Ajouter un utilisateur</div></a>
+    <a href="/partition"><div class="button">Voir toutes les partitions</div></a>
+</div>
 <table>
     <thead>
         <tr>
             <th scope="col">Utilisateur</th>
             <th scope="col">Albums</th>
+            <th scope="col">Partitions</th>
             <th scope="col">Privilèges</th>
         </tr>
     </thead>
@@ -28,6 +33,7 @@
                 </div>
             </td>
             <td>{{ user.albums | length }}</td>
+            <td>{{ user.partitions | length }}</td>
             <td>{% if user.access_level != 1 %}❌{% else %}✅{% endif %}</td>
         </tr>
         {% endfor %}

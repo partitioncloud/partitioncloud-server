@@ -20,7 +20,7 @@ bp = Blueprint("albums", __name__, url_prefix="/albums")
 @bp.route("/")
 @login_required
 def index():
-    user = User(session.get("user_id"))
+    user = User(user_id=session.get("user_id"))
     albums = user.get_albums()
 
     if user.access_level == 1:
@@ -43,7 +43,7 @@ def search_page():
     search.flush_cache()
     partitions_local = search.local_search(query, get_all_partitions())
 
-    user = User(session.get("user_id"))
+    user = User(user_id=session.get("user_id"))
 
     if nb_queries > 0:
         if user.access_level != 1:
@@ -69,8 +69,8 @@ def album(uuid):
     """
     try:
         album = Album(uuid=uuid)
-        album.users = [User(i["id"]) for i in album.get_users()]
-        user = User(session.get("user_id"))
+        album.users = [User(user_id=i["id"]) for i in album.get_users()]
+        user = User(user_id=session.get("user_id"))
         partitions = album.get_partitions()
         if user.id is None:
             # On ne propose pas aux gens non connectés de rejoindre l'album
@@ -164,7 +164,7 @@ def create_album():
 @bp.route("/<uuid>/join")
 @login_required
 def join_album(uuid):
-    user = User(session.get("user_id"))
+    user = User(user_id=session.get("user_id"))
     try:
         user.join_album(uuid)
     except LookupError:
@@ -178,7 +178,7 @@ def join_album(uuid):
 @bp.route("/<uuid>/quit")
 @login_required
 def quit_album(uuid):
-    user = User(session.get("user_id"))
+    user = User(user_id=session.get("user_id"))
     album = Album(uuid=uuid)
     users = album.get_users()
     if user.id not in [u["id"] for u in users]:
@@ -205,7 +205,7 @@ def delete_album(uuid):
     
     error = None
     users = album.get_users()
-    user = User(session.get("user_id"))
+    user = User(user_id=session.get("user_id"))
     if len(users) > 1:
         error = "Vous n'êtes pas seul dans cet album."
     elif len(users) == 1 and users[0]["id"] != user.id:
@@ -228,7 +228,7 @@ def delete_album(uuid):
 @login_required
 def add_partition(album_uuid):
     db = get_db()
-    user = User(session.get("user_id"))
+    user = User(user_id=session.get("user_id"))
     album = Album(uuid=album_uuid)
 
     if (not user.is_participant(album.uuid)) and (user.access_level != 1):
@@ -322,9 +322,8 @@ def add_partition(album_uuid):
 @bp.route("/add-partition", methods=["POST"])
 @login_required
 def add_partition_from_search():
-    user = User(session.get("user_id"))
+    user = User(user_id=session.get("user_id"))
     error = None
-    db = get_db()
 
     if "album-uuid" not in request.form:
         error = "Il est nécessaire de sélectionner un album."
@@ -341,6 +340,7 @@ def add_partition_from_search():
 
     album = Album(request.form["album-uuid"])
     if request.form["partition-type"] == "local_file":
+        db = get_db()
         data = db.execute(
             """
             SELECT * FROM contient_partition

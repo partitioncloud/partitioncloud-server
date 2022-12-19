@@ -46,7 +46,7 @@ def admin_required(view):
             flash("Vous devez être connecté pour accéder à cette page.")
             return redirect(url_for("auth.login"))
 
-        user = User(session.get("user_id"))
+        user = User(user_id=session.get("user_id"))
         if user.access_level != 1:
             flash("Droits insuffisants.")
             return redirect("/albums")
