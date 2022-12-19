@@ -218,8 +218,12 @@ input[type=submit] {
 }
 
 .user-profile-picture {
-    width: 25px;
-    height: 23px;
+    min-width: 25px;
+    max-width: 25px;
+    
+    min-height: 23px;
+    max-height: 23px;
+
     text-align: center;
     padding-top: 2px;
     border-radius: 50%;
@@ -312,6 +316,7 @@ table {
 
 .table-username {
     margin-left: 10px;
+    overflow-y: scroll;
 }
 
 td {
