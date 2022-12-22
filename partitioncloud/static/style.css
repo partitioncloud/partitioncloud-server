@@ -1,33 +1,61 @@
+:root {
+    --background-primary: white;
+    --background-secondary: #eee;
+    --color-primary: black;
+    --color-highlight: #377ba8;
+    --background-head: lightgray;
+    --background-head-hover: #ddd;
+    --background-flash: #cae6f6;
+    --shadow-color: #7f7f7f;
+    --border-color: black;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-primary: black;
+        --background-secondary: #18181a;
+        --color-primary: white;
+        --color-highlight: #9fc0ff;
+        --background-head: #232327;
+        --background-head-hover: #18181a;
+        --background-flash: #002c45;
+        --shadow-color: #282828;
+        --border-color: #6c6c6c;
+    }
+}
+
 html {
     font-family: sans-serif;
-    background: #eee;
+    background: var(--background-secondary);
+    color: var(--color-primary);
     padding: 1rem;
 }
 
 body {
     max-width: 960px;
     margin: 0 auto;
-    background: white;
+    background: var(--background-primary);
+    color: var(--color-primary);
 }
 
 h1, h2, h3,
 h4, h5, h6 {
     font-family: serif;
-    color: #377ba8;
+    color: var(--color-highlight);
     margin: 1rem 0;
 }
 
 a {
-    color: #377ba8;
+    color: var(--color-highlight);
 }
 
 hr {
     border: none;
-    border-top: 1px solid lightgray;
+    border-top: 1px solid var(--background-head);
 }
 
 nav {
-    background: lightgray;
+    background: var(--background-head);
     display: flex;
     align-items: center;
     padding: 0 0.5rem;
@@ -57,12 +85,23 @@ header .action {
     padding: 0.5rem;
 }
 
+button,
+input,
+select {
+    background-color: var(--background-secondary);
+    color: var(--color-primary);
+
+    border-width: 1px;
+    border-radius: 3px;
+    border-color: var(--border-color);
+}
+
 .content {
     padding: 0 1rem 1rem;
 }
 
 .content>header {
-    border-bottom: 1px solid lightgray;
+    border-bottom: 1px solid var(--background-head);
     display: flex;
     align-items: flex-end;
 }
@@ -75,33 +114,9 @@ header .action {
 .flash {
     margin: 1em 0;
     padding: 1em;
-    background: #cae6f6;
-    border: 1px solid #377ba8;
+    background: var(--background-flash);
+    border: 1px solid var(--color-highlight);
     border-radius: 3px;
-}
-
-.post>header {
-    display: flex;
-    align-items: flex-end;
-    font-size: 0.85em;
-}
-
-.post>header>div:first-of-type {
-    flex: auto;
-}
-
-.post>header h1 {
-    font-size: 1.5em;
-    margin-bottom: 0;
-}
-
-.post .about {
-    color: slategray;
-    font-style: italic;
-}
-
-.post .body {
-    white-space: pre-line;
 }
 
 .content:last-child {
@@ -129,37 +144,33 @@ header .action {
     resize: vertical;
 }
 
-input.danger {
-    color: #cc2f2e;
-}
-
 input[type=submit] {
     align-self: start;
     min-width: 10em;
 }
 
 .partition {
-    background-color: lightgray;
+    background-color: var(--background-head);
     text-decoration: none;
-    border-color: black;
+    border-color: var(--border-color);
     border-radius: 5px;
     border-style: solid;
     border-width: 1px;
     margin: 3px;
     width: 178px;
-    box-shadow: 2px 2px 2px #7f7f7f;
+    box-shadow: 2px 2px 2px var(--shadow-color);
 }
 
 .partition-thumbnail {
     width: 178px;
     height: 178px;
-    background-color: white;
+    background-color: var(--background-primary);
     border-radius: 5px;
 }
 
 .partition-description {
     padding: 2px;
-    color: black;
+    color: var(--color-primary);
     min-height: 40px;
 }
 
@@ -220,7 +231,7 @@ input[type=submit] {
 .user-profile-picture {
     min-width: 25px;
     max-width: 25px;
-    
+
     min-height: 23px;
     max-height: 23px;
 
@@ -229,10 +240,10 @@ input[type=submit] {
     border-radius: 50%;
     margin: 1px;
     color: white;
-    text-shadow: 1px 1px 4px #000000;
+    text-shadow: 1px 1px 4px var(--shadow-color);
     font-size: 18px;
     border: 1px solid black;
-    box-shadow: 1px 2px 2px #d0d0d0;
+    box-shadow: 1px 2px 2px var(--shadow-color);
 }
 
 #users-list {
@@ -244,21 +255,22 @@ input[type=submit] {
 .dropbtn {
     width: 30px;
     height: 30px;
-    background-image: radial-gradient(circle, #373737 2px, lightgray 3px);
+    background-image: radial-gradient(circle, var(--color-primary) 2px, var(--background-head) 3px);
     background-size: 100% 33.33%;
-    box-shadow: 1px 2px 2px #7f7f7f;
+    box-shadow: 1px 2px 2px var(--shadow-color);
 
-    border-color: black;
+    border-color: var(--border-color);
     border-style: solid;
     border-width: 1px;
     border-radius: 3px;
 }
 
 .userdropbtn {
-    background-color: lightgray;
+    background-color: var(--background-head);
     height: 30px;
     border: none;
     border-radius: 3px;
+    color: var(--color-primary);
 }
 
 .dropdown {
@@ -269,9 +281,9 @@ input[type=submit] {
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #f1f1f1;
+    background-color: var(--background-secondary);
     min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
     border-radius: 5px;
     transform: translate(-130px);
@@ -279,14 +291,14 @@ input[type=submit] {
 }
 
 .dropdown-content a {
-    color: black;
+    color: var(--color-primary);
     padding: 12px 16px;
     text-decoration: none;
     display: block;
 }
 
 .dropdown-content a:hover {
-    background-color: #ddd;
+    background-color: var(--background-head);
     border-radius: 5px;
 }
 
@@ -302,7 +314,7 @@ input[type=submit] {
 }
 
 table {
-    border: medium solid #b9c6dd;
+    border: thin solid var(--border-color);
     border-collapse: collapse;
     text-align: center;
     width: 80%;
@@ -311,17 +323,16 @@ table {
 
 .user-profile {
     display: inline-flex;
+    overflow-y: scroll;
     width: 80%;
 }
 
 .table-username {
     margin-left: 10px;
-    overflow-y: scroll;
 }
 
 td {
-    border-color: black;
-    border: thin solid;
+    border: thin solid var(--border-color);
 }
 
 .edit-button {
@@ -329,13 +340,13 @@ td {
     transform: translateX(-80%) translateY(-150%);
     padding: 2%;
 
-    border-color: black;
+    border-color: var(--border-color);
     border-style: solid;
     border-radius: 3px;
     border-width: 1px;
-    
-    box-shadow: 1px 2px 2px #7f7f7f;
-    background-color: #e2e2e2;
+
+    box-shadow: 1px 2px 2px var(--shadow-color);
+    background-color: var(--background-secondary);
 }
 
 #paroles {
@@ -344,12 +355,12 @@ td {
 }
 
 .button:hover {
-    background-color: #ddd;
+    background-color: var(--background-head-hover);
 }
 
 .button {
     display: inline;
-    background-color: lightgray;
+    background-color: var(--background-head);
     padding: 2px;
     margin: 2px;
     border-radius: 2px;
