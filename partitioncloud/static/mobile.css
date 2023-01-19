@@ -13,6 +13,14 @@
         padding: 0;
         width: 100vw;
     }
+
+    body {
+        border-radius: 0px;
+        border-width: 0px;
+    }
+    nav {
+        border-radius: 0px;
+    }
 }
 
 @media (max-width: 750px) {
