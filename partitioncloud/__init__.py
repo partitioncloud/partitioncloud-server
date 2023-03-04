@@ -68,7 +68,8 @@ def add_user():
                 # Success, go to the login page.
                 user = User(name=username)
                 try:
-                    user.join_album(album_uuid)
+                    if album_uuid != "":
+                        user.join_album(album_uuid)
                     flash(f"Utilisateur {username} créé")
                     return redirect("/albums")
                 except LookupError:

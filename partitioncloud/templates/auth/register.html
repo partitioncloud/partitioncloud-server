@@ -12,6 +12,8 @@
     <input type="password" name="password" id="password" required>
     <input type="submit" value="Créer un compte">
   </form>
+{% if g.user.access_level == 1 %}
+<!-- Uniquement pour /add-user -->
 <label for="album_uuid">Ajouter à un album: </label>
 <select name="album_uuid" id="album_uuid" form="add-user-form">
   <option value="">Aucun</option>
@@ -19,4 +21,5 @@
   <option value="{{ album['uuid'] }}">{{ album["name"] }}</option>
   {% endfor %}
 </select>
+{% endif %}
 {% endblock %}
