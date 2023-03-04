@@ -6,13 +6,16 @@ init () {
     mkdir -p "partitioncloud/search-partitions"
     mkdir -p "partitioncloud/static/thumbnails"
     mkdir -p "partitioncloud/static/search-thumbnails"
-    if [ ! -x instance/partitioncloud.sqlite ]; then
+    
+    if test -f "instance/partitioncloud.sqlite"; then
         printf "Souhaitez vous supprimer la base de données existante ? [y/n] "
         read -r CONFIRMATION
+        [[ $CONFIRMATION == y ]] || exit 1
     fi
-    [[ $CONFIRMATION == y ]] || exit 1
     sqlite3 "instance/partitioncloud.sqlite" '.read partitioncloud/schema.sql'
-    echo "Base de données initialisée"
+    echo "Base de données créé"
+    sqlite3 "instance/partitioncloud.sqlite" '.read partitioncloud/init.sql'
+    echo "Utilisateur root:root ajouté"
 }
 
 start () {
