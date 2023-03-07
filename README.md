@@ -15,8 +15,8 @@ Serveur web (basé sur Flask) pour gérer sa collection de partitions musicales
 ## Points à noter
 - Les partitions ajoutées sont accessibles à tous les utilisateurs depuis la recherche même si ils ne sont pas dans un album leur y donnant accès, pour limiter la redondance
 - Il est possible d'entrer des paroles en créant une partition, celles-ci sont utilisées uniquement pour la fonctionalité de recherche pour le moment
-- Les résultats de la recherche web sont téléchargés automatiquement pour en générer un aperçu, donc `MAX_ONLINE_QUERIES` doît rester raisonnable
-- Le fichier de configuration est utilisé par le script `make.sh` ainsi que l'interpréteur python
+- Les résultats de la recherche web sont téléchargés automatiquement pour en générer un aperçu, donc `MAX_ONLINE_QUERIES` doit rester raisonnable
+- Le fichier de configuration est un script lu par python *et* bash, il ne faut donc pas écrire `CONFIG_PARAM = 2` mais `CONFIG_PARAM=2` (pour bash)
 
 ## Installation
 
