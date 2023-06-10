@@ -2,12 +2,15 @@
 import os
 from .db import get_db
 
+from flask import current_app
+
 class User():
     def __init__(self, user_id=None, name=None):
         self.id = user_id
         self.username = name
         self.albums = None
         self.partitions = None
+        self.max_queries = 0
 
         db = get_db()
         if self.id is None and self.username is None:
@@ -36,6 +39,10 @@ class User():
             self.username = data["username"]
             self.access_level = data["access_level"]
             self.color = self.get_color()
+            if self.access_level == 1:
+                self.max_queries = 10
+            else:
+                self.max_queries = current_app.config["MAX_ONLINE_QUERIES"]
 
 
     def is_participant(self, album_uuid):
@@ -52,42 +59,47 @@ class User():
             ).fetchall()) == 1
 
 
-    def get_albums(self):
-        db = get_db()
-        if self.access_level == 1:
-            return db.execute(
-                """
-                SELECT * FROM album
-                """
-            ).fetchall()
-        return db.execute(
-                """
-                SELECT album.id, name, uuid FROM album
-                JOIN contient_user ON album_id = album.id
-                JOIN user ON user_id = user.id
-                WHERE user.id = ?
-                """,
-                (self.id,),
-            ).fetchall()
+    def get_albums(self, force_reload=False):
+        if self.albums is None or force_reload:
+            db = get_db()
+            if self.access_level == 1:
+                self.albums = db.execute(
+                    """
+                    SELECT * FROM album
+                    """
+                ).fetchall()
+            else:
+                self.albums = db.execute(
+                    """
+                    SELECT album.id, name, uuid FROM album
+                    JOIN contient_user ON album_id = album.id
+                    JOIN user ON user_id = user.id
+                    WHERE user.id = ?
+                    """,
+                    (self.id,),
+                ).fetchall()
+        return self.albums
 
 
-    def get_partitions(self):
-        db = get_db()
-        if self.access_level == 1:
-            return db.execute(
-                """
-                SELECT * FROM partition
-                """
-            ).fetchall()
-        return db.execute(
-                """
-                SELECT * FROM partition
-                JOIN user ON user_id = user.id
-                WHERE user.id = ?
-                """,
-                (self.id,),
-            ).fetchall()
-
+    def get_partitions(self, force_reload=False):
+        if self.partitions is None or force_reload:
+            db = get_db()
+            if self.access_level == 1:
+                self.partitions = db.execute(
+                    """
+                    SELECT * FROM partition
+                    """
+                ).fetchall()
+            else:
+                self.partitions = db.execute(
+                    """
+                    SELECT * FROM partition
+                    JOIN user ON user_id = user.id
+                    WHERE user.id = ?
+                    """,
+                    (self.id,),
+                ).fetchall()
+        return self.partitions
         
     def join_album(self, album_uuid):
         db = get_db()
