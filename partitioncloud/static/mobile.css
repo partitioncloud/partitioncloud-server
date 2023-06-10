@@ -1,43 +1,19 @@
-@media (max-width: 1024px) {
-    html {
-        font-size: 13px;
-        padding: 0;
-    }
-
-    body {
-        margin: 0;
-        max-width: none;
-    }
-
-    nav {
-        padding: 0;
-        width: 100vw;
-    }
-
-    body {
-        border-radius: 0px;
-        border-width: 0px;
-    }
-    nav {
-        border-radius: 0px;
-    }
-}
-
 @media (max-width: 750px) {
-    #partitions-grid {
-        grid-template-columns: repeat(auto-fill, 170px);
-    }
-    
-    .partition {
-        width: 160px;
-    }
-        
-    .partition-thumbnail {
-        width: 160px;
-        height: 160px;
+    :root {
+        --sidebar-size: 75vw;
     }
 
-    .edit-button {
-        transform: translateX(-40%) translateY(-130%);
+    #content {
+        min-width: calc(100vw - 100px);
+    }
+
+    /* Make content not scrollable */
+    #content-container {
+        overflow: hidden;
+    }
+
+    /* calc(var(--sidebar-size) - 20px) seems not to be working so I'm hardcoding this.. */
+    #settings-container {
+        width: calc(75vw - 20px);
     }
 }

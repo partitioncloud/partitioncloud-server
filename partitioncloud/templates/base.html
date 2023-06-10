@@ -1,7 +1,9 @@
-<!doctype html>
+<!DOCTYPE html>
+<html>
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title>{% block title %}{% endblock %} - PartitionCloud</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='mobile.css') }}">
@@ -9,35 +11,94 @@
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='icon.png') }}">
   <link rel="manifest" href="{{ url_for('static', filename='manifest.webmanifest') }}" />
 </head>
-<nav>
-  <h1><a href="{{ url_for('albums.index') }}">PartitionCloud</a></h1>
-    <div class="dropdown">
+
+
+<body>
+  <div id="dialogs">
+    <!-- This div contains needed needed dialogs for the page 
+    They will only appear if the user clicks a button for one of them -->
+    {% block dialogs %}{% endblock %}
+    <div class="mask" id="!"></div>
+  </div>
+  <div id="main-container">
+    <input id="slide-sidebar" type="checkbox" role="button" />
+    <label for="slide-sidebar">
+      <div id="slide">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-playlist" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+          <path d="M14 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+          <path d="M17 17v-13h4"></path>
+          <path d="M13 5h-10"></path>
+          <path d="M3 9l10 0"></path>
+          <path d="M9 13h-6"></path>
+          </svg>
+      </div>
+    </label>
+    <div id="sidebar">
       {% if g.user %}
-      <button class="userdropbtn">{{ g.user['username'] }}</button>
-      {% else %}
-      <button class="userdropbtn">Connexion</button>
+      <form id="search-form" action="/albums/search" method="post">
+        <input type="search" id="search-bar" required="" placeholder="Rechercher" name="query">
+        <br>
+        <select id="nb-queries" name="nb-queries">
+          {% for i in range(0, user.max_queries+1) %}
+          <option value="{{ i }}">{{ i }}</option>
+          {% endfor %}
+        </select>
+          <label for="nb-queries" id="nb-queries-label">en ligne</label>
+        <input id="search-submit" type="submit" value="Go">
+      </form>
       {% endif %}
-      <div class="dropdown-content">
-        {% if not g.user %}
-          <a href="{{ url_for('auth.register') }}">Créer un compte</a>
-          <a href="{{ url_for('auth.login') }}">Se connecter</a>
+      <h1>Albums</h1>
+      <section id="albums">
+        {% if user.get_albums() |length != 0 %}
+          {% for album in user.albums %}
+          <a href="/albums/{{ album['uuid'] }}">
+            <div class="album-cover" id="album-1">
+              {{ album["name"] }}
+            </div>
+          </a>
+          {% endfor %}
         {% else %}
-          {% if g.user.access_level == 1 %}
-            <a href="/admin">Panneau Admin</a>
-          {% endif %}
-          <a href="{{ url_for('auth.logout') }}">Déconnexion</a>
+        <div>Aucun album disponible</div>
         {% endif %}
+      </section>
+
+      <div id="settings-container">
+        {% if g.user %}
+          <button href="{{ url_for('auth.logout') }}" id="logout">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path>
+              <path d="M9 12h12l-3 -3"></path>
+              <path d="M18 15l3 -3"></path>
+            </svg>
+            Déconnexion
+          </button><br/>
+        {% else %}
+          <button href="{{ url_for('auth.register') }}">Créer un compte</button>
+          <button href="{{ url_for('auth.login') }}">Se connecter</button>
+        {% endif %}
+        {% if g.user.access_level == 1 %}
+          <button href="/admin">Panneau admin</button><br/>
+        {% endif %}
+        <div class="user">
+          <div class="user-profile-picture" style="background-color:var(--color-pink);"
+            title="augustin64">
+            A
+          </div>
+          <div class="username">augustin64</div>
+        </div>
+      </div>
     </div>
-</nav>
-<section class="content">
-  <header>
-    {% block header %}{% endblock %}
-    <div id="header-actions">
-      {% block header_actions %}{% endblock %}
+    <div id="content-container">
+      <header id="page-header">
+        {% block header %}{% endblock %}
+      </header>
+      <section id="content">
+        {% block content %}{% endblock %}
+      </section>
     </div>
-  </header>
-  {% for message in get_flashed_messages() %}
-  <div class="flash">{{ message }}</div>
-  {% endfor %}
-  {% block content %}{% endblock %}
-</section>
+  </div>
+</body>
+
+</html>
