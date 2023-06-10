@@ -50,7 +50,7 @@
       {% endif %}
       <h1>Albums</h1>
       <section id="albums">
-        {% if user.get_albums() |length != 0 %}
+        {% if g.user and user.get_albums() | length != 0 %}
           {% for album in user.albums %}
           <a href="/albums/{{ album['uuid'] }}">
             <div class="album-cover" id="album-1">
@@ -74,20 +74,20 @@
             </svg>
             Déconnexion
           </button><br/>
+          {% if g.user.access_level == 1 %}
+            <button href="/admin">Panneau admin</button><br/>
+          {% endif %}
+          <div class="user">
+            <div class="user-profile-picture" style="background-color:{{ user.color }};"
+              title="{{ user.username }}">
+              {{ user.username[0] | upper }}
+            </div>
+            <div class="username">{{ user.username }}</div>
+          </div>
         {% else %}
           <button href="{{ url_for('auth.register') }}">Créer un compte</button>
           <button href="{{ url_for('auth.login') }}">Se connecter</button>
         {% endif %}
-        {% if g.user.access_level == 1 %}
-          <button href="/admin">Panneau admin</button><br/>
-        {% endif %}
-        <div class="user">
-          <div class="user-profile-picture" style="background-color:var(--color-pink);"
-            title="augustin64">
-            A
-          </div>
-          <div class="username">augustin64</div>
-        </div>
       </div>
     </div>
     <div id="content-container">

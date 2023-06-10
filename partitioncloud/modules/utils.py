@@ -4,6 +4,24 @@ from .db import get_db
 
 from flask import current_app
 
+# Variables defined in the CSS
+colors = [
+    "--color-rosewater",
+    "--color-flamingo",
+    "--color-pink",
+    "--color-mauve",
+    "--color-red",
+    "--color-maroon",
+    "--color-peach",
+    "--color-yellow",
+    "--color-green",
+    "--color-teal",
+    "--color-sky",
+    "--color-sapphire",
+    "--color-blue",
+    "--color-lavender"
+]
+
 class User():
     def __init__(self, user_id=None, name=None):
         self.id = user_id
@@ -130,8 +148,11 @@ class User():
 
 
     def get_color(self):
-        integer = hash(self.username) % 16777215
-        return "#" + str(hex(integer))[2:]
+        if len(colors) == 0:
+            integer = hash(self.username) % 16777215
+            return "#" + str(hex(integer))[2:]
+        else:
+            return f"var({colors[hash(self.username) %len(colors)]})"
 
 
 
