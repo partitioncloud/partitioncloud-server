@@ -28,7 +28,7 @@ def index():
     else:
         max_queries = current_app.config["MAX_ONLINE_QUERIES"]
 
-    return render_template("albums/index.html", albums=albums, MAX_QUERIES=max_queries)
+    return render_template("albums/index.html", user=user)
 
 
 @bp.route("/search", methods=["POST"])
@@ -54,12 +54,14 @@ def search_page():
     else:
         google_results = []
 
+    user.get_albums()
+
     return render_template(
         "albums/search.html",
         partitions=partitions_local,
         google_results=google_results,
         query=query,
-        albums=user.get_albums()
+        user=user
     )
 
 @bp.route("/<uuid>")
@@ -82,7 +84,8 @@ def album(uuid):
             "albums/album.html",
             album=album,
             partitions=partitions,
-            not_participant=not_participant
+            not_participant=not_participant,
+            user=user
         )
 
     except LookupError:
@@ -118,6 +121,8 @@ def partition(album_uuid, partition_uuid):
 @bp.route("/create-album", methods=["GET", "POST"])
 @login_required
 def create_album():
+    current_user = User(user_id=session.get("user_id"))
+
     if request.method == "POST":
         name = request.form["name"]
         db = get_db()
@@ -156,9 +161,9 @@ def create_album():
             return redirect(f"/albums/{uuid}")
 
         flash(error)
-        return render_template("albums/create-album.html")
+        return render_template("albums/create-album.html", user=current_user)
 
-    return render_template("albums/create-album.html")
+    return render_template("albums/create-album.html", user=current_user)
 
 
 @bp.route("/<uuid>/join")
@@ -199,13 +204,13 @@ def quit_album(uuid):
 def delete_album(uuid):
     db = get_db()
     album = Album(uuid=uuid)
+    user = User(user_id=session.get("user_id"))
 
     if request.method == "GET":
-        return render_template("albums/delete-album.html", album=album)
+        return render_template("albums/delete-album.html", album=album, user=user)
     
     error = None
     users = album.get_users()
-    user = User(user_id=session.get("user_id"))
     if len(users) > 1:
         error = "Vous n'êtes pas seul dans cet album."
     elif len(users) == 1 and users[0]["id"] != user.id:
@@ -236,7 +241,7 @@ def add_partition(album_uuid):
         return redirect(f"/albums/{album.uuid}")
 
     if request.method == "GET":
-        return render_template("albums/add-partition.html", album=album)
+        return render_template("albums/add-partition.html", album=album, user=user)
 
     error = None
 
@@ -362,7 +367,8 @@ def add_partition_from_search():
         return render_template(
             "albums/add-partition.html",
             album=album,
-            partition_uuid=request.form["partition-uuid"]
+            partition_uuid=request.form["partition-uuid"],
+            user=user
         )
 
     else:

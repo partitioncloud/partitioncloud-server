@@ -46,7 +46,7 @@ def edit(uuid):
         return redirect("/albums")
 
     if request.method == "GET":
-        return render_template("partition/edit.html", partition=partition)
+        return render_template("partition/edit.html", partition=partition, user=user)
 
     error = None
 
@@ -90,8 +90,9 @@ def details(uuid):
         return render_template(
             "partition/details.html",
             partition=partition,
-            user=partition_user,
-            albums=partition.get_albums()
+            partition_user=partition_user,
+            albums=partition.get_albums(),
+            user=user
         )
 
     error = None
@@ -132,7 +133,7 @@ def delete(uuid):
         return redirect("/albums")
 
     if request.method == "GET":
-        return render_template("partition/delete.html", partition=partition)
+        return render_template("partition/delete.html", partition=partition, user=user)
 
     partition.delete()
 
@@ -163,4 +164,5 @@ def partition_search(uuid):
 @admin_required
 def index():
     partitions = get_all_partitions()
-    return render_template("admin/partitions.html", partitions=partitions)
+    user = User(user_id=session.get("user_id"))
+    return render_template("admin/partitions.html", partitions=partitions, user=user)

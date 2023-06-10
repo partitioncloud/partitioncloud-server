@@ -15,6 +15,7 @@ bp = Blueprint("admin", __name__, url_prefix="/admin")
 @bp.route("/")
 @admin_required
 def index():
+    current_user = User(user_id=session.get("user_id"))
     db = get_db()
     users_id = db.execute(
         """
@@ -29,5 +30,6 @@ def index():
 
     return render_template(
         "admin/index.html",
-        users=users
+        users=users,
+        user=current_user
     )

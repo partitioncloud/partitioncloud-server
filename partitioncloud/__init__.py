@@ -41,6 +41,8 @@ def add_user():
     """
     Ajouter un utilisateur en tant qu'administrateur
     """
+    current_user = User(user_id=session.get("user_id"))
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -77,7 +79,7 @@ def add_user():
                     return redirect("/albums")
 
         flash(error)
-    return render_template("auth/register.html", albums=get_all_albums())
+    return render_template("auth/register.html", albums=get_all_albums(), user=current_user)
 
 
 if __name__ == "__main__":
