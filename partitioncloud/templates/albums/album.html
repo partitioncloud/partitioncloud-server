@@ -1,57 +1,80 @@
 {% extends 'base.html' %}
 
-{% block header %}
-<h1>{% block title %}{{ album.name }}{% endblock %}</h1>
-{% endblock %}
+{% block title %}{{ album.name }}{% endblock %}
 
-{% block header_actions %}
-<div id="users-list">
-  {% for album_user in album.users %}
-  <div class="user-profile-picture" style="background-color:{{ album_user.color }};" title="{{ album_user.username }}">
-    {{ album_user.username[0] | upper }}
-  </div>
-  {% endfor %}
-</div>
-<div class="dropdown">
-  <button class="dropbtn"></button>
-  <div class="dropdown-content">
-    {% if g.user %}
-    <a href="/albums/{{ album.uuid }}/add-partition">Ajouter une partition</a>
-    {% endif %}
-    {% if not_participant %}
-    <a href="/albums/{{ album.uuid }}/join">Rejoindre</a>
-    {% else %}
-    <a href="/albums/{{ album.uuid }}/quit">Quitter</a>
-    {% endif %}
-    {% if g.user.access_level == 1 %}
-    <a id="delete-album" href="/albums/{{ album.uuid }}/delete">Supprimer</a>
-    {% endif %}
-  </div>
-</div>
 
+{% block dialogs %}
+<dialog id="add-partition">
+  <h2>Ajouter une partition à {{ album.name }}</h2>
+  <form action="/albums/{{ album.uuid }}/add-partition" method="post" enctype="multipart/form-data">
+      <input name="name" type="text" required="" placeholder="Titre"><br/>
+      <input name="author" type="text" placeholder="Auteur"><br/>
+      <textarea id="paroles" name="body" type="text" placeholder="Paroles"></textarea><br/>
+      <input name="file" type="file" required=""><br/>
+      <input type="submit" value="Ajouter">
+  </form>
+  <a href="#!" class="close-dialog">Close</a>
+</dialog>
+<dialog id="delete">
+  <h2>Supprimer l'album</h2>
+  Êtes vous sûr de vouloir supprimer cet album ?
+  <br/><br/>
+  <form method="post" action="/albums/{{ album.uuid }}/delete">
+    <input type="submit" style="background-color: var(--color-red);" value="Supprimer">
+  </form>
+  <a href="#!" class="close-dialog">Close</a>
+</dialog>
 {% endblock %}
 
 {% block content %}
-{% if partitions|length != 0 %}
-<br/><br/>
-<div id="partitions-grid">
-  {% for partition in partitions | reverse %}
-  <div>
-  <a href="/albums/{{ album.uuid }}/{{ partition['uuid'] }}">
-    <div class="partition" id="partition-{{ partition['uuid'] }}">
-      <img class="partition-thumbnail" src="/static/thumbnails/{{ partition['uuid'] }}.jpg">
-      <div class="partition-description">
-        <div class="partition-name">{{ partition["name"] }}</div>
-        <div class="partition-author">{{ partition["author"] }}</div>
+<header id="album-header">
+  <h2 id="album-title">{{ album.name }}</h2>
+  <div id="header-actions">
+    <section id="users">  
+      {% for album_user in album.users %}
+      <div class="user-profile-picture" style="background-color:{{ album_user.color }};" title="{{ album_user.username }}">
+        {{ album_user.username[0] | upper }}
+      </div>
+      {% endfor %}
+    </section>
+    <div class="dropdown dp1">
+      +
+      <div class="dropdown-content dp1">
+          {% if g.user %}
+          <a href="#add-partition">Ajouter une partition</a>
+          {% endif %}
+          {% if not_participant %}
+          <a href="/albums/{{ album.uuid }}/join">Rejoindre</a>
+          {% else %}
+          <a href="/albums/{{ album.uuid }}/quit">Quitter</a>
+          {% endif %}
+          {% if g.user.access_level == 1 %}
+          <a id="delete-album" href="#delete">Supprimer</a>
+          {% endif %}
       </div>
     </div>
-  </a>
-  {% if partition["user_id"] == g.user.id or g.user.access_level == 1 %}
-    <a href="/partition/{{ partition['uuid'] }}/edit"><div class="edit-button">✏️</div></a>
-  {% endif %}
   </div>
+</header>
+<hr/>
+{% if partitions|length != 0 %}
+<section id="partitions-grid">
+  {% for partition in partitions | reverse %}
+  <div>
+    <a href="/albums/{{ album.uuid }}/{{ partition['uuid'] }}">
+      <div class="partition" id="partition-{{ partition['uuid'] }}">
+        <img class="partition-thumbnail" src="/static/thumbnails/{{ partition['uuid'] }}.jpg">
+        <div class="partition-description">
+          <div class="partition-name">{{ partition["name"] }}</div>
+          <div class="partition-author">{{ partition["author"] }}</div>
+        </div>
+      </div>
+      </a>
+      {% if partition["user_id"] == g.user.id or g.user.access_level == 1 %}
+      <a href="/partition/{{ partition['uuid'] }}/edit"><div class="edit-button">✏️</div></a>
+      {% endif %}
+    </div>
   {% endfor %}
-</div>
+</section>
 {% else %}
 <br/>
 <div id="partitions-grid" style="display: inline;">Aucune partition disponible</div>

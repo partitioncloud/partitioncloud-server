@@ -260,6 +260,15 @@ img.partition-thumbnail {
     min-height: 50px;
 }
 
+.edit-button {
+    float: right;
+    transform: translateX(-96%) translateY(-162%);
+    padding: 2%;
+    border-radius: 3px;
+    box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.2);
+    background-color: var(--color-blue);
+  }
+
 /** Sidebar: "settings" */
 #albums {
     overflow: scroll;
@@ -275,9 +284,9 @@ img.partition-thumbnail {
     margin-left: 5px;
 }
 
-#settings-container>button {
+#settings-container button {
     background-color: inherit;
-    color: inherit;
+    color: var(--color-text);
     border-style: none;
     border-radius: 3px;
     font-size: .9rem;
@@ -285,7 +294,7 @@ img.partition-thumbnail {
     padding: 5px;
 }
 
-#settings-container>button:hover {
+#settings-container button:hover {
     background-color: var(--color-crust);
 }
 
@@ -301,12 +310,13 @@ img.partition-thumbnail {
     border-radius: 3px;
 }
 
-button#logout:hover {
+/* Danger buttons */
+button#logout:hover, a#delete-album:hover {
     background-color: var(--color-red);
     color: var(--color-mantle);
 }
 
-button#logout {
+button#logout, a#delete-album {
     color: var(--color-red);
 }
 
@@ -338,7 +348,7 @@ button#logout>svg {
     min-width: 160px;
     border-radius: 3px;
 
-    box-shadow: 0 4px 10px var(--color-surface1); /* Little shadow to add some depth */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 
@@ -347,12 +357,15 @@ button#logout>svg {
     width: unset;
 }
 
-.dropdown-content > a > div:hover {
+.dropdown-content > a:hover {
     background-color: var(--color-surface0);
 }
 
 .dropdown-content > a {
     color: var(--color-text);
+    padding: 3px 0;
+    display: block;
+    border-radius: inherit;
 }
 
 
@@ -451,4 +464,14 @@ input[type="file"] {
 
 #search-submit {
     padding: 5px 5px;
+}
+
+
+/** Flashed messages */
+.flash {
+    margin: 1em;
+    padding: 1em;
+    background: var(--color-mantle);
+    border: 2px solid var(--color-lavender);
+    border-radius: 3px;
 }

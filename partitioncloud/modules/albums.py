@@ -192,7 +192,7 @@ def quit_album(uuid):
 
     if len(users) == 1:
         flash("Vous êtes seul dans cet album, le quitter entraînera sa suppression.")
-        return redirect(f"/albums/{uuid}/delete")
+        return redirect(f"/albums/{uuid}#delete")
 
     user.quit_album(uuid)
     flash("Album quitté.")

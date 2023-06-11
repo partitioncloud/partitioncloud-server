@@ -65,17 +65,19 @@
 
       <div id="settings-container">
         {% if g.user %}
-          <button href="{{ url_for('auth.logout') }}" id="logout">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path>
-              <path d="M9 12h12l-3 -3"></path>
-              <path d="M18 15l3 -3"></path>
-            </svg>
-            Déconnexion
-          </button><br/>
+          <a href="{{ url_for('auth.logout') }}">
+            <button id="logout">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path>
+                <path d="M9 12h12l-3 -3"></path>
+                <path d="M18 15l3 -3"></path>
+              </svg>
+              Déconnexion
+            </button>
+          </a><br/>
           {% if g.user.access_level == 1 %}
-            <button href="/admin">Panneau admin</button><br/>
+            <a href="/admin"><button>Panneau admin</button></a><br/>
           {% endif %}
           <div class="user">
             <div class="user-profile-picture" style="background-color:{{ user.color }};"
@@ -85,15 +87,18 @@
             <div class="username">{{ user.username }}</div>
           </div>
         {% else %}
-          <button href="{{ url_for('auth.register') }}">Créer un compte</button>
-          <button href="{{ url_for('auth.login') }}">Se connecter</button>
+          <a href="{{ url_for('auth.register') }}"><button>Créer un compte</button></a>
+          <a href="{{ url_for('auth.login') }}"><button>Se connecter</button></a>
         {% endif %}
       </div>
     </div>
     <div id="content-container">
       <header id="page-header">
-        {% block header %}{% endblock %}
+        <h1>PartitionCloud</h1>
       </header>
+      {% for message in get_flashed_messages() %}
+      <div class="flash">{{ message }}</div>
+      {% endfor %}
       <section id="content">
         {% block content %}{% endblock %}
       </section>
