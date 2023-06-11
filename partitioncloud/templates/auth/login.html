@@ -6,10 +6,8 @@
 
 {% block content %}
   <form method="post">
-    <label for="username">Nom d'utilisateur</label>
-    <input name="username" id="username" required>
-    <label for="password">Mot de passe</label>
-    <input type="password" name="password" id="password" required>
+    <input type="text" name="username" id="username" placeholder="Nom d'utilisateur" required><br/>
+    <input type="password" name="password" id="password" placeholder="Mot de passe" required><br/>
     <input type="submit" value="Se connecter">
   </form>
 {% endblock %}

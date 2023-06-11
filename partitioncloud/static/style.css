@@ -420,6 +420,7 @@ dialog:target ~ .mask {
 /** Forms */
 input[type="text"],
 input[type="search"],
+input[type="password"],
 select,
 textarea {
   padding: 7px;
