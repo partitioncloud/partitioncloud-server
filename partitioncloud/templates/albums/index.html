@@ -1,37 +1,10 @@
 {% extends 'base.html' %}
 
-{% block header %}
-<h1 id="album-name">{% block title %}Albums{% endblock %}</h1>
-{% endblock %}
-
-{% block header_actions %}
-<a href="create-album">
-  <button id="new-album">Nouvel Album</button>
-</a>
-{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block content %}
-<form action="/albums/search" method="post" id="search-form">
-  <input id="search-bar" type="search" name="query" placeholder="Rechercher" required>
-  <br/>
-  <select id="nb-queries" name="nb-queries">
-    {% for i in range(0, MAX_QUERIES+1) %}
-      <option value="{{ i }}">{{ i }}</option>
-    {% endfor %}
-  </select>
-    <label for="nb-queries" id="nb-queries-label">Recherches en ligne</label>
-</form>
-<section id="albums">
-  {% if albums|length != 0 %}
-    {% for album in albums %}
-    <a href="{{ album['uuid'] }}">
-        <div class="album-cover" id="album-{{ album['id'] }}">
-            {{ album["name"] }}
-        </div>
-    </a>
-    {% endfor %}
-  {% else %}
-    <div>Aucun album disponible</div>
-  {% endif %}
-</section>
+<div style="text-align: center;">
+Bonjour <i><b>{{ user.username }}</b></i> !<br/>
+Aucun album sélectionné
+</div>
 {% endblock %}
