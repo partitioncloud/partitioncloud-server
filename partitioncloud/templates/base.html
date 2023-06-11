@@ -50,7 +50,11 @@
       {% endif %}
       <h1>Albums</h1>
       <section id="albums">
-        {% if g.user and user.get_albums() | length != 0 %}
+        {% if not g.user %}
+          <div style="text-align: center;"><i>Connectez vous pour avoir accès à vos albums</i></div>
+        {% elif user.get_albums() | length == 0 %}
+          <div style="text-align: center;"><i>Aucun album disponible</i></div>
+        {% else %}
           {% for album in user.albums %}
           <a href="/albums/{{ album['uuid'] }}">
             <div class="album-cover" id="album-1">
@@ -58,8 +62,6 @@
             </div>
           </a>
           {% endfor %}
-        {% else %}
-        <div>Aucun album disponible</div>
         {% endif %}
       </section>
 

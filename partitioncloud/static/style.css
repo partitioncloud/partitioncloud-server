@@ -275,6 +275,10 @@ img.partition-thumbnail {
     height: 70vh;
 }
 
+#albums div {
+    padding: 5px;
+}
+
 .user {
     display: flex;
 }
