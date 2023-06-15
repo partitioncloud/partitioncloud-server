@@ -229,7 +229,7 @@ def delete_album(uuid):
     return redirect("/albums")
 
 
-@bp.route("/<album_uuid>/add-partition", methods=["GET", "POST"])
+@bp.route("/<album_uuid>/add-partition", methods=["POST"])
 @login_required
 def add_partition(album_uuid):
     db = get_db()
@@ -239,9 +239,6 @@ def add_partition(album_uuid):
     if (not user.is_participant(album.uuid)) and (user.access_level != 1):
         flash("Vous ne participez pas à cet album.")
         return redirect(f"/albums/{album.uuid}")
-
-    if request.method == "GET":
-        return render_template("albums/add-partition.html", album=album, user=user)
 
     error = None
 
