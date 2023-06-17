@@ -1,11 +1,11 @@
-@import url('https://augustin64.fr/static/font/iosevka.css');
+@import url('https://www.augustin64.fr/static/font/iosevka.css');
 
 
 /** Color Schemes */
 /* Themes used: Catppuccin Latte & Moccha
  * https://github.com/catppuccin/catppuccin */
 
-/* Light theme : catppuccin Latte */
+/* Dark theme: Catpuccin Mocha */
 :root {
     --color-rosewater: #f5e0dc;
     --color-flamingo: #f2cdcd;
@@ -37,7 +37,7 @@
     --font-family: Iosevka Web;
 }
 
-/* Dark theme: Catpuccin Mocha */
+/* Light theme: Catppuccin Latte */
 @media (prefers-color-scheme: light) {
     :root {
         --color-rosewater: #dc8a78;
@@ -78,8 +78,12 @@
 
 
 /** Generic things */
-h1 {
+h1, #sidebar>h2 {
     margin-left: 30px;
+}
+
+h2 {
+    color: var(--color-subtext1);
 }
 
 a {
@@ -269,10 +273,26 @@ img.partition-thumbnail {
     background-color: var(--color-blue);
   }
 
-/** Sidebar: "settings" */
+/** Sidebar content */
+#new-album-button {
+    text-align: center;
+    margin: 10px;
+    background-color: var(--color-surface1);
+    padding: 8px 0;
+    border-radius: 5px;
+    color: var(--color-text);
+    border: 2px solid var(--color-overlay0);
+}
+
+#new-album-button:hover {
+    border-color: var(--color-blue);
+    background-color: var(--color-surface0);
+}
+
 #albums {
     overflow: scroll;
     height: 70vh;
+    padding: 0 5px;
 }
 
 #albums div {
@@ -324,11 +344,11 @@ button#logout, a#delete-album {
     color: var(--color-red);
 }
 
-button#logout>svg {
+#settings-container svg.icon {
     scale: 0.9;
     position: absolute;
-    top: 7px;
     left: 10px;
+    transform: translateY(-17%);
 }
 
 #settings-container>.user {

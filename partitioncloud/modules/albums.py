@@ -118,52 +118,49 @@ def partition(album_uuid, partition_uuid):
     )
 
 
-@bp.route("/create-album", methods=["GET", "POST"])
+@bp.route("/create-album", methods=["POST"])
 @login_required
 def create_album():
     current_user = User(user_id=session.get("user_id"))
 
-    if request.method == "POST":
-        name = request.form["name"]
-        db = get_db()
-        error = None
+    name = request.form["name"]
+    db = get_db()
+    error = None
 
-        if not name or name.strip() == "":
-            error = "Un nom est requis."
+    if not name or name.strip() == "":
+        error = "Un nom est requis. L'album n'a pas été créé"
 
-        if error is None:
-            while True:
-                try:
-                    uuid = str(uuid4())
+    if error is None:
+        while True:
+            try:
+                uuid = str(uuid4())
 
-                    db.execute(
-                        """
-                        INSERT INTO album (uuid, name)
-                        VALUES (?, ?)
-                        """,
-                        (uuid, name),
-                    )
-                    db.commit()
-                    album = Album(uuid=uuid)
-                    db.execute(
-                        """
-                        INSERT INTO contient_user (user_id, album_id)
-                        VALUES (?, ?)
-                        """,
-                        (session.get("user_id"), album.id),
-                    )
-                    db.commit()
+                db.execute(
+                    """
+                    INSERT INTO album (uuid, name)
+                    VALUES (?, ?)
+                    """,
+                    (uuid, name),
+                )
+                db.commit()
+                album = Album(uuid=uuid)
+                db.execute(
+                    """
+                    INSERT INTO contient_user (user_id, album_id)
+                    VALUES (?, ?)
+                    """,
+                    (session.get("user_id"), album.id),
+                )
+                db.commit()
 
-                    break
-                except db.IntegrityError:
-                    pass
+                break
+            except db.IntegrityError:
+                pass
 
-            return redirect(f"/albums/{uuid}")
+        return redirect(f"/albums/{uuid}")
 
-        flash(error)
-        return render_template("albums/create-album.html", user=current_user)
-
-    return render_template("albums/create-album.html", user=current_user)
+    flash(error)
+    return redirect(request.referrer)
 
 
 @bp.route("/<uuid>/join")
