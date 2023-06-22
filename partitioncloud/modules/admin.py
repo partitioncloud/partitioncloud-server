@@ -3,7 +3,7 @@
 Admin Panel
 """
 import os
-from flask import Blueprint, abort, send_file, render_template
+from flask import Blueprint, abort, send_file, render_template, session
 
 from .db import get_db
 from .auth import admin_required
@@ -16,6 +16,7 @@ bp = Blueprint("admin", __name__, url_prefix="/admin")
 @admin_required
 def index():
     current_user = User(user_id=session.get("user_id"))
+    current_user.get_albums() # We need to do that before we close the db
     db = get_db()
     users_id = db.execute(
         """

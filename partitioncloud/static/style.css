@@ -454,7 +454,7 @@ textarea {
 }
 
 textarea {
-  resize: vertical;
+  resize: both;
 }
 
 input[type="submit"] {
@@ -491,6 +491,21 @@ input[type="file"] {
     padding: 5px 5px;
 }
 
+/** Search results */
+.add-partition-form select {
+    width: 178px;
+    margin: 0px;
+}
+
+.add-partition-form {
+    align-items: center;
+    display: grid;
+}
+
+.add-partition-form input[type="submit"] {
+    margin: 5px 0;
+    width: 178px;
+}
 
 /** Flashed messages */
 .flash {

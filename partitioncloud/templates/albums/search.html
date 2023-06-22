@@ -21,7 +21,7 @@
     </a>
     <form action="/albums/add-partition" method="post">
       <select name="album-uuid">
-        {% for album in albums %}
+        {% for album in user.albums %}
         <option value="{{ album['uuid'] }}">{{ album["name"] }}</option>
         {% endfor %}
       </select>
@@ -46,9 +46,9 @@
         </div>
       </div>
     </a>
-    <form action="/albums/add-partition" method="post">
+    <form action="/albums/add-partition" class="add-partition-form" method="post">
       <select name="album-uuid">
-        {% for album in albums %}
+        {% for album in user.albums %}
         <option value="{{ album['uuid'] }}">{{ album["name"] }}</option>
         {% endfor %}
       </select>

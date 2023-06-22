@@ -4,7 +4,7 @@ Main file
 """
 import os
 
-from flask import Flask, g, redirect, render_template, request, send_file, flash
+from flask import Flask, g, redirect, render_template, request, send_file, flash, session
 from werkzeug.security import generate_password_hash
 
 from .modules.utils import User, Album, get_all_albums
