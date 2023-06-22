@@ -1,12 +1,10 @@
 {% extends 'base.html' %}
 
-{% block header %}
-<h1>{% block title %}Résultats de la recherche "{{ query }}"{% endblock %}</h1>
-{% endblock %}
+{% block title %}Résultats de la recherche "{{ query }}"{% endblock %}
 
 {% block content %}
 {% if partitions|length != 0 %}
-<h4>Résultats dans la bibliothèque locale</h4>
+<h3>Résultats dans la bibliothèque locale</h3>
 <div id="partitions-grid">
   {% for partition in partitions %}
   <div class="partition-container">
@@ -19,7 +17,7 @@
         </div>
       </div>
     </a>
-    <form action="/albums/add-partition" method="post">
+    <form action="/albums/add-partition" class="add-partition-form" method="post">
       <select name="album-uuid">
         {% for album in user.albums %}
         <option value="{{ album['uuid'] }}">{{ album["name"] }}</option>
@@ -34,7 +32,7 @@
 </div>
 {% endif %}
 {% if google_results|length != 0 %}
-<h4>Résultats de la recherche en ligne</h4>
+<h3>Résultats de la recherche en ligne</h3>
 <div id="partitions-grid">
   {% for partition in google_results %}
   <div class="partition-container">

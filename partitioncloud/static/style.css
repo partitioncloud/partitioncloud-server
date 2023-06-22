@@ -453,6 +453,10 @@ textarea {
   border-style: unset;
 }
 
+select {
+    max-width: 190px; /* We don't want loong album names to break the css */
+}
+
 textarea {
   resize: both;
 }
