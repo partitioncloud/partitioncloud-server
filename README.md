@@ -5,7 +5,7 @@ Serveur web (basé sur Flask) pour gérer sa collection de partitions musicales
 ## Features
 
 ### Liste non exhaustive
-- recherche de partitions en ligne et ajout à la base de données (recherche Google)
+- recherche de partitions en ligne et ajout à la base de données (par recherche Google)
 - partage d'un album par un lien direct sans nécessité de connexion (en lecture seule)
 - Thème sombre (je ne suis pas satisfait du résultat, mais il est à peu près correct)
 - dashboard administrateur: gestion de tous les albums, partitions et utilisateurs
@@ -14,9 +14,9 @@ Serveur web (basé sur Flask) pour gérer sa collection de partitions musicales
 
 ## Points à noter
 - Les partitions ajoutées sont accessibles à tous les utilisateurs depuis la recherche même si ils ne sont pas dans un album leur y donnant accès, pour limiter la redondance
-- Il est possible d'entrer des paroles en créant une partitions, celles-ci sont utilisées uniquement pour la recherche
-- Les résultats de la recherche web sont téléchargés automatiquement pour en générer un aperçu
-- Le fichier de configuration est utilisé par le script `make.sh` ainsi que l'interpréteur python
+- Il est possible d'entrer des paroles en créant une partition, celles-ci sont utilisées uniquement pour la fonctionalité de recherche pour le moment
+- Les résultats de la recherche web sont téléchargés automatiquement pour en générer un aperçu, donc `MAX_ONLINE_QUERIES` doit rester raisonnable
+- Le fichier de configuration est un script lu par python *et* bash, il ne faut donc pas écrire `CONFIG_PARAM = 2` mais `CONFIG_PARAM=2` (pour bash)
 
 ## Installation
 
@@ -47,7 +47,7 @@ Installer [`gunicorn`](https://github.com/benoitc/gunicorn) puis:
 ```bash
 cp default_config.py instance/config.py
 ```
-Modifier le fichier de configuration créé
+Modifier le fichier de configuration créé dans `instance/`
 
 ## Screenshots
 
