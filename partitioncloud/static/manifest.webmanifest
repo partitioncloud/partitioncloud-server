@@ -1,11 +1,21 @@
 {
-  "background_color": "white",
+  "background_color": "#eff1f5",
   "description": "Partitioncloud",
   "display": "fullscreen",
   "icons": [
     {
-      "src": "static/icon.png",
+      "src": "/static/icons/icon.png",
       "sizes": "2000x2000",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/icons/512.png",
+      "sizes": "128x128 256x256 512x512 ",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/icons/144.png",
+      "sizes": "48x48 72x72 96x96 144x144",
       "type": "image/png"
     }
   ],
