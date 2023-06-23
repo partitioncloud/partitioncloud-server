@@ -76,9 +76,33 @@
     --sidebar-size: 200px;
 }
 
+* {
+    font-family: var(--font-family);
+}
+
+
+/** Hide scrollbars (deeply needed on Chromium) */
+::-webkit-scrollbar {
+    display: none;
+}
+
+:root {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
 
 /** Generic things */
-h1, #sidebar>h2 {
+h1 {
+    font-size: 32px;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+h1,
+#sidebar>h2 {
     margin-left: 30px;
 }
 
@@ -121,6 +145,7 @@ body {
     margin: 5px;
     border-radius: 3px;
     background-color: inherit;
+    overflow-x: hidden;
 }
 
 .album-cover:hover {
@@ -137,7 +162,6 @@ body {
     left: 0;
     bottom: 0;
 }
-
 
 #slide {
     padding: 10px 6px 3px 10px;
@@ -160,7 +184,6 @@ input:checked#slide-sidebar~#sidebar {
     transition: display 0s 0.5s;
 }
 
-
 input:checked#slide-sidebar~label {
     left: 10px;
 }
@@ -175,6 +198,7 @@ input:checked#slide-sidebar~label {
     -moz-transition: left 0.5s ease;
     transition: left 0.5s ease;
 }
+
 
 /** Albums: users */
 #album-header {
@@ -207,6 +231,15 @@ section#users {
 
 .user-profile-picture {
     color: var(--color-mantle);
+}
+
+.user-profile {
+    display: inline-flex;
+}
+
+.user-profile .user-profile-picture {
+    position: absolute;
+    left: 30px;
 }
 
 .dropdown {
@@ -271,7 +304,8 @@ img.partition-thumbnail {
     border-radius: 3px;
     box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.2);
     background-color: var(--color-blue);
-  }
+}
+
 
 /** Sidebar content */
 #new-album-button {
@@ -314,8 +348,14 @@ img.partition-thumbnail {
     border-style: none;
     border-radius: 3px;
     font-size: .9rem;
+
+    width: 100%;
     width: -moz-available;
+    width: -webkit-fill-available;
+    width: stretch;
+
     padding: 5px;
+    padding-left: 20px; /* Prevent overlay with svg */
 }
 
 #settings-container button:hover {
@@ -327,20 +367,16 @@ img.partition-thumbnail {
     bottom: 0;
 
     background-color: var(--color-base);
-    width: 180px; /*TODO width: calc(var-(--sidebar-size) - 20px); ?*/
+    width: 180px;
+    /*TODO width: calc(var-(--sidebar-size) - 20px); ?*/
     padding: 5px;
     margin: 5px;
 
     border-radius: 3px;
 }
 
-/* Danger buttons */
-button#logout:hover, a#delete-album:hover {
-    background-color: var(--color-red);
-    color: var(--color-mantle);
-}
-
-button#logout, a#delete-album {
+button#logout,
+a#delete-album {
     color: var(--color-red);
 }
 
@@ -360,6 +396,7 @@ button#logout, a#delete-album {
     background-color: var(--color-mantle);
 }
 
+
 /** Dropdown */
 .dropdown-content {
     display: none;
@@ -375,23 +412,21 @@ button#logout, a#delete-album {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
-
 .dropdown:hover .dropdown-content {
     display: block;
     width: unset;
 }
 
-.dropdown-content > a:hover {
+.dropdown-content>a:hover {
     background-color: var(--color-surface0);
 }
 
-.dropdown-content > a {
+.dropdown-content>a {
     color: var(--color-text);
     padding: 3px 0;
     display: block;
     border-radius: inherit;
 }
-
 
 
 /** Dialogs */
@@ -420,7 +455,7 @@ dialog:target {
     display: block;
 }
 
-dialog:target ~ .mask {
+dialog:target~.mask {
     display: block;
 }
 
@@ -437,38 +472,50 @@ dialog:target ~ .mask {
 }
 
 
-/** Forms */
+/** Different kinds of inputs */
 input[type="text"],
 input[type="search"],
 input[type="password"],
 select,
 textarea {
-  padding: 7px;
-  background-color: var(--color-surface1);
-  color: var(--color-text);
-  margin: 3px;
+    padding: 7px;
+    background-color: var(--color-surface1);
+    color: var(--color-text);
+    margin: 3px;
 
-  border-radius: 3px;
-  border-width: 0;
-  border-style: unset;
+    border-radius: 3px;
+    border-width: 0;
+    border-style: unset;
 }
 
 select {
-    max-width: 190px; /* We don't want loong album names to break the css */
+    max-width: 190px;
+    /* We don't want loong album names to break the css */
 }
 
 textarea {
-  resize: both;
+    resize: both;
+    min-width: 178px;
 }
 
-input[type="submit"] {
+input[type="submit"],
+button {
     padding: 10px 20px;
     border: none;
     border-radius: 3px;
     margin: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+input[type="submit"] {
     background-color: var(--color-blue);
     color: var(--color-base);
-    cursor: pointer;
+}
+
+button {
+    background-color: var(--color-subtext0);
+    color: var(--color-base)
 }
 
 /* Styles for input[type="file"] */
@@ -482,18 +529,40 @@ input[type="file"] {
     cursor: pointer;
 }
 
+::placeholder {
+    color: var(--color-text);
+    opacity: 40%;
+}
+
+
+/** Dangerous buttons */
+button#logout:hover,
+a#delete-album:hover,
+button#delete-partition {
+    background-color: var(--color-red);
+    color: var(--color-mantle);
+}
+
+
 /** Search bar */
 #search-form {
     margin: 10px;
 }
 
 #search-bar {
+    width: 100%;
     width: -moz-available;
+    width: -webkit-fill-available;
+    width: stretch;
 }
 
 #search-submit {
-    padding: 5px 5px;
+    padding: 5px;
+    position: absolute;
+    right: 10px;
+    width: calc(100% - 90px);
 }
+
 
 /** Search results */
 .add-partition-form select {
@@ -511,6 +580,7 @@ input[type="file"] {
     width: 178px;
 }
 
+
 /** Flashed messages */
 .flash {
     margin: 1em;
@@ -518,4 +588,57 @@ input[type="file"] {
     background: var(--color-mantle);
     border: 2px solid var(--color-lavender);
     border-radius: 3px;
+}
+
+
+/** Tableaux */
+table {
+    border: thin solid var(--color-surface0);
+    border-collapse: collapse;
+    margin: auto;
+    width: 100%;
+    width: -moz-available;
+    width: -webkit-fill-available;
+    width: stretch;
+}
+
+td {
+    min-width: 178px;
+    border: thin solid var(--color-surface0);
+    text-align: center;
+}
+
+.table-username {
+    line-height: 37px;
+}
+
+
+/** Panneau admin */
+#actions-rapides .button {
+    background-color: var(--color-base);
+    color: var(--color-text);
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+#actions-rapides {
+    display: flex;
+    padding: 5px;
+    background-color: var(--color-crust);
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    margin: 5px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+#actions-rapides .button:hover {
+    background-color: var(--color-lavender);
+    color: var(--color-crust);
+}
+
+.liste {
+    text-align: left;
 }

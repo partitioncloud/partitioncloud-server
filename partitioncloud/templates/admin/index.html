@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 
-{% block header %}
-<h1>Panneau d'administration</h1>
-{% endblock %}
-
-{% block header_actions %}
-{% endblock %}
 
 {% block content %}
+<h2>{% block title %}Panneau d'administration{% endblock %}</h2>
+
 <div id="actions-rapides">
-    <a href="/add-user"><div class="button">Ajouter un utilisateur</div></a>
-    <a href="/partition"><div class="button">Voir toutes les partitions</div></a>
+    <a href="/add-user">
+        <div class="button">Ajouter un utilisateur</div>
+    </a>
+    <a href="/partition">
+        <div class="button">Voir toutes les partitions</div>
+    </a>
 </div>
 <table>
     <thead>
@@ -26,7 +26,8 @@
         <tr>
             <td>
                 <div class="user-profile">
-                    <div class="user-profile-picture" style="background-color:{{ user.color }};" title="{{ user.username }}">
+                    <div class="user-profile-picture" style="background-color:{{ user.color }};"
+                        title="{{ user.username }}">
                         {{ user.username[0] | upper }}
                     </div>
                     <div class="table-username">{{ user.username }}</div>

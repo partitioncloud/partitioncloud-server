@@ -1,24 +1,36 @@
 {% extends 'base.html' %}
 
-{% block header %}
-<h1>{% block title %}Edit - {{ partition.name }}{% endblock %}</h1>
-{% endblock %}
+
 
 {% block content %}
+<h2>{% block title %}Modifier "{{ partition.name }}"{% endblock %}</h2>
 <br/>
-<a href="/partition/{{ partition.uuid }}"><div>voir le fichier ↗</div></a>
 
 <form action="/partition/{{ partition.uuid }}/edit" method="post" enctype="multipart/form-data">
-  Titre*
-  <input name="name" type="text" value="{{ partition.name }}" required />
-  Auteur
-  <input name="author" type="text" value="{{ partition.author }}" />
-  Paroles
-  <textarea id="paroles" name="body" type="text">{{ partition.body }}</textarea>
+  <table>
+    <tbody>
+      <tr>
+        <td>Fichier</td>
+        <td><a href="/partition/{{ partition.uuid }}"><img class="partition-thumbnail" src="/static/thumbnails/{{ partition.uuid }}.jpg"></a></td>
+      </tr>
+      <tr>
+        <td>Titre</td>
+        <td><input name="name" type="text" value="{{ partition.name }}" placeholder="Titre" required /><br/></td>
+      </tr>
+      <tr>
+        <td>Auteur</td>
+        <td><input name="author" type="text" value="{{ partition.author }}" placeholder="Auteur" /><br/></td>
+      </tr>
+      <tr>
+        <td>Paroles</td>
+        <td><textarea id="paroles" name="body" type="text" placeholder="Paroles">{{ partition.body }}</textarea><br/></td>
+      </tr>
+    </tbody>
+  </table>
   <input type="submit" value="Mettre à jour" />
 </form>
 <a href="/partition/{{ partition.uuid }}/delete">
-  <button id="supprimer-partition" style="width: 132px;">Supprimer</button>
+  <button id="delete-partition">Supprimer</button>
 </a>
 
 {% endblock %}
