@@ -10,7 +10,7 @@ Serveur web (basé sur Flask) pour gérer sa collection de partitions musicales
 - Thème sombre (je ne suis pas satisfait du résultat, mais il est à peu près correct)
 - dashboard administrateur: gestion de tous les albums, partitions et utilisateurs
 - [CLI](https://github.com/partitioncloud/partitioncloud-cli) uniquement à des fins de synchronisation. Il serait bon d'ajouter une BDD locale avec les UUIDs des partitions
-- Pas de Javascript
+- ~~Pas de Javascript~~ Complètement fonctionnel sans JavaScript, cela vient juste ajouter des [toutes petites améliorations](partitioncloud/static/main.js)
 
 ## Points à noter
 - Les partitions ajoutées sont accessibles à tous les utilisateurs depuis la recherche même si ils ne sont pas dans un album leur y donnant accès, pour limiter la redondance

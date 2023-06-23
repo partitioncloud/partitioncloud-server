@@ -31,7 +31,7 @@
     <div class="mask" id="!"></div>
   </div>
   <div id="main-container">
-    <input id="slide-sidebar" type="checkbox" role="button" />
+    <input id="slide-sidebar" type="checkbox" role="button"/>
     <label for="slide-sidebar">
       <div id="slide">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-playlist" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -49,12 +49,11 @@
       <form id="search-form" action="/albums/search" method="post">
         <input type="search" id="search-bar" required="" placeholder="Rechercher" name="query">
         <br>
-        <select id="nb-queries" name="nb-queries">
+        <select id="nb-queries" name="nb-queries" title="Nombre de recherches en ligne">
           {% for i in range(0, user.max_queries+1) %}
           <option value="{{ i }}">{{ i }}</option>
           {% endfor %}
         </select>
-          <label for="nb-queries" id="nb-queries-label">en ligne</label>
         <input id="search-submit" type="submit" value="Go">
       </form>
       {% endif %}
@@ -136,5 +135,5 @@
     </div>
   </div>
 </body>
-
+<script src="{{ url_for('static', filename='main.js') }}"></script>
 </html>
