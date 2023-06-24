@@ -7,7 +7,7 @@ Serveur web (basé sur Flask) pour gérer sa collection de partitions musicales
 ### Liste non exhaustive
 - recherche de partitions en ligne et ajout à la base de données (par recherche Google)
 - partage d'un album par un lien direct sans nécessité de connexion (en lecture seule)
-- Thème sombre (je ne suis pas satisfait du résultat, mais il est à peu près correct)
+- Thème sombre
 - dashboard administrateur: gestion de tous les albums, partitions et utilisateurs
 - [CLI](https://github.com/partitioncloud/partitioncloud-cli) uniquement à des fins de synchronisation. Il serait bon d'ajouter une BDD locale avec les UUIDs des partitions
 - ~~Pas de Javascript~~ Complètement fonctionnel sans JavaScript, cela vient juste ajouter des [toutes petites améliorations](partitioncloud/static/main.js)
@@ -52,17 +52,18 @@ Modifier le fichier de configuration créé dans `instance/`
 ## Screenshots
 
 ### Interface principale
-![Interface principale](https://user-images.githubusercontent.com/67148092/222953263-f779fdc8-b92d-479d-a7d1-1a71ca519a29.png)
-![Mode sombre](https://user-images.githubusercontent.com/67148092/222953282-622a3c0b-bdcd-495a-880c-5b12d0f8921c.png)
+![Interface principale](https://github.com/partitioncloud/partitioncloud-server/assets/67148092/5e19ea1c-ca92-4109-a973-0d0d91f69d20)
+![Mode sombre](https://github.com/partitioncloud/partitioncloud-server/assets/67148092/d1de7743-72c9-4769-9a3f-65e67bec438a)
+
 
 ### Tableau administrateur
-![Admin dashboard](https://user-images.githubusercontent.com/67148092/222953310-6f1b1705-8e8f-4e93-b5e3-352f7225af46.png)
-![add-user](https://user-images.githubusercontent.com/67148092/222953312-9dd12cc5-c416-4666-a00f-9d429afc13d6.png)
+![Admin dashboard](https://github.com/partitioncloud/partitioncloud-server/assets/67148092/5cec2375-4e61-4d8c-bd36-8259a392779d)
+![add-user](https://github.com/partitioncloud/partitioncloud-server/assets/67148092/6cd6564f-dd4a-4bcf-bb67-18d064baa877)
+
 
 ### Recherche en ligne et locale
 
-_Les noms des sites webs ont volontairement été supprimés_
-![Recherche](https://user-images.githubusercontent.com/67148092/222953333-db0633d7-3dd4-4405-8d87-8411db630724.png)
+![Recherche](https://github.com/partitioncloud/partitioncloud-server/assets/67148092/745bf3e3-37e9-40cd-80d2-14670bce1a45)
 
 
 ## TODO
