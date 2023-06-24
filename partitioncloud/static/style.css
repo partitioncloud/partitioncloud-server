@@ -1,4 +1,4 @@
-@import url('https://www.augustin64.fr/static/font/iosevka.css');
+/** @import url('https://www.augustin64.fr/static/font/iosevka.css'); */
 
 
 /** Color Schemes */
@@ -34,7 +34,7 @@
     --color-mantle: #181825;
     --color-crust: #11111b;
 
-    --font-family: Iosevka Web;
+    /* --font-family: Iosevka Web; /* Specify the font here */
 }
 
 /* Light theme: Catppuccin Latte */
@@ -72,8 +72,9 @@
 
 /** Various settings (variables) */
 :root {
-    /*--sidebar-size: max(10vw, 160px);*/
-    --sidebar-size: 200px;
+    --sidebar-size: max(10vw, 160px);
+    --sidebar-sz-plus10: calc(var(--sidebar-size) + 10px);
+    --sidebar-sz-moins20: calc(var(--sidebar-size) - 20px);
 }
 
 * {
@@ -192,7 +193,7 @@ input:checked#slide-sidebar~label {
     z-index: 1;
     position: absolute;
     top: 20px;
-    left: calc(var(--sidebar-size) + 10px);
+    left: var(--sidebar-sz-plus10);
     background-color: var(--color-base);
 
     -moz-transition: left 0.5s ease;
@@ -325,7 +326,7 @@ img.partition-thumbnail {
 
 #albums {
     overflow: scroll;
-    height: 70vh;
+    height: calc(100% - 375px); /* we don't want it hidden behind settings */
     padding: 0 5px;
 }
 
@@ -367,8 +368,7 @@ img.partition-thumbnail {
     bottom: 0;
 
     background-color: var(--color-base);
-    width: 180px;
-    /*TODO width: calc(var-(--sidebar-size) - 20px); ?*/
+    width: var(--sidebar-sz-moins20);
     padding: 5px;
     margin: 5px;
 
@@ -538,7 +538,7 @@ input[type="file"] {
 /** Dangerous buttons */
 button#logout:hover,
 a#delete-album:hover,
-button#delete-partition {
+#delete-partition {
     background-color: var(--color-red);
     color: var(--color-mantle);
 }

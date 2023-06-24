@@ -11,9 +11,4 @@
     #content-container {
         overflow: hidden;
     }
-
-    /* calc(var(--sidebar-size) - 20px) seems not to be working so I'm hardcoding this.. */
-    #settings-container {
-        width: calc(75vw - 20px);
-    }
 }
