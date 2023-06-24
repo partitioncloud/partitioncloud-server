@@ -117,7 +117,9 @@
             <div class="username">{{ user.username }}</div>
           </div>
         {% else %}
-          <a href="{{ url_for('auth.register') }}"><button>Créer un compte</button></a>
+          {% if not config.DISABLE_REGISTER %}
+            <a href="{{ url_for('auth.register') }}"><button>Créer un compte</button></a>
+          {% endif %}
           <a href="{{ url_for('auth.login') }}"><button>Se connecter</button></a>
         {% endif %}
       </div>

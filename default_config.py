@@ -7,4 +7,9 @@ SECRET_KEY="dev"
 
 # Port to run on
 PORT="5000"
+
+# Number of online queries an "normal user" can do
 MAX_ONLINE_QUERIES=3
+
+# Disable registration of new users via /auth/register (they can still be added by root)
+DISABLE_REGISTER=False

@@ -13,7 +13,8 @@ from flask import (
     request,
     session,
     url_for,
-    flash
+    flash,
+    current_app
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -76,6 +77,10 @@ def register():
     Validates that the username is not already taken. Hashes the
     password for security.
     """
+    if current_app.config["DISABLE_REGISTER"]:
+        flash("L'enregistrement de nouveaux utilisateurs a été désactivé par l'administrateur.")
+        return redirect(url_for("auth.login"))
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]

@@ -70,5 +70,5 @@ Modifier le fichier de configuration créé dans `instance/`
 - [ ] Modifier son mot de passe
 - [ ] Supprimer un utilisateur
 - [ ] Ajouter config:DISABLE_DARK_MODE
-- [ ] Ajouter config:DISABLE_REGISTER
+- [x] Ajouter config:DISABLE_REGISTER
 - [ ] Ajouter config:ONLINE_SEARCH_BASE_QUERY pour la recherche google, actuellement 'filetype:pdf partition'
