@@ -94,15 +94,17 @@ def register():
                     (username, generate_password_hash(password)),
                 )
                 db.commit()
+                flash(f"Utilisateur {username} créé avec succès. Vous pouvez vous connecter.")
             except db.IntegrityError:
                 # The username was already taken, which caused the
                 # commit to fail. Show a validation error.
-                error = f"Le nom d'utilisateur {username} est déjà pris."
+                error = f"Le nom d'utilisateur {username} est déjà pris. Vous souhaitez peut-être vous connecter"
             else:
                 # Success, go to the login page.
                 return redirect(url_for("auth.login"))
 
         flash(error)
+        db.close()
 
     return render_template("auth/register.html")
 
@@ -119,10 +121,8 @@ def login():
             "SELECT * FROM user WHERE username = ?", (username,)
         ).fetchone()
 
-        if user is None:
-            error = "Incorrect username."
-        elif not check_password_hash(user["password"], password):
-            error = "Incorrect password."
+        if (user is None) or not check_password_hash(user["password"], password):
+            error = "Nom d'utilisateur ou mot de passe incorrect."
 
         if error is None:
             # store the user id in a new session and return to the index

@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 
-{% block title %}Connexion{% endblock %}
 
 {% block content %}
+<h2>{% block title %}Connexion{% endblock %}</h2>
+
   <form method="post">
     <input type="text" name="username" id="username" placeholder="Nom d'utilisateur" required><br/>
     <input type="password" name="password" id="password" placeholder="Mot de passe" required><br/>

@@ -7,7 +7,7 @@
 {% block content %}
 Êtes vous sûr de vouloir supprimer cette partition ?
 <form method="post">
-  <input type="submit" value="Supprimer">
+  <input type="submit" id="delete-partition" value="Supprimer">
 </form>
 <a class="button-href" href="/albums/{{ partition.uuid }}/edit">
   <button id="cancel-deletion">Annuler</button>
