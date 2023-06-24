@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
-{% block title %}Résultats de la recherche "{{ query }}"{% endblock %}
 
 {% block content %}
+<h2>{% block title %}Résultats de la recherche "{{ query }}"{% endblock %}</h2>
 {% if partitions|length != 0 %}
 <h3>Résultats dans la bibliothèque locale</h3>
 <div id="partitions-grid">
@@ -57,5 +57,8 @@
   </div>
   {% endfor %}
 </div>
+{% endif %}
+{% if google_results|length == 0 and partitions|length == 0 %}
+Aucun résultat. Essayez d'augmenter le nombre de recherches en ligne ou d'affiner votre recherche.
 {% endif %}
 {% endblock %}
