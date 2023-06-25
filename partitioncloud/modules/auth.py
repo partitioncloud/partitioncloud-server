@@ -38,6 +38,19 @@ def login_required(view):
     return wrapped_view
 
 
+def anon_required(view):
+    """View decorator that redirects authenticated users to the index."""
+
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is not None:
+            return redirect(url_for("albums.index"))
+
+        return view(**kwargs)
+
+    return wrapped_view
+
+
 def admin_required(view):
     """View decorator that redirects anonymous users to the login page."""
 
@@ -72,6 +85,7 @@ def load_logged_in_user():
 
 
 @bp.route("/register", methods=("GET", "POST"))
+@anon_required
 def register():
     """Register a new user.
     Validates that the username is not already taken. Hashes the
@@ -115,6 +129,7 @@ def register():
 
 
 @bp.route("/login", methods=("GET", "POST"))
+@anon_required
 def login():
     """Log in a registered user by adding the user id to the session."""
     if request.method == "POST":

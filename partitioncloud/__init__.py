@@ -82,9 +82,9 @@ def add_user():
     return render_template("auth/register.html", albums=get_all_albums(), user=current_user)
 
 
-# Automatically close db after each request
 @app.after_request
 def after_request(response):
+    """Automatically close db after each request"""
     if ('db' in g) and (g.db is not None):
         g.db.close()
     return response
