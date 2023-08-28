@@ -4,6 +4,7 @@ Module implémentant la recherche de partitions par mots-clés
 """
 from uuid import uuid4
 import urllib.request
+import threading
 import os
 
 import googlesearch
@@ -40,6 +41,18 @@ def local_search(query, partitions):
     return sorted_partitions[:min(5,len(sorted_partitions))]
 
 
+def download_search_result(element):
+    uuid = element["uuid"]
+    url = element["url"]
+
+    try:
+        urllib.request.urlretrieve(url, f"partitioncloud/search-partitions/{uuid}.pdf")
+
+    except (urllib.error.HTTPError, urllib.error.URLError) as e:
+        with open(f"partitioncloud/search-partitions/{uuid}.pdf",'a') as f: 
+            pass # Create empty file
+
+
 def online_search(query, num_queries):
     """
     Renvoie les 3 résultats les plus pertinents depuis google
@@ -65,35 +78,45 @@ def online_search(query, num_queries):
                     (uuid, element,)
                 )
                 db.commit()
-                urllib.request.urlretrieve(element, f"partitioncloud/search-partitions/{uuid}.pdf")
 
-                os.system(
-                    f'/usr/bin/convert -thumbnail\
-                    "178^>" -background white -alpha \
-                    remove -crop 178x178+0+0 \
-                    partitioncloud/search-partitions/{uuid}.pdf[0] \
-                    partitioncloud/static/search-thumbnails/{uuid}.jpg'
-                )
                 partitions.append(
                     {
                         "name": element.split("://")[1].split("/")[0],
-                        "uuid": uuid
+                        "uuid": uuid,
+                        "url": element
                     }
                 )
                 break
             except db.IntegrityError:
                 pass
-            except (urllib.error.HTTPError, urllib.error.URLError) as e:
-                print(e, element)
-                db.execute(
-                    """
-                    DELETE FROM search_results
-                    WHERE uuid = ?
-                    """,
-                    (uuid,)
-                )
-                db.commit()
-                break
+
+    threads = [threading.Thread(target=download_search_result, args=(elem,)) for elem in partitions]
+
+    for thread in threads:
+        thread.start()
+
+    for thread in threads:
+        thread.join()
+
+    for element in partitions:
+        pass
+        uuid = element["uuid"]
+        url = element["url"]
+        if os.stat(f"partitioncloud/search-partitions/{uuid}.pdf").st_size == 0:
+            print("An error occured", url)
+            db.execute(
+                """
+                DELETE FROM search_results
+                WHERE uuid = ?
+                """,
+                (uuid,)
+            )
+            db.commit()
+
+            os.remove(f"partitioncloud/search-partitions/{uuid}.pdf")
+
+            partitions.remove(element)
+
     return partitions
 
 
