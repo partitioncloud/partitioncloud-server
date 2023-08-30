@@ -4,12 +4,12 @@ Main file
 """
 import os
 
-from flask import Flask, g, redirect, render_template, request, send_file, flash, session
+from flask import Flask, g, redirect, render_template, request, send_file, flash, session, abort
 from werkzeug.security import generate_password_hash
 
 from .modules.utils import User, Album, get_all_albums
 from .modules import albums, auth, partition, admin
-from .modules.auth import admin_required
+from .modules.auth import admin_required, login_required
 from .modules.db import get_db
 
 app = Flask(__name__)
@@ -82,9 +82,35 @@ def add_user():
     return render_template("auth/register.html", albums=get_all_albums(), user=current_user)
 
 
-# Automatically close db after each request
+@app.route("/static/search-thumbnails/<uuid>.jpg")
+@login_required
+def search_thumbnail(uuid):
+    db = get_db()
+    partition = db.execute(
+        """
+        SELECT uuid, url FROM search_results
+        WHERE uuid = ?
+        """,
+        (uuid,)
+    ).fetchone()
+
+    if partition is None:
+        abort(404)
+    if not os.path.exists(os.path.join(app.static_folder, "search-thumbnails", f"{uuid}.jpg")):
+        os.system(
+            f'/usr/bin/convert -thumbnail\
+            "178^>" -background white -alpha \
+            remove -crop 178x178+0+0 \
+            partitioncloud/search-partitions/{uuid}.pdf[0] \
+            partitioncloud/static/search-thumbnails/{uuid}.jpg'
+        )
+
+    return send_file(os.path.join(app.static_folder, "search-thumbnails", f"{uuid}.jpg"))
+
+
 @app.after_request
 def after_request(response):
+    """Automatically close db after each request"""
     if ('db' in g) and (g.db is not None):
         g.db.close()
     return response
