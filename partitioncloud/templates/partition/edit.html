@@ -13,6 +13,16 @@
         <td>Fichier</td>
         <td><a href="/partition/{{ partition.uuid }}"><img class="partition-thumbnail" src="/static/thumbnails/{{ partition.uuid }}.jpg"></a></td>
       </tr>
+      {% if partition.source != "unknown" and partition.source != "upload" %}
+        <tr>
+          <td>
+            Source
+          </td>
+          <td class="partition-source">
+            <a href="{{ partition.source }}">{{ partition.source.split("/")[2] }}</a>
+          </td>
+        </tr>
+      {% endif %}
       <tr>
         <td>Titre</td>
         <td><input name="name" type="text" value="{{ partition.name }}" placeholder="Titre" required /><br/></td>
