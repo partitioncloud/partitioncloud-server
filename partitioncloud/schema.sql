@@ -17,7 +17,8 @@ CREATE TABLE partition (
 	name TEXT NOT NULL,
 	author TEXT,
 	body TEXT,
-	user_id INTEGER
+	user_id INTEGER,
+	source TEXT DEFAULT 'unknown'
 );
 
 CREATE TABLE album (

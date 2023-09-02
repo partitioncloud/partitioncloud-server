@@ -603,6 +603,7 @@ table {
 }
 
 td {
+    height: 35px; /* will grow automatically */
     min-width: 178px;
     border: thin solid var(--color-surface0);
     text-align: center;

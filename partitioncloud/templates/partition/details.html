@@ -26,6 +26,18 @@
       </tr>
       <tr>
         <td>
+          Type d'ajout
+        </td>
+        <td>
+          {% if partition.source == "unknown" or partition.source == "upload" %}
+            {{ partition.source }}
+          {% else %}
+            <a href="{{ partition.source }}">search</a>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td>
           Albums
         </td>
         <td class="liste">

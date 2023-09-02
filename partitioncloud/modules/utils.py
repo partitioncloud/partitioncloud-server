@@ -314,6 +314,7 @@ class Partition():
             self.author = data["author"]
             self.body = data["body"]
             self.user_id = data["user_id"]
+            self.source = data["source"]
         else:
             raise LookupError
 

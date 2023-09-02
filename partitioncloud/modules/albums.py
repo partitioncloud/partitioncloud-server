@@ -232,6 +232,7 @@ def add_partition(album_uuid):
     db = get_db()
     user = User(user_id=session.get("user_id"))
     album = Album(uuid=album_uuid)
+    source = "upload" # source type: upload, unknown or url
 
     if (not user.is_participant(album.uuid)) and (user.access_level != 1):
         flash("Vous ne participez pas à cet album.")
@@ -256,6 +257,8 @@ def add_partition(album_uuid):
             ).fetchone()
             if data is None:
                 error = "Les résultats de la recherche ont expiré."
+            else:
+                source = data["url"]
     else:
         partition_type = "file"
 
@@ -278,10 +281,10 @@ def add_partition(album_uuid):
 
             db.execute(
                 """
-                INSERT INTO partition (uuid, name, author, body, user_id)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO partition (uuid, name, author, body, user_id, source)
+                VALUES (?, ?, ?, ?, ?, ?)
                 """,
-                (partition_uuid, request.form["name"], author, body, user.id),
+                (partition_uuid, request.form["name"], author, body, user.id, source),
             )
             db.commit()
 
