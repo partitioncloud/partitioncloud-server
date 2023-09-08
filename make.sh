@@ -7,6 +7,10 @@ init () {
     mkdir -p "partitioncloud/static/thumbnails"
     mkdir -p "partitioncloud/static/search-thumbnails"
     
+    if ! test -f "instance/config.py"; then
+        echo "SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex())')" > instance/config.py
+    done
+
     if test -f "instance/partitioncloud.sqlite"; then
         printf "Souhaitez vous supprimer la base de données existante ? [y/n] "
         read -r CONFIRMATION
