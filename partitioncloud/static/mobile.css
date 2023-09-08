@@ -7,8 +7,11 @@
         min-width: calc(100vw - 100px);
     }
 
-    /* Make content not scrollable */
-    #content-container {
+    /* Make content not scrollable (vertically),
+     do not collapse thing in a ridiculously small space */
+    #content-container, #footer {
         overflow: hidden;
+        min-width: 90vw;
+        position: fixed;
     }
 }

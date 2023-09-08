@@ -3,6 +3,7 @@
 Main file
 """
 import os
+import subprocess
 
 from flask import Flask, g, redirect, render_template, request, send_file, flash, session, abort
 from werkzeug.security import generate_password_hash
@@ -27,6 +28,13 @@ app.register_blueprint(auth.bp)
 app.register_blueprint(admin.bp)
 app.register_blueprint(albums.bp)
 app.register_blueprint(partition.bp)
+
+
+try:
+    result = subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE)
+    __version__ = result.stdout.decode('utf8')
+except FileNotFoundError: # In case git not found, which would be strange
+    __version__ = "unknown"
 
 
 @app.route("/")
@@ -106,6 +114,13 @@ def search_thumbnail(uuid):
         )
 
     return send_file(os.path.join(app.static_folder, "search-thumbnails", f"{uuid}.jpg"))
+
+
+@app.context_processor
+def inject_default_variables():
+    if __version__ == "unknown":
+        return dict(version="")
+    return dict(version=__version__)
 
 
 @app.after_request

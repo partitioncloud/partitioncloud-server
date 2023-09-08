@@ -141,6 +141,25 @@ body {
     padding: 0 25px;
 }
 
+#content {
+    margin-bottom: 50px;
+}
+
+#footer {
+    position: fixed;
+    text-align: center;
+
+    bottom: 0;
+    right: 0;
+    left: var(--sidebar-size);
+
+    background-color: var(--color-base);
+    -moz-transition: left 0.5s ease;
+    transition: left 0.5s ease;
+
+    padding: 5px;
+}
+
 .album-cover {
     padding: 5px;
     margin: 5px;
@@ -176,6 +195,11 @@ body {
 }
 
 input:checked#slide-sidebar~#content-container {
+    left: 0;
+    overflow: unset;
+}
+
+input:checked#slide-sidebar~#footer {
     left: 0;
     overflow: unset;
 }

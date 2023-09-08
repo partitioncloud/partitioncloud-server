@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title>{% block title %}{% endblock %} - PartitionCloud</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -135,6 +135,7 @@
         {% block content %}{% endblock %}
       </section>
     </div>
+    <div id="footer"><a href="https://github.com/partitioncloud/partitioncloud-server">PartitionCloud</a> {{ version }}</div>
   </div>
 </body>
 <script src="{{ url_for('static', filename='main.js') }}"></script>
