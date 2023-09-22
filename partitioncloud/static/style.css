@@ -143,12 +143,12 @@ body {
 
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 #content {
     margin-bottom: 50px;
     flex: 1;
-    overflow: hidden;
 }
 
 #footer {
@@ -266,15 +266,17 @@ section#users {
 
 .user-profile-picture {
     color: var(--color-mantle);
+    position: absolute;
+    left: 0;
 }
 
 .user-profile {
     display: inline-flex;
+    margin-left: 30px;
 }
 
 .user-profile .user-profile-picture {
     position: absolute;
-    left: 30px;
 }
 
 .dropdown {
