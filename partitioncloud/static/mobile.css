@@ -13,5 +13,10 @@
         overflow: hidden;
         min-width: 90vw;
         position: fixed;
+        transition: all 0.5s ease;
+    }
+
+    input:checked#slide-sidebar~#content-container {
+        position: initial;
     }
 }
