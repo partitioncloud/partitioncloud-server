@@ -82,12 +82,12 @@
 }
 
 
-/** Hide scrollbars (needed on Chromium) */
-*::-webkit-scrollbar {
+/** Hide scrollbars (deeply needed on Chromium) */
+::-webkit-scrollbar {
     display: none;
 }
 
-* {
+:root {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
@@ -139,16 +139,10 @@ body {
     transition: left 0.5s ease;
 
     padding: 0 25px;
-    max-height: 100vh;
-
-    display: flex;
-    flex-direction: column;
 }
 
 #content {
     margin-bottom: 50px;
-    flex: 1;
-    overflow: hidden;
 }
 
 #footer {
@@ -203,10 +197,6 @@ body {
 input:checked#slide-sidebar~#content-container {
     left: 0;
     overflow: unset;
-}
-
-input:checked#slide-sidebar~#content-container>#content {
-    overflow-y: scroll;
 }
 
 input:checked#slide-sidebar~#footer {
