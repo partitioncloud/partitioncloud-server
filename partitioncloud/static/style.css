@@ -81,6 +81,10 @@
     font-family: var(--font-family);
 }
 
+body {
+    overflow-x: hidden;
+}
+
 
 /** Hide scrollbars (deeply needed on Chromium) */
 ::-webkit-scrollbar {
@@ -158,6 +162,7 @@ body {
     transition: left 0.5s ease;
 
     padding: 5px;
+    margin-left: var(--sidebar-size);
 }
 
 .album-cover {
@@ -181,6 +186,9 @@ body {
     top: 0;
     left: 0;
     bottom: 0;
+
+    -moz-transition: width 0.5s ease;
+    transition: width 0.5s ease;
 }
 
 #slide {
@@ -197,11 +205,13 @@ body {
 input:checked#slide-sidebar~#content-container {
     left: 0;
     overflow: unset;
+    margin-left: 0;
 }
 
 input:checked#slide-sidebar~#footer {
     left: 0;
     overflow: unset;
+    margin-left: 0;
 }
 
 input:checked#slide-sidebar~#sidebar {
@@ -397,6 +407,9 @@ img.partition-thumbnail {
     margin: 5px;
 
     border-radius: 3px;
+
+    -moz-transition: width 0.5s ease;
+    transition: width 0.5s ease;
 }
 
 button#logout,
@@ -666,4 +679,8 @@ td {
 
 .liste {
     text-align: left;
+}
+
+.x-scrollable {
+    overflow-x: auto;
 }
