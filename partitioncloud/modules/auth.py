@@ -123,7 +123,6 @@ def register():
                 return redirect(url_for("auth.login"))
 
         flash(error)
-        db.close()
 
     return render_template("auth/register.html")
 

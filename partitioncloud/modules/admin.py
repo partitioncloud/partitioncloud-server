@@ -27,7 +27,6 @@ def index():
     for u in users:
         u.albums = u.get_albums()
         u.partitions = u.get_partitions()
-    db.close()
 
     return render_template(
         "admin/index.html",

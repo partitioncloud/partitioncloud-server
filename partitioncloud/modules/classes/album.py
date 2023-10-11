@@ -41,20 +41,22 @@ class Album():
         self.users = None
 
 
-    def get_users(self):
+    def get_users(self, force_reload=False):
         """
         Renvoie les utilisateurs liés à l'album
         """
-        db = get_db()
-        return db.execute(
-            """
-            SELECT * FROM user
-            JOIN contient_user ON user_id = user.id
-            JOIN album ON album.id = album_id
-            WHERE album.uuid = ?
-            """,
-            (self.uuid,)
-        ).fetchall()
+        if self.users is None or force_reload:
+            db = get_db()
+            self.users = db.execute(
+                """
+                SELECT * FROM user
+                JOIN contient_user ON user_id = user.id
+                JOIN album ON album.id = album_id
+                WHERE album.uuid = ?
+                """,
+                (self.uuid,)
+            ).fetchall()
+        return self.users
 
     def get_partitions(self):
         """

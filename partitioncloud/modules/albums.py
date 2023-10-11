@@ -171,10 +171,10 @@ def join_album(uuid):
         user.join_album(uuid)
     except LookupError:
         flash("Cet album n'existe pas.")
-        return redirect(f"/albums/{uuid}")
+        return redirect(request.referrer)
 
     flash("Album ajouté à la collection.")
-    return redirect(f"/albums/{uuid}")
+    return redirect(request.referrer)
 
 
 @bp.route("/<uuid>/quit")
@@ -185,7 +185,7 @@ def quit_album(uuid):
     users = album.get_users()
     if user.id not in [u["id"] for u in users]:
         flash("Vous ne faites pas partie de cet album")
-        return redirect(f"/albums/{uuid}")
+        return redirect(request.referrer)
 
     if len(users) == 1:
         flash("Vous êtes seul dans cet album, le quitter entraînera sa suppression.")
@@ -218,7 +218,7 @@ def delete_album(uuid):
 
     if error is not None:
         flash(error)
-        return redirect(f"/albums/{uuid}")
+        return redirect(request.referrer)
 
     album.delete()
 
@@ -236,7 +236,7 @@ def add_partition(album_uuid):
 
     if (not user.is_participant(album.uuid)) and (user.access_level != 1):
         flash("Vous ne participez pas à cet album.")
-        return redirect(f"/albums/{album.uuid}")
+        return redirect(request.referrer)
 
     error = None
 
@@ -264,7 +264,7 @@ def add_partition(album_uuid):
 
     if error is not None:
         flash(error)
-        return redirect(f"/albums/{album.uuid}")
+        return redirect(request.referrer)
 
     if "author" in request.form:
         author = request.form["author"]
@@ -318,7 +318,7 @@ def add_partition(album_uuid):
             pass
 
     flash(f"Partition {request.form['name']} ajoutée")
-    return redirect(f"/albums/{album.uuid}")
+    return redirect(request.referrer)
 
 
 @bp.route("/add-partition", methods=["POST"])
