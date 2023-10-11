@@ -28,7 +28,11 @@
 
 {% block content %}
 <header id="album-header">
-  <h2 id="album-title">{{ album.name }}</h2>
+  <h2 id="album-title">
+    {% if groupe %}<a href="/groupe/{{ groupe.uuid }}">{{ groupe.name}}</a> /
+    {% endif %}
+    {{ album.name }}
+  </h2>
   {% if g.user %}
     <div id="header-actions">
       <section id="users">

@@ -164,7 +164,7 @@ body {
     padding: 5px;
 }
 
-.album-cover {
+.album-cover, .groupe-cover {
     padding: 5px;
     margin: 5px;
     border-radius: 3px;
@@ -172,8 +172,19 @@ body {
     overflow-x: hidden;
 }
 
-.album-cover:hover {
+.album-cover:hover, .groupe-album-cover:hover {
     background-color: var(--color-base);
+}
+
+.groupe-cover {
+    background-color: var(--color-crust);
+}
+
+.groupe-albums-cover {
+    background-color: var(--color-mantle);
+    border-radius: 3px;
+    margin: -1px;
+    margin-top: 10px;
 }
 
 
@@ -341,8 +352,19 @@ img.partition-thumbnail {
 }
 
 
+/** Albums grid in groupe view */
+#albums-grid > a > .album {
+    padding: 10px;
+    border-radius: 3px;
+}
+
+#albums-grid > a > .album:hover {
+    background-color: var(--color-surface0);
+}
+
+
 /** Sidebar content */
-#new-album-button {
+.create-button {
     text-align: center;
     margin: 10px;
     background-color: var(--color-surface1);
@@ -352,18 +374,18 @@ img.partition-thumbnail {
     border: 2px solid var(--color-overlay0);
 }
 
-#new-album-button:hover {
+.create-button:hover {
     border-color: var(--color-blue);
     background-color: var(--color-surface0);
 }
 
-#albums {
+#sidebar-navigation {
     overflow: scroll;
-    height: calc(100% - 375px); /* we don't want it hidden behind settings */
+    height: calc(100% - 400px); /* we don't want it hidden behind settings */
     padding: 0 5px;
 }
 
-#albums div {
+#albums div, #groupes div {
     padding: 5px;
 }
 

@@ -27,6 +27,14 @@
       </form>
       <a href="#!" class="close-dialog">Close</a>
     </dialog>
+    <dialog id="create-groupe">
+      <h2>Créer un nouveau groupe</h2>
+      <form action="/groupe/create-groupe" method="post">
+        <input type="text" name="name" id="name" placeholder="Nom" required><br/>
+        <input type="submit" value="Créer">
+      </form>
+      <a href="#!" class="close-dialog">Close</a>
+    </dialog>
     {% endif %}
     <div class="mask" id="!"></div>
   </div>
@@ -60,26 +68,65 @@
       <h2>Albums</h2>
       {% if g.user %}
       <a href="#create-album">
-        <div id="new-album-button">
+        <div class="create-button">
             Créer un album
         </div>
       </a>
+      <a href="#create-groupe">
+        <div class="create-button">
+            Créer un groupe
+        </div>
+      </a>
       {% endif %}
-      <section id="albums">
-        {% if not g.user %}
-          <div style="text-align: center;"><i>Connectez vous pour avoir accès à vos albums</i></div>
-        {% elif user.get_albums() | length == 0 %}
+
+      {% if g.user %}
+      <section id="sidebar-navigation">
+        <section id="groupes">
+          {% if user.get_groupes() | length > 0 %}
+          {% for groupe in user.groupes %}
+          <div class="groupe-cover">
+            <details>
+              <summary>
+                <a href="/groupe/{{ groupe.uuid }}">{{ groupe.name }}</a>
+              </summary>
+              <div class="groupe-albums-cover">
+                {% if groupe.get_albums() | length == 0 %}
+                  Aucun album 
+                {% else %}
+                  {% for album in groupe.get_albums() %}
+                  <a href="/groupe/{{ groupe.uuid }}/{{ album["uuid"] }}">
+                    <div class="groupe-album-cover">
+                      {{ album["name"] }}
+                    </div>
+                  </a>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </details>
+          </div>
+          {% endfor %}
+          {% endif %}
+        </section>
+
+        <section id="albums">
+          {% if user.get_albums() | length == 0 %}
           <div style="text-align: center;"><i>Aucun album disponible</i></div>
-        {% else %}
+          {% else %}
           {% for album in user.albums %}
           <a href="/albums/{{ album['uuid'] }}">
-            <div class="album-cover" id="album-1">
+            <div class="album-cover">
               {{ album["name"] }}
             </div>
           </a>
           {% endfor %}
-        {% endif %}
+          {% endif %}
+        </section>
       </section>
+      {% else %}
+      <section id="sidebar-navigation">
+        <div style="text-align: center;"><i>Connectez vous pour avoir accès à vos albums</i></div>
+      </section>
+      {% endif %}
 
       <div id="settings-container">
         {% if g.user %}

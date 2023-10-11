@@ -5,8 +5,8 @@ from .db import get_db
 
 from .classes.user import User
 from .classes.album import Album
+from .classes.groupe import Groupe
 from .classes.partition import Partition
-
 
 
 def get_all_partitions():

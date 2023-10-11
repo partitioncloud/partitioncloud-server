@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ groupe.name }}{% endblock %}
+
+
+{% block dialogs %}
+<dialog id="create-groupe-album">
+  <h2>Créer un nouvel album dans le groupe {{ groupe.name }}</h2>
+  <form action="/groupe/{{ groupe.uuid }}/create-album" method="post">
+      <input type="text" name="name" id="name" placeholder="Nom" required><br/>
+      <input type="submit" value="Ajouter">
+  </form>
+  <a href="#!" class="close-dialog">Close</a>
+</dialog>
+<dialog id="delete">
+  <h2>Supprimer le groupe</h2>
+  Êtes vous sûr de vouloir supprimer ce groupe ? Cela supprimera les albums
+  sous-jacents et leurs partitions si personne ne les a rejoints (indépendamment du groupe).
+  <br/><br/>
+  <form method="post" action="/groupe/{{ groupe.uuid }}/delete">
+    <input type="submit" style="background-color: var(--color-red);" value="Supprimer">
+  </form>
+  <a href="#!" class="close-dialog">Close</a>
+</dialog>
+{% endblock %}
+
+{% block content %}
+<header id="album-header">
+  <h2 id="groupe-title">{{ groupe.name }}</h2>
+  {% if g.user %}
+    <div id="header-actions">
+      <section id="users">
+      {% for groupe_user in groupe.users %}
+        <div class="user-profile-picture" style="background-color:{{ groupe_user.color }};" title="{{ groupe_user.username }}">
+        {{ groupe_user.username[0] | upper }}
+        </div>
+      {% endfor %}
+      </section>
+      <div class="dropdown dp1">
+        +
+        <div class="dropdown-content dp1">
+        {% if not_participant %}
+          <a href="/groupe/{{ groupe.uuid }}/join">Rejoindre</a>
+        {% elif groupe.users | length > 1 %}
+          <a href="/groupe/{{ groupe.uuid }}/quit">Quitter</a>
+        {% endif %}
+        {% if g.user.access_level == 1 or user.id in groupe.get_admins() %}
+          <a href="#create-groupe-album">Ajouter un album</a>
+          <a id="delete-album" href="#delete">Supprimer</a>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</header>
+<hr/>
+{% if groupe.albums|length != 0 %}
+<section id="albums-grid">
+  {% for album in groupe.albums | reverse %}
+  <a href="/groupe/{{ groupe.uuid }}/{{ album.uuid }}">
+    <div class="album">
+      {{ album.name }}
+    </div>
+  </a>
+  {% endfor %}
+</section>
+{% else %}
+<br/>
+<div id="albums-grid" style="display: inline;">Aucun album disponible. <a href="#create-groupe-album">En créer un</a></div>
+{% endif %}
+{% endblock %}

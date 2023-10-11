@@ -9,7 +9,7 @@ from flask import Flask, g, redirect, render_template, request, send_file, flash
 from werkzeug.security import generate_password_hash
 
 from .modules.utils import User, Album, get_all_albums
-from .modules import albums, auth, partition, admin
+from .modules import albums, auth, partition, admin, groupe
 from .modules.auth import admin_required, login_required
 from .modules.db import get_db
 
@@ -26,6 +26,7 @@ else:
 
 app.register_blueprint(auth.bp)
 app.register_blueprint(admin.bp)
+app.register_blueprint(groupe.bp)
 app.register_blueprint(albums.bp)
 app.register_blueprint(partition.bp)
 
