@@ -318,7 +318,7 @@ def add_partition(album_uuid):
             pass
 
     flash(f"Partition {request.form['name']} ajoutée")
-    return redirect(request.referrer)
+    return redirect(f"/albums/{album.uuid}")
 
 
 @bp.route("/add-partition", methods=["POST"])
