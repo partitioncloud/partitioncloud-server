@@ -92,32 +92,6 @@ def album(uuid):
         return abort(404)
 
 
-@bp.route("/<album_uuid>/<partition_uuid>")
-def partition(album_uuid, partition_uuid):
-    """
-    Returns a partition in a given album
-    """
-    db = get_db()
-    partition = db.execute(
-        """
-        SELECT * FROM partition
-        JOIN contient_partition ON partition_uuid = partition.uuid
-        JOIN album ON album.id = album_id
-        WHERE album.uuid = ?
-        AND partition.uuid = ?
-        """,
-        (album_uuid, partition_uuid),
-    ).fetchone()
-
-    if partition is None:
-        return abort(404)
-
-    return send_file(
-        os.path.join("partitions", f"{partition_uuid}.pdf"),
-        download_name = f"{partition['name']}.pdf"
-    )
-
-
 @bp.route("/create-album", methods=["POST"])
 @login_required
 def create_album():

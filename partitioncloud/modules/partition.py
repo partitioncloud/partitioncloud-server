@@ -13,7 +13,6 @@ from .utils import get_all_partitions, User, Partition
 bp = Blueprint("partition", __name__, url_prefix="/partition")
 
 @bp.route("/<uuid>")
-@login_required
 def partition(uuid):
     db = get_db()
     partition = db.execute(

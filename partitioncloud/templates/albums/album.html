@@ -66,7 +66,7 @@
 <section id="partitions-grid">
   {% for partition in partitions | reverse %}
   <div>
-    <a href="/albums/{{ album.uuid }}/{{ partition['uuid'] }}">
+    <a href="/partition/{{ partition['uuid'] }}">
       <div class="partition" id="partition-{{ partition['uuid'] }}">
         <img class="partition-thumbnail" src="/static/thumbnails/{{ partition['uuid'] }}.jpg">
         <div class="partition-description">

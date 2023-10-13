@@ -94,7 +94,7 @@
                   Aucun album 
                 {% else %}
                   {% for album in groupe.get_albums() %}
-                  <a href="/groupe/{{ groupe.uuid }}/{{ album["uuid"] }}">
+                  <a href="/groupe/{{ groupe.uuid }}/{{ album['uuid'] }}">
                     <div class="groupe-album-cover">
                       {{ album["name"] }}
                     </div>
