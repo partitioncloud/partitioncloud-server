@@ -54,6 +54,11 @@
         {% for album in user.albums %}
         <option value="{{ album['uuid'] }}">{{ album["name"] }}</option>
         {% endfor %}
+        {% for groupe in user.get_groupes() %}
+          {% for album in groupe.get_albums() %}
+          <option value="{{ album['uuid'] }}">{{ groupe.name }}/{{ album["name"] }}</option>
+          {% endfor %}
+        {% endfor %}
       </select>
       <input type="hidden" value="{{ partition['uuid'] }}" name="partition-uuid">
       <input type="hidden" value="online_search" name="partition-type">
