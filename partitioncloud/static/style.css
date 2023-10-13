@@ -381,7 +381,7 @@ img.partition-thumbnail {
 
 #sidebar-navigation {
     overflow: scroll;
-    height: calc(100% - 400px); /* we don't want it hidden behind settings */
+    height: calc(100% - 375px); /* we don't want it hidden behind settings */
     padding: 0 5px;
 }
 
