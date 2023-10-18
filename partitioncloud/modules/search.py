@@ -5,11 +5,14 @@ Module implémentant la recherche de partitions par mots-clés
 from uuid import uuid4
 import urllib.request
 import threading
+import socket
 import os
 
 import googlesearch
 
 from .db import get_db
+
+socket.setdefaulttimeout(5) # Maximum time before we give up on downloading a file (dead url)
 
 
 def local_search(query, partitions):
@@ -60,35 +63,40 @@ def online_search(query, num_queries):
     db = get_db()
     query = f"partition filetype:pdf {query}"
     partitions = []
-    results = googlesearch.search(
-        query,
-        num=num_queries,
-        stop=num_queries,
-        pause=0.2
-    )
-    for element in results:
-        while True:
-            try:
-                uuid = str(uuid4())
-                db.execute(
-                    """
-                    INSERT INTO search_results (uuid, url)
-                    VALUES (?, ?)
-                    """,
-                    (uuid, element,)
-                )
-                db.commit()
 
-                partitions.append(
-                    {
-                        "name": element.split("://")[1].split("/")[0],
-                        "uuid": uuid,
-                        "url": element
-                    }
-                )
-                break
-            except db.IntegrityError:
-                pass
+    try:
+        results = googlesearch.search(
+            query,
+            num=num_queries,
+            stop=num_queries,
+            pause=0.2
+        )
+        for element in results:
+            while True:
+                try:
+                    uuid = str(uuid4())
+                    db.execute(
+                        """
+                        INSERT INTO search_results (uuid, url)
+                        VALUES (?, ?)
+                        """,
+                        (uuid, element,)
+                    )
+                    db.commit()
+
+                    partitions.append(
+                        {
+                            "name": element.split("://")[1].split("/")[0],
+                            "uuid": uuid,
+                            "url": element
+                        }
+                    )
+                    break
+                except db.IntegrityError:
+                    pass
+
+    except urllib.error.URLError: # Unable to access network
+        return []
 
     threads = [threading.Thread(target=download_search_result, args=(elem,)) for elem in partitions]
 
