@@ -1,0 +1,63 @@
+{% set DISABLE_HEADER=true %}
+
+{% extends 'base.html' %}
+
+{% block title %}Attachments de {{ partition.name }}{% endblock %}
+
+{% block dialogs %}
+<dialog id="create-attachment">
+    <h2>Ajouter un attachment à {{ partition.name }}</h2>
+    <form action="/partition/{{ partition.uuid }}/add-attachment" method="post" enctype="multipart/form-data">
+        <input type="text" name="name" id="name" placeholder="Nom"><br/>
+        <input name="file" type="file" accept=".mp3,.mid" required=""><br/>
+        <input type="submit" value="Ajouter">
+    </form>
+    <a href="#!" class="close-dialog">Close</a>
+</dialog>
+{% endblock %}
+
+{% block content %}
+<object id="pdf-embed" width="400" height="500" type="application/pdf" data="/partition/{{ partition.uuid }}">
+    <p>
+        Impossible d'afficher le pdf dans ce navigateur.
+        Il est conseillé d'utiliser Firefox sur Android.
+    </p>
+</object>
+
+<script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.5.0"></script>
+<midi-visualizer type="staff" id="midi-visualizer"></midi-visualizer>
+
+        
+{% if partition.attachments | length > 0 %}
+<div id="attachments">
+    <table>
+        <tbody>
+        {% for attachment in partition.attachments %}
+        <tr>
+            {% if attachment.filetype == "mp3" %}
+            <td><audio controls src="/partition/attachment/{{ attachment.uuid }}.mp3"></td>
+            <td>🎙️ {{ attachment.name }}</td>
+            {% elif attachment.filetype == "mid" %}
+            
+            <td><midi-player
+                    src="/partition/attachment/{{ attachment.uuid }}.mid"
+                    sound-font visualizer="#midi-visualizer" data-js-focus-visible>
+                </midi-player>
+                <noscript>MIDI support needs JavaScript</noscript>
+            </td>
+            <td>🎵 {{ attachment.name }}</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<br/>
+{% if user %}
+<div class="centered">
+    <a href="#create-attachment"><button>Ajouter un attachment</button></a>
+</div>
+{% endif %}
+{% endblock %}

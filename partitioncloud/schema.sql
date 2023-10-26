@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS search_results;
 DROP TABLE IF EXISTS groupe;
 DROP TABLE IF EXISTS groupe_contient_user;
 DROP TABLE IF EXISTS groupe_contient_album;
+DROP TABLE IF EXISTS attachments;
 
 CREATE TABLE user (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -65,4 +66,12 @@ CREATE TABLE groupe_contient_album (
 	groupe_id INTEGER NOT NULL,
 	album_id INTEGER NOT NULL,
 	PRIMARY KEY (groupe_id, album_id)
+);
+
+CREATE TABLE attachments (
+	uuid TEXT(36) PRIMARY KEY,
+	name TEXT NOT NULL,
+	filetype TEXT NOT NULL DEFAULT 'mp3',
+	partition_uuid INTEGER NOT NULL,
+	user_id INTEGER NOT NULL
 );

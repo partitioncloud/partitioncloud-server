@@ -35,6 +35,17 @@
         <td>Paroles</td>
         <td><textarea id="paroles" name="body" type="text" placeholder="Paroles">{{ partition.body }}</textarea><br/></td>
       </tr>
+      <tr>
+        <td>Pièces jointes</td>
+        {% set _ = partition.load_attachments() %}
+        <td><a href="/partition/{{ partition.uuid }}/attachments">
+          {% if partition.attachments %}
+            Oui, {{ partition.attachments | length }}
+          {% else %}
+            En rajouter
+          {% endif %}
+        </a></td>
+      </tr>
     </tbody>
   </table>
   <input type="submit" value="Mettre à jour" />

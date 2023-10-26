@@ -10,7 +10,7 @@
       <input name="name" type="text" required="" placeholder="Titre"><br/>
       <input name="author" type="text" placeholder="Auteur"><br/>
       <textarea id="paroles" name="body" type="text" placeholder="Paroles"></textarea><br/>
-      <input name="file" type="file" required=""><br/>
+      <input name="file" type="file" accept=".pdf" required=""><br/>
       <input type="submit" value="Ajouter">
   </form>
   <a href="#!" class="close-dialog">Close</a>
@@ -75,9 +75,14 @@
         </div>
       </div>
       </a>
-      {% if partition["user_id"] == g.user.id or g.user.access_level == 1 %}
-      <a href="/partition/{{ partition['uuid'] }}/edit"><div class="edit-button">✏️</div></a>
-      {% endif %}
+      <div class="partition-buttons">
+        {% if partition["has_attachment"] %}
+        <a href="/partition/{{ partition['uuid'] }}/attachments"><div class="partition-action">📎</div></a>
+        {% endif %}
+        {% if partition["user_id"] == g.user.id or g.user.access_level == 1 %}
+        <a href="/partition/{{ partition['uuid'] }}/edit"><div class="partition-action">✏️</div></a>
+        {% endif %}
+      </div>
     </div>
   {% endfor %}
 </section>

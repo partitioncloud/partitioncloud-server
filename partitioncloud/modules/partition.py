@@ -3,11 +3,12 @@
 Partition module
 """
 import os
+from uuid import uuid4
 from flask import Blueprint, abort, send_file, render_template, request, redirect, flash, session
 
 from .db import get_db
 from .auth import login_required, admin_required
-from .utils import get_all_partitions, User, Partition
+from .utils import get_all_partitions, User, Partition, Attachment
 
 
 bp = Blueprint("partition", __name__, url_prefix="/partition")
@@ -15,20 +16,109 @@ bp = Blueprint("partition", __name__, url_prefix="/partition")
 @bp.route("/<uuid>")
 def partition(uuid):
     db = get_db()
-    partition = db.execute(
-        """
-        SELECT * FROM partition
-        WHERE uuid = ?
-        """,
-        (uuid,)
-    ).fetchone()
-
-    if partition is None:
+    try:
+        partition = Partition(uuid=uuid)
+    except LookupError:
         abort(404)
+
+    
     return send_file(
         os.path.join("partitions", f"{uuid}.pdf"),
-        download_name = f"{partition['name']}.pdf"
+        download_name = f"{partition.name}.pdf"
     )
+
+@bp.route("/<uuid>/attachments")
+def attachments(uuid):
+    db = get_db()
+    try:
+        partition = Partition(uuid=uuid)
+    except LookupError:
+        abort(404)
+    
+    partition.load_attachments()
+    return render_template(
+        "partition/attachments.html",
+        partition=partition,
+        user=User(user_id=session.get("user_id"))
+    )
+
+
+@bp.route("/<uuid>/add-attachment", methods=["POST"])
+@login_required
+def add_attachment(uuid):
+    db = get_db()
+    try:
+        partition = Partition(uuid=uuid)
+    except LookupError:
+        abort(404)
+    user = User(user_id=session.get("user_id"))
+
+    if user.id != partition.user_id and user.access_level != 1:
+        flash("Cette partition ne vous appartient pas")
+        return redirect(request.referrer)
+
+    error = None # À mettre au propre
+    if "file" not in request.files:
+        error = "Aucun fichier n'a été fourni."
+    else:
+        if "name" not in request.form or request.form["name"] == "":
+            name = ".".join(request.files["file"].filename.split(".")[:-1])
+        else:
+            name = request.form["name"]
+        
+        if name == "":
+            error = "Pas de nom de fichier"
+        
+        else:
+            filename = request.files["file"].filename
+            ext = filename.split(".")[-1]
+            if ext not in ["mid", "mp3"]:
+                error = "Extension de fichier non supportée"
+
+    if error is not None:
+        flash(error)
+        return redirect(request.referrer)
+
+    while True:
+        try:
+            attachment_uuid = str(uuid4())
+
+            db.execute(
+                """
+                INSERT INTO attachments (uuid, name, filetype, partition_uuid, user_id)
+                VALUES (?, ?, ?, ?, ?)
+                """,
+                (attachment_uuid, name, ext, partition.uuid, user.id),
+            )
+            db.commit()
+
+            file = request.files["file"]
+            file.save(f"partitioncloud/attachments/{attachment_uuid}.{ext}")
+            break
+
+        except db.IntegrityError:
+                pass
+
+    
+    return redirect(f"/partition/{partition.uuid}/attachments")
+
+
+@bp.route("/attachment/<uuid>.<filetype>")
+def attachment(uuid, filetype):
+    db = get_db()
+    try:
+        attachment = Attachment(uuid=uuid)
+    except LookupError:
+        abort(404)
+
+    assert filetype == attachment.filetype
+    
+    return send_file(
+        os.path.join("attachments", f"{uuid}.{attachment.filetype}"),
+        download_name = f"{attachment.name}.{attachment.filetype}"
+    )
+
+    
 
 @bp.route("/<uuid>/edit", methods=["GET", "POST"])
 @login_required

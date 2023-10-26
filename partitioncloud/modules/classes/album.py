@@ -65,10 +65,14 @@ class Album():
         db = get_db()
         return db.execute(
             """
-            SELECT partition.uuid, partition.name, partition.author, partition.user_id FROM partition
-            JOIN contient_partition ON partition_uuid = partition.uuid
-            JOIN album ON album.id = album_id
+            SELECT p.uuid, p.name, p.author, p.user_id,
+                CASE WHEN MAX(a.uuid) IS NOT NULL THEN 1 ELSE 0 END AS has_attachment
+            FROM partition AS p
+                JOIN contient_partition ON contient_partition.partition_uuid = p.uuid
+                JOIN album ON album.id = album_id
+                LEFT JOIN attachments AS a ON p.uuid = a.partition_uuid
             WHERE album.uuid = ?
+            GROUP BY p.uuid, p.name, p.author, p.user_id
             """,
             (self.uuid,),
         ).fetchall()

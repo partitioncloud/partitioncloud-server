@@ -170,9 +170,11 @@
       </div>
     </div>
     <div id="content-container">
-      <header id="page-header">
-        <h1>PartitionCloud</h1>
-      </header>
+      {% if not DISABLE_HEADER %}
+        <header id="page-header">
+          <h1>PartitionCloud</h1>
+        </header>
+      {% endif %}
       {% for message in get_flashed_messages() %}
       <div class="flash">{{ message }}</div>
       {% endfor %}

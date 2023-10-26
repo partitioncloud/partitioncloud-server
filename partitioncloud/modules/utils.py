@@ -7,13 +7,20 @@ from .classes.user import User
 from .classes.album import Album
 from .classes.groupe import Groupe
 from .classes.partition import Partition
+from .classes.attachment import Attachment
 
 
 def get_all_partitions():
     db = get_db()
     partitions = db.execute(
         """
-        SELECT * FROM partition
+        SELECT p.uuid, p.name, p.author, p.body, p.user_id,
+            CASE WHEN MAX(a.uuid) IS NOT NULL THEN 1 ELSE 0 END AS has_attachment
+        FROM partition AS p
+            JOIN contient_partition ON contient_partition.partition_uuid = p.uuid
+            JOIN album ON album.id = album_id
+            LEFT JOIN attachments AS a ON p.uuid = a.partition_uuid
+        GROUP BY p.uuid, p.name, p.author, p.user_id
         """
     )
     # Transform sql object to dictionary usable in any thread
@@ -23,7 +30,8 @@ def get_all_partitions():
             "name": p["name"],
             "author": p["author"],
             "body": p["body"],
-            "user_id": p["user_id"]
+            "user_id": p["user_id"],
+            "has_attachment": p["has_attachment"]
         } for p in partitions
     ]
 

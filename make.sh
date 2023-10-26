@@ -3,6 +3,7 @@
 init () {
     mkdir -p "instance"
     mkdir -p "partitioncloud/partitions"
+    mkdir -p "partitioncloud/attachments"
     mkdir -p "partitioncloud/search-partitions"
     mkdir -p "partitioncloud/static/thumbnails"
     mkdir -p "partitioncloud/static/search-thumbnails"

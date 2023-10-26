@@ -3,6 +3,7 @@ from flask import current_app
 
 from ..db import get_db
 from .user import User
+from .attachment import Attachment
 
 
 
@@ -25,6 +26,7 @@ class Partition():
             self.body = data["body"]
             self.user_id = data["user_id"]
             self.source = data["source"]
+            self.attachments = None
         else:
             raise LookupError
 
@@ -95,3 +97,15 @@ class Partition():
             """,
             (self.uuid,),
         ).fetchall()
+
+    def load_attachments(self):
+        db = get_db()
+        if self.attachments is None:
+            data = db.execute(
+                """
+                SELECT * FROM attachments
+                WHERE partition_uuid = ?
+                """,
+                (self.uuid,)
+            )
+            self.attachments = [Attachment(data=i) for i in data]
