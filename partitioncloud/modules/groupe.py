@@ -207,7 +207,13 @@ def create_album(groupe_uuid):
             except db.IntegrityError:
                 pass
 
-        return redirect(f"/groupe/{groupe.uuid}/{uuid}")
+        if "response" in request.args and request.args["response"] == "json":
+            return {
+                "status": "ok",
+                "uuid": uuid
+            }
+        else:
+            return redirect(f"/groupe/{groupe.uuid}/{uuid}")
 
     flash(error)
     return redirect(request.referrer)
