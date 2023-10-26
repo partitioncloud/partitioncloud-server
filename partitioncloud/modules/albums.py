@@ -131,7 +131,13 @@ def create_album():
             except db.IntegrityError:
                 pass
 
-        return redirect(f"/albums/{uuid}")
+        if "response" in request.args and request.args["response"] == "json":
+            return {
+                "status": "ok",
+                "uuid": uuid
+            }
+        else:
+            return redirect(f"/albums/{uuid}")
 
     flash(error)
     return redirect(request.referrer)
@@ -291,8 +297,14 @@ def add_partition(album_uuid):
         except db.IntegrityError:
             pass
 
-    flash(f"Partition {request.form['name']} ajoutée")
-    return redirect(f"/albums/{album.uuid}")
+    if "response" in request.args and request.args["response"] == "json":
+        return {
+            "status": "ok",
+            "uuid": partition_uuid
+        }
+    else:
+        flash(f"Partition {request.form['name']} ajoutée")
+        return redirect(f"/albums/{album.uuid}")
 
 
 @bp.route("/add-partition", methods=["POST"])

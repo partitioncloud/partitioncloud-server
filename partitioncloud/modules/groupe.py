@@ -89,7 +89,13 @@ def create_groupe():
             except db.IntegrityError:
                 pass
 
-        return redirect(f"/groupe/{uuid}")
+        if "response" in request.args and request.args["response"] == "json":
+            return {
+                "status": "ok",
+                "uuid": uuid
+            }
+        else:
+            return redirect(f"/groupe/{uuid}")
 
     flash(error)
     return redirect(request.referrer)

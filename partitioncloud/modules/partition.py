@@ -99,8 +99,14 @@ def add_attachment(uuid):
         except db.IntegrityError:
                 pass
 
-    
-    return redirect(f"/partition/{partition.uuid}/attachments")
+
+    if "response" in request.args and request.args["response"] == "json":
+        return {
+            "status": "ok",
+            "uuid": attachment_uuid
+        }
+    else:
+        return redirect(f"/partition/{partition.uuid}/attachments")
 
 
 @bp.route("/attachment/<uuid>.<filetype>")
