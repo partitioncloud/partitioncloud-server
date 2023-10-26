@@ -194,15 +194,16 @@ class User():
 
     def quit_album(self, album_uuid):
         db = get_db()
-        album = Album(uuid=album_uuid)
 
         db.execute(
             """
             DELETE FROM contient_user
+            JOIN album
+                ON album.id = album_id
             WHERE user_id = ?
-            AND album_id = ?
+            AND album.uuid = ?
             """,
-            (self.id, album.id)
+            (self.id, album_uuid)
         )
         db.commit()
 

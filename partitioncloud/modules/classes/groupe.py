@@ -54,9 +54,9 @@ class Groupe():
             """
             SELECT id FROM album
             LEFT JOIN groupe_contient_album
-            LEFT JOIN contient_user
                 ON groupe_contient_album.album_id=album.id
-                AND contient_user.album_id=album.id
+            LEFT JOIN contient_user
+                ON contient_user.album_id=album.id
             WHERE user_id IS NULL AND groupe_id IS NULL
             """
         ).fetchall()

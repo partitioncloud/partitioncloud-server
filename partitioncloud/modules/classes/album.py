@@ -2,7 +2,7 @@ import os
 
 from ..db import get_db
 
-
+from .attachment import Attachment
 
 class Album():
     def __init__(self, uuid=None, id=None):
@@ -116,6 +116,18 @@ class Album():
             """
         )
         for partition in partitions.fetchall():
+            data = db.execute(
+                """
+                SELECT * FROM attachments
+                WHERE partition_uuid = ?
+                """,
+                (partition["uuid"],)
+            )
+            attachments = [Attachment(data=i) for i in data]
+
+            for attachment in attachments:
+                attachment.delete()
+
             os.remove(f"partitioncloud/partitions/{partition['uuid']}.pdf")
             if os.path.exists(f"partitioncloud/static/thumbnails/{partition['uuid']}.jpg"):
                 os.remove(f"partitioncloud/static/thumbnails/{partition['uuid']}.jpg")
