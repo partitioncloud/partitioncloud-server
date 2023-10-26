@@ -1,3 +1,5 @@
+import os
+
 from flask import current_app
 
 from ..db import get_db
@@ -28,6 +30,19 @@ class Attachment():
         self.user_id = data["user_id"]
         self.filetype = data["filetype"]
         self.partition_uuid = data["partition_uuid"]
+
+    def delete(self):
+        db = get_db()
+        db.execute(
+            """
+            DELETE FROM attachments
+            WHERE uuid = ?
+            """,
+            (self.uuid,)
+        )
+        db.commit()
+        
+        os.remove(f"partitioncloud/attachments/{self.uuid}.{self.filetype}")
 
     def __repr__(self):
         return f"{self.name}.{self.filetype}"

@@ -31,6 +31,8 @@ class Partition():
             raise LookupError
 
     def delete(self):
+        self.load_attachments()
+
         db = get_db()
         db.execute(
             """
@@ -45,7 +47,7 @@ class Partition():
         if os.path.exists(f"partitioncloud/static/thumbnails/{self.uuid}.jpg"):
             os.remove(f"partitioncloud/static/thumbnails/{self.uuid}.jpg")
 
-        partitions = db.execute(
+        db.execute(
             """
             DELETE FROM partition
             WHERE uuid = ?
@@ -53,6 +55,9 @@ class Partition():
             (self.uuid,)
         )
         db.commit()
+
+        for attachment in self.attachments:
+            attachment.delete()
 
     def update(self, name=None, author="", body=""):
         if name is None:
