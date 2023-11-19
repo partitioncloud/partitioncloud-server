@@ -131,3 +131,6 @@ def mass_rename():
 
 def base_url_parameter_added():
     print(f"{Style.BRIGHT}{Fore.YELLOW}The parameter BASE_URL has been added, reference your front url in it{Style.RESET_ALL}")
+
+def install_qrcode():
+    os.system("pip install qrcode -qq")

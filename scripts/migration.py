@@ -36,7 +36,10 @@ hooks = [
     ("v1.4.0", [
         ("Change all albums & groupes uuids", v1.mass_rename),
         ("Warn new parameter", v1.base_url_parameter_added)
-    ])
+    ]),
+    ("v1.4.1", [
+        ("Install qrcode", v1.install_qrcode)
+    ]),
 ]
 
 
