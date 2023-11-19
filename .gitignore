@@ -11,3 +11,6 @@ partitioncloud/search-partitions
 partitioncloud/static/thumbnails
 partitioncloud/static/search-thumbnails
 partitioncloud/attachments
+
+.venv
+backups
