@@ -4,14 +4,13 @@ Albums module
 """
 import os
 import shutil
-from uuid import uuid4
 
 from flask import (Blueprint, abort, flash, redirect, render_template, request,
                    send_file, session, current_app)
 
 from .auth import login_required
 from .db import get_db
-from .utils import User, Album, get_all_partitions
+from .utils import User, Album, get_all_partitions, new_uuid, get_qrcode, format_uuid
 from . import search
 
 bp = Blueprint("albums", __name__, url_prefix="/albums")
@@ -71,25 +70,34 @@ def album(uuid):
     """
     try:
         album = Album(uuid=uuid)
-        album.users = [User(user_id=i["id"]) for i in album.get_users()]
-        user = User(user_id=session.get("user_id"))
-        partitions = album.get_partitions()
-        if user.id is None:
-            # On ne propose pas aux gens non connectés de rejoindre l'album
-            not_participant = False
-        else:
-            not_participant = not user.is_participant(album.uuid)
-
-        return render_template(
-            "albums/album.html",
-            album=album,
-            partitions=partitions,
-            not_participant=not_participant,
-            user=user
-        )
-
     except LookupError:
-        return abort(404)
+        try:
+            album = Album(uuid=format_uuid(uuid))
+            return redirect(f"/albums/{format_uuid(uuid)}")
+        except LookupError:
+            return abort(404)
+
+    album.users = [User(user_id=i["id"]) for i in album.get_users()]
+    user = User(user_id=session.get("user_id"))
+    partitions = album.get_partitions()
+    if user.id is None:
+        # On ne propose pas aux gens non connectés de rejoindre l'album
+        not_participant = False
+    else:
+        not_participant = not user.is_participant(album.uuid)
+
+    return render_template(
+        "albums/album.html",
+        album=album,
+        partitions=partitions,
+        not_participant=not_participant,
+        user=user
+    )
+
+
+@bp.route("/<uuid>/qr")
+def qr_code(uuid):
+    return get_qrcode(f"/albums/{uuid}")
 
 
 @bp.route("/create-album", methods=["POST"])
@@ -107,7 +115,7 @@ def create_album():
     if error is None:
         while True:
             try:
-                uuid = str(uuid4())
+                uuid = new_uuid()
 
                 db.execute(
                     """

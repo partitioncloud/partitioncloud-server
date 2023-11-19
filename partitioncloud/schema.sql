@@ -28,7 +28,7 @@ CREATE TABLE partition (
 CREATE TABLE album (
 	id INTEGER PRIMARY KEY,
 	name TEXT NOT NULL,
-	uuid TEXT(36) UNIQUE NOT NULL
+	uuid TEXT(6) UNIQUE NOT NULL
 );
 
 CREATE TABLE contient_partition (
@@ -52,7 +52,7 @@ CREATE TABLE search_results (
 CREATE TABLE groupe (
 	id INTEGER PRIMARY KEY,
 	name TEXT NOT NULL,
-	uuid TEXT(36) NOT NULL
+	uuid TEXT(6) UNIQUE NOT NULL
 );
 
 CREATE TABLE groupe_contient_user (

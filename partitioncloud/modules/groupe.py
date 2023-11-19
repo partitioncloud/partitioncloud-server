@@ -3,14 +3,13 @@
 Groupe module
 """
 import os
-from uuid import uuid4
 
 from flask import (Blueprint, abort, flash, redirect, render_template, request,
                    send_file, session, current_app)
 
 from .auth import login_required
 from .db import get_db
-from .utils import User, Album, get_all_partitions, Groupe
+from .utils import User, Album, get_all_partitions, Groupe, new_uuid, get_qrcode, format_uuid
 from . import search
 
 bp = Blueprint("groupe", __name__, url_prefix="/groupe")
@@ -28,25 +27,34 @@ def groupe(uuid):
     """
     try:
         groupe = Groupe(uuid=uuid)
-        groupe.users = [User(user_id=i["id"]) for i in groupe.get_users()]
-        groupe.get_albums()
-        user = User(user_id=session.get("user_id"))
-        
-        if user.id is None:
-            # On ne propose pas aux gens non connectés de rejoindre l'album
-            not_participant = False
-        else:
-            not_participant = not user.id in [i.id for i in groupe.users]
-
-        return render_template(
-            "groupe/index.html",
-            groupe=groupe,
-            not_participant=not_participant,
-            user=user
-        )
-
     except LookupError:
-        return abort(404)
+        try:
+            groupe = Groupe(uuid=format_uuid(uuid))
+            return redirect(f"/groupe/{format_uuid(uuid)}")
+        except LookupError:
+            return abort(404)
+
+    groupe.users = [User(user_id=i["id"]) for i in groupe.get_users()]
+    groupe.get_albums()
+    user = User(user_id=session.get("user_id"))
+    
+    if user.id is None:
+        # On ne propose pas aux gens non connectés de rejoindre l'album
+        not_participant = False
+    else:
+        not_participant = not user.id in [i.id for i in groupe.users]
+
+    return render_template(
+        "groupe/index.html",
+        groupe=groupe,
+        not_participant=not_participant,
+        user=user
+    )
+
+
+@bp.route("/<uuid>/qr")
+def album_qr_code(uuid):
+    return get_qrcode(f"/groupe/{uuid}")
 
 
 
@@ -65,7 +73,7 @@ def create_groupe():
     if error is None:
         while True:
             try:
-                uuid = str(uuid4())
+                uuid = new_uuid()
 
                 db.execute(
                     """
@@ -182,7 +190,7 @@ def create_album(groupe_uuid):
     if error is None:
         while True:
             try:
-                uuid = str(uuid4())
+                uuid = new_uuid()
 
                 db.execute(
                     """
@@ -228,11 +236,19 @@ def album(groupe_uuid, album_uuid):
     try:
         groupe = Groupe(uuid=groupe_uuid)
     except LookupError:
-        abort(404)
+        try:
+            groupe = Groupe(uuid=format_uuid(groupe_uuid))
+            return redirect(f"/groupe/{format_uuid(groupe_uuid)}/{album_uuid}")
+        except LookupError:
+            return abort(404)
 
     album_list = [a for a in groupe.get_albums() if a.uuid == album_uuid]
     if len(album_list) == 0:
-        abort(404)
+        album_uuid = format_uuid(album_uuid)
+        album_list = [a for a in groupe.get_albums() if a.uuid == album_uuid]
+        if len(album_list) != 0:
+            return redirect(f"/groupe/{groupe_uuid}/{album_uuid}")
+        return abort(404)
 
     album = album_list[0]
     user = User(user_id=session.get("user_id"))
@@ -257,3 +273,8 @@ def album(groupe_uuid, album_uuid):
         not_participant=not_participant,
         user=user
     )
+
+
+@bp.route("/<groupe_uuid>/<album_uuid>/qr")
+def groupe_qr_code(groupe_uuid, album_uuid):
+    return get_qrcode(f"/groupe/{groupe_uuid}/{album_uuid}")

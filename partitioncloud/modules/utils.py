@@ -1,7 +1,29 @@
 #!/usr/bin/python3
 import os
+import io
+import random
+import string
+import qrcode
 
 from .db import get_db
+from flask import current_app, send_file
+
+
+def new_uuid():
+    return ''.join([random.choice(string.ascii_uppercase + string.digits) for _ in range(6)])
+
+def format_uuid(uuid):
+    """Format old uuid4 format"""
+    return uuid.upper()[:6]
+
+def get_qrcode(location):
+    complete_url = current_app.config["BASE_URL"] + location
+    img_io = io.BytesIO()
+
+    qrcode.make(complete_url).save(img_io)
+    img_io.seek(0)
+    return send_file(img_io, mimetype="image/jpeg")
+
 
 from .classes.user import User
 from .classes.album import Album

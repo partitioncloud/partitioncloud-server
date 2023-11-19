@@ -24,6 +24,15 @@
   </form>
   <a href="#!" class="close-dialog">Close</a>
 </dialog>
+{% if groupe %}
+  {% set current_url = "/groupe/" + groupe.uuid + "/" + album.uuid %}
+{% else %}
+  {% set current_url = "/albums/" + album.uuid %}
+{% endif %}
+{% with share_link=config.BASE_URL+current_url, share_qrlink=current_url + "/qr" %}
+  {% include 'components/share_dialog.html' %}
+{% endwith %}
+
 {% endblock %}
 
 {% block content %}
@@ -53,6 +62,7 @@
             {% elif album.users | length > 1 %}
             <a href="/albums/{{ album.uuid }}/quit">Quitter</a>
             {% endif %}
+            <a href="#share">Partager</a>
             {% if g.user.access_level == 1 or (not not_participant and album.users | length == 1) %}
             <a id="delete-album" href="#delete">Supprimer</a>
             {% endif %}

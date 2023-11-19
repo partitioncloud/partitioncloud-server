@@ -750,3 +750,18 @@ midi-player {
     justify-content: center;
     display: flex;
 }
+
+#share-qrcode {
+    margin: 20px;
+    margin-top: 50px;
+    border-radius: 15px;
+}
+
+#share-url {
+    background-color: var(--color-surface1);
+    width: fit-content;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 100px;
+    margin-top: 20px;
+}

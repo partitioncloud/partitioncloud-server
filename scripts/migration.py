@@ -32,6 +32,10 @@ hooks = [
     ]),
     ("v1.3.3", [
         ("Install colorama", v1.install_colorama)
+    ]),
+    ("v1.4.0", [
+        ("Change all albums & groupes uuids", v1.mass_rename),
+        ("Warn new parameter", v1.base_url_parameter_added)
     ])
 ]
 
@@ -60,7 +64,7 @@ def backup_instance(version, verbose=True):
         if verbose:
             print(*args)
 
-    print_verbose("Backing up current instance")
+    print_verbose("\nBacking up current instance")
     dest = os.path.join("backups", version)
 
     if os.path.exists(dest):
@@ -95,7 +99,7 @@ def apply_hooks(hooks):
             subhook[1]()
 
 
-def migrate(current, target, skip_backup=False):
+def migrate(current, target, skip_backup=False, prog_name="scripts/migration.py"):
     """"""
     print(f"Trying to migrate from {args.current} to {args.target}")
 
@@ -115,7 +119,8 @@ def migrate(current, target, skip_backup=False):
 
     if not skip_backup:
         backup_instance(current)
-        print(f"Instance backed up in {Style.BRIGHT}backups/{current}{Style.RESET_ALL}")
+        print(f"Instance backed up in {Style.BRIGHT}backups/{current}{Style.RESET_ALL}\n")
+        print(f"If something goes wrong, recover with {Style.BRIGHT}{Fore.BLUE}{prog_name} --restore {current}{Style.RESET_ALL}")
     else:
         print("Skipping automatic backup")
 

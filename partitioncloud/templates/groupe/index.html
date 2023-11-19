@@ -22,6 +22,10 @@
   </form>
   <a href="#!" class="close-dialog">Close</a>
 </dialog>
+{% set current_url = "/groupe/" + groupe.uuid %}
+{% with share_link=config.BASE_URL+current_url, share_qrlink=current_url + "/qr" %}
+  {% include 'components/share_dialog.html' %}
+{% endwith %}
 {% endblock %}
 
 {% block content %}
@@ -44,6 +48,7 @@
         {% elif groupe.users | length > 1 %}
           <a href="/groupe/{{ groupe.uuid }}/quit">Quitter</a>
         {% endif %}
+        <a href="#share">Partager</a>
         {% if g.user.access_level == 1 or user.id in groupe.get_admins() %}
           <a href="#create-groupe-album">Ajouter un album</a>
           <a id="delete-album" href="#delete">Supprimer</a>

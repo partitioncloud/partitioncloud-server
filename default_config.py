@@ -13,3 +13,6 @@ MAX_ONLINE_QUERIES=3
 
 # Disable registration of new users via /auth/register (they can still be added by root)
 DISABLE_REGISTER=False
+
+# Front URL of the application (for QRCodes generation)
+BASE_URL="http://localhost:5000"
