@@ -12,16 +12,18 @@ def add_groupes():
             id INTEGER PRIMARY KEY,
             name TEXT NOT NULL,
             uuid TEXT(36) NOT NULL
-        );
-
-        CREATE TABLE groupe_contient_user (
+        );"""
+    )
+    utils.run_sqlite_command(
+        """CREATE TABLE groupe_contient_user (
             groupe_id INTEGER NOT NULL,
             user_id INTEGER NOT NULL,
             is_admin INTEGER NOT NULL DEFAULT 0,
             PRIMARY KEY (groupe_id, user_id)
-        );
-
-        CREATE TABLE groupe_contient_album (
+        );"""
+    )
+    utils.run_sqlite_command(
+        """CREATE TABLE groupe_contient_album (
             groupe_id INTEGER NOT NULL,
             album_id INTEGER NOT NULL,
             PRIMARY KEY (groupe_id, album_id)

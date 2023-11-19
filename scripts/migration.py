@@ -129,7 +129,7 @@ def restore(version):
         exit(1)
 
     dest = os.path.join("backups", version)
-    print(f"Restoring from {dst}")
+    print(f"Restoring from {dest}")
     paths = [
         ("instance", os.path.join(dest, "instance")),
         (os.path.join("partitioncloud", "partitions"), os.path.join(dest, "partitions")),
@@ -144,7 +144,7 @@ def restore(version):
             print(f"\tRestoring {src}")
             copy_tree(dst, src)
         else:
-            print(f"{Fore.RED}No available backup for {src}, deleting current content to avoid any conflict{Style.RESET_ALL}")
+            print(f"\t{Fore.RED}No available backup for {src}, deleting current content to avoid any conflict{Style.RESET_ALL}")
 
 
 if __name__ == "__main__":
