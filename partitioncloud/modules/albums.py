@@ -4,6 +4,7 @@ Albums module
 """
 import os
 import shutil
+from uuid import uuid4
 
 from flask import (Blueprint, abort, flash, redirect, render_template, request,
                    send_file, session, current_app)
