@@ -14,9 +14,9 @@
         <td>
           {% if user is not none %}
           <div class="user-profile"><!-- Completely messy html for this -->
-            <div class="table-username">{{ user.username }}</div>
-            <div class="user-profile-picture" style="background-color:{{ user.color }};" title="{{ user.username }}">
-              {{ user.username[0] | upper }}
+            <div class="table-username">{{ partition_user.username }}</div>
+            <div class="user-profile-picture" style="background-color:{{ partition_user.color }};" title="{{ partition_user.username }}">
+              {{ partition_user.username[0] | upper }}
             </div>
           </div>
           {% else %}
