@@ -19,29 +19,34 @@ def local_search(query, partitions):
     """
     Renvoie les 5 résultats les plus pertinents parmi une liste donnée
     """
+    query_words = [word.lower() for word in query.split(" ")]
     def score_attribution(partition):
         score = 0
-        for word in query.split(" "):
+        for word in query_words:
             if word != "":
-                low_word = word.lower()
-                if low_word in partition["name"].lower():
-                    score += 3
-                elif low_word in partition["body"].lower():
-                    score += 1
-                elif low_word in partition["author"].lower():
+                if word in partition["name"].lower():
+                    score += 6
+                elif word in partition["author"].lower():
+                    score += 4
+                elif word in partition["body"].lower():
                     score += 2
                 else:
-                    score -= .5
+                    score -= 1
+        for word in partition["name"].split(" "):
+            if word != "" and word.lower() not in query_words:
+                score -= 1
         return score
 
-    partitions = sorted(partitions, key=score_attribution, reverse=True)
-    sorted_partitions = []
-    for partition in partitions:
-        if score_attribution(partition) > 0:
-            sorted_partitions.append(partition)
+    score_partitions = [(score_attribution(partition), partition) for partition in partitions]
+    score_partitions.sort(key=lambda x: x[0], reverse=True)
+    
+    selection = []
+    for score, partition in score_partitions[:5]:
+        if score > 0:
+            selection.append(partition)
         else:
             break
-    return sorted_partitions[:min(5,len(sorted_partitions))]
+    return selection
 
 
 def download_search_result(element):
