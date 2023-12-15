@@ -60,7 +60,7 @@ class Partition():
 
     def update(self, name=None, author="", body=""):
         if name is None:
-            raise Exception("name cannot be None")
+            raise ValueError("name cannot be None")
 
         db = get_db()
         db.execute(

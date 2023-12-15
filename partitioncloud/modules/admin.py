@@ -25,10 +25,10 @@ def index():
         SELECT id FROM user
         """
     )
-    users = [User(user_id=u["id"]) for u in users_id]
-    for u in users:
-        u.albums = u.get_albums()
-        u.partitions = u.get_partitions()
+    users = [User(user_id=user["id"]) for user in users_id]
+    for user in users:
+        user.get_albums()
+        user.get_partitions()
 
     return render_template(
         "admin/index.html",

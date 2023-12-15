@@ -18,7 +18,7 @@ def index():
 
 
 @bp.route("/<uuid>")
-def groupe(uuid):
+def get_groupe(uuid):
     """
     Groupe page
     """
@@ -221,7 +221,7 @@ def create_album(groupe_uuid):
 
 
 @bp.route("/<groupe_uuid>/<album_uuid>")
-def album(groupe_uuid, album_uuid):
+def get_album(groupe_uuid, album_uuid):
     """
     Album page
     """
@@ -246,7 +246,7 @@ def album(groupe_uuid, album_uuid):
     user = User(user_id=session.get("user_id"))
 
     # List of users without duplicate
-    users_id = list(set([i["id"] for i in album.get_users()+groupe.get_users()]))
+    users_id = list({i["id"] for i in album.get_users()+groupe.get_users()})
     album.users = [User(user_id=id) for id in users_id]
 
     partitions = album.get_partitions()

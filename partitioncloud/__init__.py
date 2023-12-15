@@ -57,36 +57,20 @@ def add_user():
         username = request.form["username"]
         password = request.form["password"]
         album_uuid = request.form["album_uuid"]
-        db = get_db()
-        error = None
 
-        if not username:
-            error = "Un nom d'utilisateur est requis."
-        elif not password:
-            error = "Un mot de passe est requis."
+        error = auth.create_user(username, password)
 
         if error is None:
+            # Success, go to the login page.
+            user = User(name=username)
             try:
-                db.execute(
-                    "INSERT INTO user (username, password) VALUES (?, ?)",
-                    (username, generate_password_hash(password)),
-                )
-                db.commit()
-            except db.IntegrityError:
-                # The username was already taken, which caused the
-                # commit to fail. Show a validation error.
-                error = f"Le nom d'utilisateur {username} est déjà pris."
-            else:
-                # Success, go to the login page.
-                user = User(name=username)
-                try:
-                    if album_uuid != "":
-                        user.join_album(album_uuid)
-                    flash(f"Utilisateur {username} créé")
-                    return redirect("/albums")
-                except LookupError:
-                    flash(f"Cet album n'existe pas. L'utilisateur {username} a été créé")
-                    return redirect("/albums")
+                if album_uuid != "":
+                    user.join_album(album_uuid)
+                flash(f"Utilisateur {username} créé")
+                return redirect("/albums")
+            except LookupError:
+                flash(f"Cet album n'existe pas. L'utilisateur {username} a été créé")
+                return redirect("/albums")
 
         flash(error)
     return render_template("auth/register.html", albums=get_all_albums(), user=current_user)

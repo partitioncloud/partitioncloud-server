@@ -4,8 +4,8 @@ import random
 import string
 import qrcode
 
-from .db import get_db
 from flask import current_app, send_file
+from .db import get_db
 
 
 def new_uuid():

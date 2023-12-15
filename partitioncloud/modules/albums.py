@@ -65,7 +65,7 @@ def search_page():
     )
 
 @bp.route("/<uuid>")
-def album(uuid):
+def get_album(uuid):
     """
     Album page
     """

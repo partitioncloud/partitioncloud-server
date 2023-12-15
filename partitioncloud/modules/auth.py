@@ -3,6 +3,7 @@
 Authentification module
 """
 import functools
+from typing import Optional
 
 from flask import (Blueprint, flash, g, redirect, render_template,
                 request, session, url_for, current_app)
@@ -75,6 +76,30 @@ def load_logged_in_user():
         )
 
 
+def create_user(username: str, password: str) -> Optional[str]:
+    """Adds a new user to the database"""
+    if not username:
+        error = "Un nom d'utilisateur est requis."
+    elif not password:
+        error = "Un mot de passe est requis."
+
+    try:
+        db = get_db()
+
+        db.execute(
+            "INSERT INTO user (username, password) VALUES (?, ?)",
+            (username, generate_password_hash(password)),
+        )
+        db.commit()
+    except db.IntegrityError:
+        # The username was already taken, which caused the
+        # commit to fail. Show a validation error.
+        error = f"Le nom d'utilisateur {username} est déjà pris."
+    
+    if error is not None:
+        return error
+
+
 @bp.route("/register", methods=("GET", "POST"))
 @anon_required
 def register():
@@ -89,32 +114,13 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        db = get_db()
-        error = None
 
-        if not username:
-            error = "Un nom d'utilisateur est requis."
-        elif not password:
-            error = "Un mot de passe est requis."
+        error = create_user(username, password)
 
-        if error is None:
-            try:
-                db.execute(
-                    "INSERT INTO user (username, password) VALUES (?, ?)",
-                    (username, generate_password_hash(password)),
-                )
-                db.commit()
-                flash(f"Utilisateur {username} créé avec succès. Vous pouvez vous connecter.")
-            except db.IntegrityError:
-                # The username was already taken, which caused the
-                # commit to fail. Show a validation error.
-                error = f"Le nom d'utilisateur {username} est déjà pris. \
-                        Vous souhaitez peut-être vous connecter"
-            else:
-                # Success, go to the login page.
-                return redirect(url_for("auth.login"))
-
-        flash(error)
+        if error is not None:
+            flash(error)
+        else:
+            flash("Utilisateur créé avec succès. Vous pouvez vous connecter.")
 
     return render_template("auth/register.html")
 

@@ -2,6 +2,7 @@ import random
 import string
 import sqlite3
 
+
 def run_sqlite_command(*args):
     """Run a command against the database"""
     con = sqlite3.connect("instance/partitioncloud.sqlite")
@@ -9,6 +10,7 @@ def run_sqlite_command(*args):
     cur.execute(*args)
     con.commit()
     con.close()
+
 
 def get_sqlite_data(*args):
     """Get data from the db"""
@@ -19,8 +21,12 @@ def get_sqlite_data(*args):
     con.close()
     return new_data
 
+
 def new_uuid():
-    return ''.join([random.choice(string.ascii_uppercase + string.digits) for _ in range(6)])
+    return "".join(
+        [random.choice(string.ascii_uppercase + string.digits) for _ in range(6)]
+    )
+
 
 def format_uuid(uuid):
     """Format old uuid4 format"""

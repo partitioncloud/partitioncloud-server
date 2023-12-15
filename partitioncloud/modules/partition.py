@@ -14,7 +14,7 @@ from .utils import get_all_partitions, User, Partition, Attachment
 bp = Blueprint("partition", __name__, url_prefix="/partition")
 
 @bp.route("/<uuid>")
-def partition(uuid):
+def get_partition(uuid):
     try:
         partition = Partition(uuid=uuid)
     except LookupError:
@@ -107,7 +107,7 @@ def add_attachment(uuid):
 
 
 @bp.route("/attachment/<uuid>.<filetype>")
-def attachment(uuid, filetype):
+def get_attachment(uuid, filetype):
     try:
         attachment = Attachment(uuid=uuid)
     except LookupError:

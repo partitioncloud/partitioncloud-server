@@ -1,0 +1,5 @@
+[BASIC]
+good-names=db, v, v1, v2, f, id, i, j, k
+
+[MESSAGES CONTROL]
+disable=pointless-string-statement

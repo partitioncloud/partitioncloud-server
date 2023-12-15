@@ -57,7 +57,7 @@ def download_search_result(element):
         urllib.request.urlretrieve(url, f"partitioncloud/search-partitions/{uuid}.pdf")
 
     except (urllib.error.HTTPError, urllib.error.URLError):
-        with open(f"partitioncloud/search-partitions/{uuid}.pdf", 'a', encoding="utf8") as f:
+        with open(f"partitioncloud/search-partitions/{uuid}.pdf", 'a', encoding="utf8") as _:
             pass # Create empty file
 
 
