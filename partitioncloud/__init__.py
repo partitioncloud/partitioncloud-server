@@ -32,9 +32,10 @@ app.register_blueprint(partition.bp)
 
 
 try:
-    result = subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE)
+    result = subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE, check=True)
     __version__ = result.stdout.decode('utf8')
-except FileNotFoundError: # In case git not found, which would be strange
+except (FileNotFoundError, subprocess.CalledProcessError):
+    # In case git not found or any platform specific weird error
     __version__ = "unknown"
 
 
@@ -94,8 +95,11 @@ def add_user():
 @app.route("/static/search-thumbnails/<uuid>.jpg")
 @login_required
 def search_thumbnail(uuid):
+    """
+    Renvoie l'apercu d'un résultat de recherche
+    """
     db = get_db()
-    partition = db.execute(
+    part = db.execute(
         """
         SELECT uuid, url FROM search_results
         WHERE uuid = ?
@@ -103,7 +107,7 @@ def search_thumbnail(uuid):
         (uuid,)
     ).fetchone()
 
-    if partition is None:
+    if part is None:
         abort(404)
     if not os.path.exists(os.path.join(app.static_folder, "search-thumbnails", f"{uuid}.jpg")):
         os.system(
@@ -119,9 +123,10 @@ def search_thumbnail(uuid):
 
 @app.context_processor
 def inject_default_variables():
+    """Inject the version number in the template variables"""
     if __version__ == "unknown":
-        return dict(version="")
-    return dict(version=__version__)
+        return {"version": ''}
+    return {"version": __version__}
 
 
 @app.after_request

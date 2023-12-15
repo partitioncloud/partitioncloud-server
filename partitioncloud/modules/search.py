@@ -39,7 +39,7 @@ def local_search(query, partitions):
 
     score_partitions = [(score_attribution(partition), partition) for partition in partitions]
     score_partitions.sort(key=lambda x: x[0], reverse=True)
-    
+
     selection = []
     for score, partition in score_partitions[:5]:
         if score > 0:
@@ -56,8 +56,8 @@ def download_search_result(element):
     try:
         urllib.request.urlretrieve(url, f"partitioncloud/search-partitions/{uuid}.pdf")
 
-    except (urllib.error.HTTPError, urllib.error.URLError) as e:
-        with open(f"partitioncloud/search-partitions/{uuid}.pdf",'a') as f: 
+    except (urllib.error.HTTPError, urllib.error.URLError):
+        with open(f"partitioncloud/search-partitions/{uuid}.pdf", 'a', encoding="utf8") as f:
             pass # Create empty file
 
 
@@ -112,7 +112,6 @@ def online_search(query, num_queries):
         thread.join()
 
     for element in partitions:
-        pass
         uuid = element["uuid"]
         url = element["url"]
         if os.stat(f"partitioncloud/search-partitions/{uuid}.pdf").st_size == 0:
@@ -140,7 +139,7 @@ def flush_cache():
     db = get_db()
     expired_cache = db.execute(
         """
-        SELECT uuid FROM search_results 
+        SELECT uuid FROM search_results
         WHERE creation_time <= datetime('now', '-15 minutes', 'localtime')
         """
     ).fetchall()

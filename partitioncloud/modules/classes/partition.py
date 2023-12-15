@@ -1,5 +1,4 @@
 import os
-from flask import current_app
 
 from ..db import get_db
 from .user import User
@@ -42,7 +41,7 @@ class Partition():
             (self.uuid,)
         )
         db.commit()
-        
+
         os.remove(f"partitioncloud/partitions/{self.uuid}.pdf")
         if os.path.exists(f"partitioncloud/static/thumbnails/{self.uuid}.jpg"):
             os.remove(f"partitioncloud/static/thumbnails/{self.uuid}.jpg")
@@ -61,7 +60,7 @@ class Partition():
 
     def update(self, name=None, author="", body=""):
         if name is None:
-            return Exception("name cannot be None")
+            raise Exception("name cannot be None")
 
         db = get_db()
         db.execute(

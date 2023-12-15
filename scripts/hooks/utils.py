@@ -15,7 +15,7 @@ def get_sqlite_data(*args):
     con = sqlite3.connect("instance/partitioncloud.sqlite")
     cur = con.cursor()
     data = cur.execute(*args)
-    new_data = [i for i in data]
+    new_data = list(data)
     con.close()
     return new_data
 

@@ -15,13 +15,12 @@ bp = Blueprint("partition", __name__, url_prefix="/partition")
 
 @bp.route("/<uuid>")
 def partition(uuid):
-    db = get_db()
     try:
         partition = Partition(uuid=uuid)
     except LookupError:
         abort(404)
 
-    
+
     return send_file(
         os.path.join("partitions", f"{uuid}.pdf"),
         download_name = f"{partition.name}.pdf"
@@ -29,12 +28,11 @@ def partition(uuid):
 
 @bp.route("/<uuid>/attachments")
 def attachments(uuid):
-    db = get_db()
     try:
         partition = Partition(uuid=uuid)
     except LookupError:
         abort(404)
-    
+
     partition.load_attachments()
     return render_template(
         "partition/attachments.html",
@@ -65,10 +63,10 @@ def add_attachment(uuid):
             name = ".".join(request.files["file"].filename.split(".")[:-1])
         else:
             name = request.form["name"]
-        
+
         if name == "":
             error = "Pas de nom de fichier"
-        
+
         else:
             filename = request.files["file"].filename
             ext = filename.split(".")[-1]
@@ -97,7 +95,7 @@ def add_attachment(uuid):
             break
 
         except db.IntegrityError:
-                pass
+            pass
 
 
     if "response" in request.args and request.args["response"] == "json":
@@ -105,31 +103,28 @@ def add_attachment(uuid):
             "status": "ok",
             "uuid": attachment_uuid
         }
-    else:
-        return redirect(f"/partition/{partition.uuid}/attachments")
+    return redirect(f"/partition/{partition.uuid}/attachments")
 
 
 @bp.route("/attachment/<uuid>.<filetype>")
 def attachment(uuid, filetype):
-    db = get_db()
     try:
         attachment = Attachment(uuid=uuid)
     except LookupError:
         abort(404)
 
     assert filetype == attachment.filetype
-    
+
     return send_file(
         os.path.join("attachments", f"{uuid}.{attachment.filetype}"),
         download_name = f"{attachment.name}.{attachment.filetype}"
     )
 
-    
+
 
 @bp.route("/<uuid>/edit", methods=["GET", "POST"])
 @login_required
 def edit(uuid):
-    db = get_db()
     try:
         partition = Partition(uuid=uuid)
     except LookupError:
@@ -155,7 +150,7 @@ def edit(uuid):
     if error is not None:
         flash(error)
         return redirect(f"/partition/{ uuid }/edit")
-    
+
     partition.update(
         name=request.form["name"],
         author=request.form["author"],
@@ -169,7 +164,6 @@ def edit(uuid):
 @bp.route("/<uuid>/details", methods=["GET", "POST"])
 @admin_required
 def details(uuid):
-    db = get_db()
     try:
         partition = Partition(uuid=uuid)
     except LookupError:
@@ -202,7 +196,7 @@ def details(uuid):
     if error is not None:
         flash(error)
         return redirect(f"/partition/{ uuid }/details")
-    
+
     partition.update(
         name=request.form["name"],
         author=request.form["author"],

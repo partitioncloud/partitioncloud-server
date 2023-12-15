@@ -1,7 +1,5 @@
 import os
 
-from flask import current_app
-
 from ..db import get_db
 
 
@@ -41,7 +39,7 @@ class Attachment():
             (self.uuid,)
         )
         db.commit()
-        
+
         os.remove(f"partitioncloud/attachments/{self.uuid}.{self.filetype}")
 
     def __repr__(self):

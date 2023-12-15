@@ -2,15 +2,12 @@
 """
 Groupe module
 """
-import os
-
-from flask import (Blueprint, abort, flash, redirect, render_template, request,
-                   send_file, session, current_app)
+from flask import (Blueprint, abort, flash, redirect, render_template,
+                   request, session)
 
 from .auth import login_required
 from .db import get_db
-from .utils import User, Album, get_all_partitions, Groupe, new_uuid, get_qrcode, format_uuid
-from . import search
+from .utils import User, Album, Groupe, new_uuid, get_qrcode, format_uuid
 
 bp = Blueprint("groupe", __name__, url_prefix="/groupe")
 
@@ -37,7 +34,7 @@ def groupe(uuid):
     groupe.users = [User(user_id=i["id"]) for i in groupe.get_users()]
     groupe.get_albums()
     user = User(user_id=session.get("user_id"))
-    
+
     if user.id is None:
         # On ne propose pas aux gens non connectés de rejoindre l'album
         not_participant = False
@@ -61,8 +58,6 @@ def album_qr_code(uuid):
 @bp.route("/create-groupe", methods=["POST"])
 @login_required
 def create_groupe():
-    current_user = User(user_id=session.get("user_id"))
-
     name = request.form["name"]
     db = get_db()
     error = None
@@ -102,8 +97,7 @@ def create_groupe():
                 "status": "ok",
                 "uuid": uuid
             }
-        else:
-            return redirect(f"/groupe/{uuid}")
+        return redirect(f"/groupe/{uuid}")
 
     flash(error)
     return redirect(request.referrer)
@@ -139,21 +133,20 @@ def quit_groupe(uuid):
 
     user.quit_groupe(groupe.uuid)
     flash("Groupe quitté.")
-    return redirect(f"/albums")
+    return redirect("/albums")
 
 
 @bp.route("/<uuid>/delete", methods=["POST"])
 @login_required
 def delete_groupe(uuid):
-    db = get_db()
     groupe = Groupe(uuid=uuid)
     user = User(user_id=session.get("user_id"))
-    
+
     error = None
     users = groupe.get_users()
     if len(users) > 1:
         error = "Vous n'êtes pas seul dans ce groupe."
-    
+
     if user.access_level == 1 or user.id not in groupe.get_admins():
         error = None
 
@@ -220,8 +213,7 @@ def create_album(groupe_uuid):
                 "status": "ok",
                 "uuid": uuid
             }
-        else:
-            return redirect(f"/groupe/{groupe.uuid}/{uuid}")
+        return redirect(f"/groupe/{groupe.uuid}/{uuid}")
 
     flash(error)
     return redirect(request.referrer)

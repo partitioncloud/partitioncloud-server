@@ -37,7 +37,7 @@ class User():
         if self.id is None and self.username is None:
             self.username = ""
             self.access_level = -1
-        
+
         else:
             if self.id is not None:
                 data = db.execute(
@@ -55,7 +55,7 @@ class User():
                     """,
                     (self.username,)
                 ).fetchone()
-            
+
             self.id = data["id"]
             self.username = data["username"]
             self.access_level = data["access_level"]
@@ -68,7 +68,7 @@ class User():
 
     def is_participant(self, album_uuid, exclude_groupe=False):
         db = get_db()
-        
+
         return (len(db.execute( # Is participant directly in the album
                 """
                 SELECT album.id FROM album
@@ -77,7 +77,7 @@ class User():
                 WHERE user.id = ? AND album.uuid = ?
                 """,
                 (self.id, album_uuid)
-            ).fetchall()) == 1 or 
+            ).fetchall()) == 1 or
             # Is participant in a group that has this album
             ((not exclude_groupe) and (len(db.execute(
                 """
@@ -165,7 +165,7 @@ class User():
                     (self.id,),
                 ).fetchall()
         return self.partitions
-        
+
     def join_album(self, album_uuid):
         db = get_db()
         album = Album(uuid=album_uuid)
@@ -226,5 +226,4 @@ class User():
         if len(colors) == 0:
             integer = hash(self.username) % 16777215
             return "#" + str(hex(integer))[2:]
-        else:
-            return f"var({colors[hash(self.username) %len(colors)]})"
+        return f"var({colors[hash(self.username) %len(colors)]})"

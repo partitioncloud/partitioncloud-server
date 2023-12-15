@@ -92,7 +92,7 @@ def mass_rename():
                 (album[0], album[1], utils.format_uuid(album[2]))
             )
         except sqlite3.IntegrityError:
-            uuid = new_uuid()
+            uuid = utils.new_uuid()
             print(f"{Fore.RED}Collision on {album[1]}{Style.RESET_ALL} ({album[2][:10]} renaming to {uuid})")
             utils.run_sqlite_command(
                 """
@@ -101,7 +101,7 @@ def mass_rename():
                 """,
                 (album[0], album[1], uuid)
             )
-    
+
     for groupe in groupes:
         try:
             utils.run_sqlite_command(
@@ -112,7 +112,7 @@ def mass_rename():
                 (groupe[0], groupe[1], utils.format_uuid(groupe[2]))
             )
         except sqlite3.IntegrityError:
-            uuid = new_uuid()
+            uuid = utils.new_uuid()
             print(f"{Fore.RED}Collision on {groupe[1]}{Style.RESET_ALL} ({groupe[2][:10]} renaming to {uuid})")
             utils.run_sqlite_command(
                 """

@@ -6,8 +6,8 @@ import os
 import shutil
 from uuid import uuid4
 
-from flask import (Blueprint, abort, flash, redirect, render_template, request,
-                   send_file, session, current_app)
+from flask import (Blueprint, abort, flash, redirect, render_template,
+                   request, session, current_app)
 
 from .auth import login_required
 from .db import get_db
@@ -20,13 +20,10 @@ bp = Blueprint("albums", __name__, url_prefix="/albums")
 @bp.route("/")
 @login_required
 def index():
+    """
+    Albums home page
+    """
     user = User(user_id=session.get("user_id"))
-    albums = user.get_albums()
-
-    if user.access_level == 1:
-        max_queries = 10
-    else:
-        max_queries = current_app.config["MAX_ONLINE_QUERIES"]
 
     return render_template("albums/index.html", user=user)
 
@@ -34,6 +31,9 @@ def index():
 @bp.route("/search", methods=["POST"])
 @login_required
 def search_page():
+    """
+    Résultats de recherche
+    """
     if "query" not in request.form or request.form["query"] == "":
         flash("Aucun terme de recherche spécifié.")
         return redirect("/albums")
@@ -98,14 +98,18 @@ def album(uuid):
 
 @bp.route("/<uuid>/qr")
 def qr_code(uuid):
+    """
+    Renvoie le QR Code d'un album
+    """
     return get_qrcode(f"/albums/{uuid}")
 
 
 @bp.route("/create-album", methods=["POST"])
 @login_required
 def create_album():
-    current_user = User(user_id=session.get("user_id"))
-
+    """
+    Création d'un album
+    """
     name = request.form["name"]
     db = get_db()
     error = None
@@ -145,8 +149,7 @@ def create_album():
                 "status": "ok",
                 "uuid": uuid
             }
-        else:
-            return redirect(f"/albums/{uuid}")
+        return redirect(f"/albums/{uuid}")
 
     flash(error)
     return redirect(request.referrer)
@@ -155,6 +158,9 @@ def create_album():
 @bp.route("/<uuid>/join")
 @login_required
 def join_album(uuid):
+    """
+    Rejoindre un album
+    """
     user = User(user_id=session.get("user_id"))
     try:
         user.join_album(uuid)
@@ -169,6 +175,9 @@ def join_album(uuid):
 @bp.route("/<uuid>/quit")
 @login_required
 def quit_album(uuid):
+    """
+    Quitter un album
+    """
     user = User(user_id=session.get("user_id"))
     album = Album(uuid=uuid)
     users = album.get_users()
@@ -182,26 +191,28 @@ def quit_album(uuid):
 
     user.quit_album(uuid)
     flash("Album quitté.")
-    return redirect(f"/albums")
+    return redirect("/albums")
 
 
 @bp.route("/<uuid>/delete", methods=["GET", "POST"])
 @login_required
 def delete_album(uuid):
-    db = get_db()
+    """
+    Supprimer un album
+    """
     album = Album(uuid=uuid)
     user = User(user_id=session.get("user_id"))
 
     if request.method == "GET":
         return render_template("albums/delete-album.html", album=album, user=user)
-    
+
     error = None
     users = album.get_users()
     if len(users) > 1:
         error = "Vous n'êtes pas seul dans cet album."
     elif len(users) == 1 and users[0]["id"] != user.id:
         error = "Vous ne possédez pas cet album."
-    
+
     if user.access_level == 1:
         error = None
 
@@ -218,6 +229,9 @@ def delete_album(uuid):
 @bp.route("/<album_uuid>/add-partition", methods=["POST"])
 @login_required
 def add_partition(album_uuid):
+    """
+    Ajouter une partition à un album (par upload)
+    """
     db = get_db()
     user = User(user_id=session.get("user_id"))
     album = Album(uuid=album_uuid)
@@ -281,7 +295,10 @@ def add_partition(album_uuid):
                 file = request.files["file"]
                 file.save(f"partitioncloud/partitions/{partition_uuid}.pdf")
             else:
-                shutil.copyfile(f"partitioncloud/search-partitions/{search_uuid}.pdf", f"partitioncloud/partitions/{partition_uuid}.pdf")
+                shutil.copyfile(
+                    f"partitioncloud/search-partitions/{search_uuid}.pdf",
+                    f"partitioncloud/partitions/{partition_uuid}.pdf"
+                )
 
             os.system(
                 f'/usr/bin/convert -thumbnail\
@@ -290,14 +307,6 @@ def add_partition(album_uuid):
                 partitioncloud/partitions/{partition_uuid}.pdf[0] \
                 partitioncloud/static/thumbnails/{partition_uuid}.jpg'
             )
-
-            album_id = db.execute(
-                """
-                SELECT id FROM album
-                WHERE uuid = ?
-                """,
-                (album.uuid,)
-            ).fetchone()["id"]
             db.commit()
 
             album.add_partition(partition_uuid)
@@ -311,14 +320,16 @@ def add_partition(album_uuid):
             "status": "ok",
             "uuid": partition_uuid
         }
-    else:
-        flash(f"Partition {request.form['name']} ajoutée")
-        return redirect(f"/albums/{album.uuid}")
+    flash(f"Partition {request.form['name']} ajoutée")
+    return redirect(f"/albums/{album.uuid}")
 
 
 @bp.route("/add-partition", methods=["POST"])
 @login_required
 def add_partition_from_search():
+    """
+    Ajout d'une partition (depuis la recherche)
+    """
     user = User(user_id=session.get("user_id"))
     error = None
 
@@ -330,7 +341,7 @@ def add_partition_from_search():
         error = "Il est nécessaire de spécifier un type de partition."
     elif (not user.is_participant(request.form["album-uuid"])) and (user.access_level != 1):
         error = "Vous ne participez pas à cet album."
-    
+
     if error is not None:
         flash(error)
         return redirect("/albums")
@@ -355,7 +366,7 @@ def add_partition_from_search():
 
         return redirect(f"/albums/{album.uuid}")
 
-    elif request.form["partition-type"] == "online_search":
+    if request.form["partition-type"] == "online_search":
         return render_template(
             "albums/add-partition.html",
             album=album,
@@ -363,6 +374,5 @@ def add_partition_from_search():
             user=user
         )
 
-    else:
-        flash("Type de partition inconnu.")
-        return redirect("/albums")
+    flash("Type de partition inconnu.")
+    return redirect("/albums")

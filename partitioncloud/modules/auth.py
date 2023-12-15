@@ -4,18 +4,9 @@ Authentification module
 """
 import functools
 
-from flask import (
-    Blueprint,
-    flash,
-    g,
-    redirect,
-    render_template,
-    request,
-    session,
-    url_for,
-    flash,
-    current_app
-)
+from flask import (Blueprint, flash, g, redirect, render_template,
+                request, session, url_for, current_app)
+
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db import get_db
@@ -117,7 +108,8 @@ def register():
             except db.IntegrityError:
                 # The username was already taken, which caused the
                 # commit to fail. Show a validation error.
-                error = f"Le nom d'utilisateur {username} est déjà pris. Vous souhaitez peut-être vous connecter"
+                error = f"Le nom d'utilisateur {username} est déjà pris. \
+                        Vous souhaitez peut-être vous connecter"
             else:
                 # Success, go to the login page.
                 return redirect(url_for("auth.login"))

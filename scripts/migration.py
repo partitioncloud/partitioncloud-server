@@ -11,7 +11,7 @@ from hooks import v1
 
 def get_version(v: str) -> (int, int, int):
     """Returns a tuple (major, minor, patch from the string v{major}.{minor}.{patch})"""
-    assert (v[0] == 'v') # Check if the version is correctly formatted
+    assert v[0] == 'v' # Check if the version is correctly formatted
     return tuple(map(int, v[1:].split('.')))
 
 
@@ -48,10 +48,9 @@ def get_hooks(current, target):
     def compare(v1: str, v2: str):
         if is_newer(v2[0], v1[0]):
             return -1
-        elif is_newer(v1[0], v2[0]):
+        if is_newer(v1[0], v2[0]):
             return 1
-        else:
-            return 0
+        return 0
 
     applied_hooks = []
     for hook in hooks:
@@ -104,12 +103,12 @@ def apply_hooks(hooks):
 
 def migrate(current, target, skip_backup=False, prog_name="scripts/migration.py"):
     """"""
-    print(f"Trying to migrate from {args.current} to {args.target}")
+    print(f"Trying to migrate from {current} to {target}")
 
-    assert is_newer(args.target, args.current)
+    assert is_newer(target, current)
 
-    applied_hooks = get_hooks(args.current, args.target)
-    if (len(applied_hooks) == 0):
+    applied_hooks = get_hooks(current, target)
+    if len(applied_hooks) == 0:
         print(f"{Fore.GREEN}No hook to apply{Style.RESET_ALL}")
         exit(0)
 
@@ -166,7 +165,7 @@ if __name__ == "__main__":
     parser.add_argument('-r', '--restore', help='restore from specific version backup, will not apply any hook (vx.y.z)')
 
     args = parser.parse_args()
-    
+
     if args.restore is None:
         migrate(args.current, args.target, skip_backup=args.skip_backup)
     else:
