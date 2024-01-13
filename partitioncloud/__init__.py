@@ -3,6 +3,7 @@
 Main file
 """
 import os
+import datetime
 import subprocess
 
 from flask import Flask, g, redirect, render_template, request, send_file, flash, session, abort
@@ -104,6 +105,12 @@ def search_thumbnail(uuid):
 
     return send_file(os.path.join(app.static_folder, "search-thumbnails", f"{uuid}.jpg"))
 
+
+@app.before_request
+def before_request():
+    """Set cookie max age to 31 days"""
+    session.permanent = True
+    app.permanent_session_lifetime = datetime.timedelta(days=int(app.config["MAX_AGE"]))
 
 @app.context_processor
 def inject_default_variables():

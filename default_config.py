@@ -16,3 +16,6 @@ DISABLE_REGISTER=False
 
 # Front URL of the application (for QRCodes generation)
 BASE_URL="http://localhost:5000"
+
+# Session expiration, in days
+MAX_AGE=31
