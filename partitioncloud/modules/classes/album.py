@@ -4,6 +4,7 @@ Classe Album
 import os
 
 from ..db import get_db
+from ..utils import new_uuid
 
 from .attachment import Attachment
 
@@ -163,3 +164,26 @@ class Album():
             (partition_uuid, self.id),
         )
         db.commit()
+
+
+def create(name: str) -> str:
+    """Créer un nouvel album"""
+    db = get_db()
+    while True:
+        try:
+            uuid = new_uuid()
+
+            db.execute(
+                """
+                INSERT INTO album (uuid, name)
+                VALUES (?, ?)
+                """,
+                (uuid, name),
+            )
+            db.commit()
+
+            break
+        except db.IntegrityError:
+            pass
+
+    return uuid

@@ -44,7 +44,6 @@ def attachments(uuid):
 @bp.route("/<uuid>/add-attachment", methods=["POST"])
 @login_required
 def add_attachment(uuid):
-    db = get_db()
     try:
         partition = Partition(uuid=uuid)
     except LookupError:
@@ -66,7 +65,6 @@ def add_attachment(uuid):
 
         if name == "":
             error = "Pas de nom de fichier"
-
         else:
             filename = request.files["file"].filename
             ext = filename.split(".")[-1]
@@ -81,6 +79,7 @@ def add_attachment(uuid):
         try:
             attachment_uuid = str(uuid4())
 
+            db = get_db()
             db.execute(
                 """
                 INSERT INTO attachments (uuid, name, filetype, partition_uuid, user_id)

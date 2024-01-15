@@ -111,7 +111,7 @@ def online_search(query, num_queries):
     for thread in threads:
         thread.join()
 
-    for element in partitions:
+    for element in partitions.copy():
         uuid = element["uuid"]
         url = element["url"]
         if os.stat(f"partitioncloud/search-partitions/{uuid}.pdf").st_size == 0:

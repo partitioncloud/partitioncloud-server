@@ -5,14 +5,16 @@ Albums module
 import os
 import shutil
 from uuid import uuid4
+from typing import TypeVar
 
 from flask import (Blueprint, abort, flash, redirect, render_template,
                    request, session, current_app)
 
 from .auth import login_required
 from .db import get_db
-from .utils import User, Album, get_all_partitions, new_uuid, get_qrcode, format_uuid
-from . import search
+from .utils import User, Album
+from . import search, utils
+
 
 bp = Blueprint("albums", __name__, url_prefix="/albums")
 
@@ -41,7 +43,7 @@ def search_page():
     query = request.form["query"]
     nb_queries = abs(int(request.form["nb-queries"]))
     search.flush_cache()
-    partitions_local = search.local_search(query, get_all_partitions())
+    partitions_local = search.local_search(query, utils.get_all_partitions())
 
     user = User(user_id=session.get("user_id"))
 
@@ -73,8 +75,8 @@ def get_album(uuid):
         album = Album(uuid=uuid)
     except LookupError:
         try:
-            album = Album(uuid=format_uuid(uuid))
-            return redirect(f"/albums/{format_uuid(uuid)}")
+            album = Album(uuid=utils.format_uuid(uuid))
+            return redirect(f"/albums/{utils.format_uuid(uuid)}")
         except LookupError:
             return abort(404)
 
@@ -101,12 +103,12 @@ def qr_code(uuid):
     """
     Renvoie le QR Code d'un album
     """
-    return get_qrcode(f"/albums/{uuid}")
+    return utils.get_qrcode(f"/albums/{uuid}")
 
 
 @bp.route("/create-album", methods=["POST"])
 @login_required
-def create_album():
+def create_album_req():
     """
     Création d'un album
     """
@@ -118,31 +120,16 @@ def create_album():
         error = "Un nom est requis. L'album n'a pas été créé"
 
     if error is None:
-        while True:
-            try:
-                uuid = new_uuid()
-
-                db.execute(
-                    """
-                    INSERT INTO album (uuid, name)
-                    VALUES (?, ?)
-                    """,
-                    (uuid, name),
-                )
-                db.commit()
-                album = Album(uuid=uuid)
-                db.execute(
-                    """
-                    INSERT INTO contient_user (user_id, album_id)
-                    VALUES (?, ?)
-                    """,
-                    (session.get("user_id"), album.id),
-                )
-                db.commit()
-
-                break
-            except db.IntegrityError:
-                pass
+        uuid = utils.create_album(name)
+        album = Album(uuid=uuid)
+        db.execute(
+            """
+            INSERT INTO contient_user (user_id, album_id)
+            VALUES (?, ?)
+            """,
+            (session.get("user_id"), album.id),
+        )
+        db.commit()
 
         if "response" in request.args and request.args["response"] == "json":
             return {
@@ -232,6 +219,13 @@ def add_partition(album_uuid):
     """
     Ajouter une partition à un album (par upload)
     """
+    T = TypeVar("T")
+    def get_opt_string(dictionary: dict[T, str], key: T):
+        """Renvoie '' si la clé n'existe pas dans le dictionnaire"""
+        if key in dictionary:
+            return dictionary[key]
+        return ""
+
     db = get_db()
     user = User(user_id=session.get("user_id"))
     album = Album(uuid=album_uuid)
@@ -245,23 +239,22 @@ def add_partition(album_uuid):
 
     if "name" not in request.form:
         error = "Un titre est requis."
+    elif "file" not in request.files and "partition-uuid" not in request.form:
+        error = "Aucun fichier n'a été fourni."
     elif "file" not in request.files:
-        if "partition-uuid" not in request.form:
-            error = "Aucun fichier n'a été fourni."
+        partition_type = "uuid"
+        search_uuid = request.form["partition-uuid"]
+        data = db.execute(
+            """
+            SELECT * FROM search_results
+            WHERE uuid = ?
+            """,
+            (search_uuid,)
+        ).fetchone()
+        if data is None:
+            error = "Les résultats de la recherche ont expiré."
         else:
-            partition_type = "uuid"
-            search_uuid = request.form["partition-uuid"]
-            data = db.execute(
-                """
-                SELECT * FROM search_results
-                WHERE uuid = ?
-                """,
-                (search_uuid,)
-            ).fetchone()
-            if data is None:
-                error = "Les résultats de la recherche ont expiré."
-            else:
-                source = data["url"]
+            source = data["url"]
     else:
         partition_type = "file"
 
@@ -269,14 +262,8 @@ def add_partition(album_uuid):
         flash(error)
         return redirect(request.referrer)
 
-    if "author" in request.form:
-        author = request.form["author"]
-    else:
-        author = ""
-    if "body" in request.form:
-        body = request.form["body"]
-    else:
-        body = ""
+    author = get_opt_string(request.form, "author")
+    body = get_opt_string(request.form, "body")
 
     while True:
         try:

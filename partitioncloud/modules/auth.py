@@ -78,6 +78,7 @@ def load_logged_in_user():
 
 def create_user(username: str, password: str) -> Optional[str]:
     """Adds a new user to the database"""
+    error = None
     if not username:
         error = "Un nom d'utilisateur est requis."
     elif not password:
@@ -95,9 +96,8 @@ def create_user(username: str, password: str) -> Optional[str]:
         # The username was already taken, which caused the
         # commit to fail. Show a validation error.
         error = f"Le nom d'utilisateur {username} est déjà pris."
-    
-    if error is not None:
-        return error
+
+    return error # may be None
 
 
 @bp.route("/register", methods=("GET", "POST"))

@@ -7,7 +7,8 @@ from flask import (Blueprint, abort, flash, redirect, render_template,
 
 from .auth import login_required
 from .db import get_db
-from .utils import User, Album, Groupe, new_uuid, get_qrcode, format_uuid
+from .utils import User, Album, Groupe
+from . import utils
 
 bp = Blueprint("groupe", __name__, url_prefix="/groupe")
 
@@ -26,8 +27,8 @@ def get_groupe(uuid):
         groupe = Groupe(uuid=uuid)
     except LookupError:
         try:
-            groupe = Groupe(uuid=format_uuid(uuid))
-            return redirect(f"/groupe/{format_uuid(uuid)}")
+            groupe = Groupe(uuid=utils.format_uuid(uuid))
+            return redirect(f"/groupe/{utils.format_uuid(uuid)}")
         except LookupError:
             return abort(404)
 
@@ -51,7 +52,7 @@ def get_groupe(uuid):
 
 @bp.route("/<uuid>/qr")
 def album_qr_code(uuid):
-    return get_qrcode(f"/groupe/{uuid}")
+    return utils.get_qrcode(f"/groupe/{uuid}")
 
 
 
@@ -68,7 +69,7 @@ def create_groupe():
     if error is None:
         while True:
             try:
-                uuid = new_uuid()
+                uuid = utils.new_uuid()
 
                 db.execute(
                     """
@@ -162,7 +163,7 @@ def delete_groupe(uuid):
 
 @bp.route("/<groupe_uuid>/create-album", methods=["POST"])
 @login_required
-def create_album(groupe_uuid):
+def create_album_req(groupe_uuid):
     try:
         groupe = Groupe(uuid=groupe_uuid)
     except LookupError:
@@ -181,32 +182,17 @@ def create_album(groupe_uuid):
         error ="Vous n'êtes pas administrateur de ce groupe"
 
     if error is None:
-        while True:
-            try:
-                uuid = new_uuid()
+        uuid = utils.create_album(name)
+        album = Album(uuid=uuid)
 
-                db.execute(
-                    """
-                    INSERT INTO album (uuid, name)
-                    VALUES (?, ?)
-                    """,
-                    (uuid, name),
-                )
-                db.commit()
-                album = Album(uuid=uuid)
-
-                db.execute(
-                    """
-                    INSERT INTO groupe_contient_album (groupe_id, album_id)
-                    VALUES (?, ?)
-                    """,
-                    (groupe.id, album.id)
-                )
-                db.commit()
-
-                break
-            except db.IntegrityError:
-                pass
+        db.execute(
+            """
+            INSERT INTO groupe_contient_album (groupe_id, album_id)
+            VALUES (?, ?)
+            """,
+            (groupe.id, album.id)
+        )
+        db.commit()
 
         if "response" in request.args and request.args["response"] == "json":
             return {
@@ -229,14 +215,14 @@ def get_album(groupe_uuid, album_uuid):
         groupe = Groupe(uuid=groupe_uuid)
     except LookupError:
         try:
-            groupe = Groupe(uuid=format_uuid(groupe_uuid))
-            return redirect(f"/groupe/{format_uuid(groupe_uuid)}/{album_uuid}")
+            groupe = Groupe(uuid=utils.format_uuid(groupe_uuid))
+            return redirect(f"/groupe/{utils.format_uuid(groupe_uuid)}/{album_uuid}")
         except LookupError:
             return abort(404)
 
     album_list = [a for a in groupe.get_albums() if a.uuid == album_uuid]
     if len(album_list) == 0:
-        album_uuid = format_uuid(album_uuid)
+        album_uuid = utils.format_uuid(album_uuid)
         album_list = [a for a in groupe.get_albums() if a.uuid == album_uuid]
         if len(album_list) != 0:
             return redirect(f"/groupe/{groupe_uuid}/{album_uuid}")
@@ -269,4 +255,4 @@ def get_album(groupe_uuid, album_uuid):
 
 @bp.route("/<groupe_uuid>/<album_uuid>/qr")
 def groupe_qr_code(groupe_uuid, album_uuid):
-    return get_qrcode(f"/groupe/{groupe_uuid}/{album_uuid}")
+    return utils.get_qrcode(f"/groupe/{groupe_uuid}/{album_uuid}")

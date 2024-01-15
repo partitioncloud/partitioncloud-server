@@ -29,6 +29,7 @@ from .classes.album import Album
 from .classes.groupe import Groupe
 from .classes.partition import Partition
 from .classes.attachment import Attachment
+from .classes.album import create as create_album
 
 
 def get_all_partitions():
