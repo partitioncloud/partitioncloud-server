@@ -760,6 +760,9 @@ midi-player {
     margin: 20px;
     margin-top: 50px;
     border-radius: 15px;
+    width: 370px;
+    height: 370px;
+    background-color: white;
 }
 
 #share-url {
