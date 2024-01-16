@@ -5,7 +5,6 @@ import os
 
 from flask import current_app, abort, Blueprint, send_file
 
-from .db import get_db
 from .auth import login_required
 
 bp = Blueprint("thumbnails", __name__, url_prefix="/thumbnails")

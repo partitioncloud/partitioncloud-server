@@ -39,8 +39,9 @@ def load_config():
         app.config.from_object(user_config)
 
         if os.path.abspath(app.config["INSTANCE_PATH"]) != app.instance_path:
-            print("[ERROR] Using two different instance path. \
-            \nPlease modify INSTANCE_PATH only in default_config.py and remove it from $INSTANCE_PATH/config.py")
+            print(("[ERROR] Using two different instance path.\n"
+                    "Please modify INSTANCE_PATH only in default_config.py ",
+                    "and remove it from $INSTANCE_PATH/config.py"))
             sys.exit(1)
     else:
         print("[WARNING] Using default config")
