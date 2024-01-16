@@ -7,8 +7,8 @@ init () {
     mkdir -p "$INSTANCE_PATH/partitions"
     mkdir -p "$INSTANCE_PATH/attachments"
     mkdir -p "$INSTANCE_PATH/search-partitions"
-    mkdir -p "$INSTANCE_PATH/static/thumbnails"
-    mkdir -p "$INSTANCE_PATH/static/search-thumbnails"
+    mkdir -p "partitioncloud/static/thumbnails"
+    mkdir -p "partitioncloud/static/search-thumbnails"
     
     if ! test -f "$INSTANCE_PATH/config.py"; then
         echo "SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex())')" > "$INSTANCE_PATH/config.py"
