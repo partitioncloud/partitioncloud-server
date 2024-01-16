@@ -6,7 +6,7 @@ import argparse
 from functools import cmp_to_key
 
 from colorama import Fore, Style
-from hooks import v1 as v1_hooks
+from hooks import v1 as v1_hooks, config
 
 
 def get_version(v: str) -> (int, int, int):
@@ -33,7 +33,8 @@ hooks = [
         ],
     ),
     ("v1.4.1", [("Install qrcode", v1_hooks.install_qrcode)]),
-    ("v1.5.0", [("Move to instance directory", v1_hooks.move_instance)])
+    ("v1.5.0", [("Move to instance directory", v1_hooks.move_instance)]),
+    ("v1.5.1", [("Move thumbnails", v1_hooks.move_thumbnails)])
 ]
 
 
@@ -73,7 +74,7 @@ def backup_instance(version, verbose=True):
 
     os.makedirs(dest)
     paths = [
-        ("instance", os.path.join(dest, "instance")),
+        (config.instance, os.path.join(dest, "instance")),
         (
             os.path.join("partitioncloud", "partitions"),
             os.path.join(dest, "partitions"),
@@ -155,7 +156,7 @@ def restore(version):
     dest = os.path.join("backups", version)
     print(f"Restoring from {dest}")
     paths = [
-        ("instance", os.path.join(dest, "instance")),
+        (config.instance, os.path.join(dest, "instance")),
         (
             os.path.join("partitioncloud", "partitions"),
             os.path.join(dest, "partitions"),
@@ -191,6 +192,7 @@ if __name__ == "__main__":
 
     parser.add_argument("-c", "--current", help="current version (vx.y.z)")
     parser.add_argument("-t", "--target", help="target version (vx.y.z)")
+    parser.add_argument("-i", "--instance", help="instance folder", default="instance")
     parser.add_argument("-s", "--skip-backup", action="store_true")
     parser.add_argument(
         "-r",
@@ -199,6 +201,7 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
+    config.instance = os.path.abspath(args.instance)
 
     if args.restore is None:
         migrate(args.current, args.target, skip_backup=args.skip_backup)

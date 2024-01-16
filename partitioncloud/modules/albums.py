@@ -299,13 +299,6 @@ def add_partition(album_uuid):
                     partition_path
                 )
 
-            os.system(
-                f'/usr/bin/convert -thumbnail\
-                "178^>" -background white -alpha \
-                remove -crop 178x178+0+0 \
-                {partition_path}[0] \
-                partitioncloud/static/thumbnails/{partition_uuid}.jpg'
-            )
             db.commit()
 
             album.add_partition(partition_uuid)

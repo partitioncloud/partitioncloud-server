@@ -150,14 +150,11 @@ def flush_cache(instance_path):
     ).fetchall()
     for element in expired_cache:
         uuid = element["uuid"]
-        try:
+        if os.path.exists(f"{instance_path}/search-partitions/{uuid}.pdf"):
             os.remove(f"{instance_path}/search-partitions/{uuid}.pdf")
-        except FileNotFoundError:
-            pass
-        try:
-            os.remove(f"partitioncloud/static/search-thumbnails/{uuid}.jpg")
-        except FileNotFoundError:
-            pass
+
+        if os.path.exists(f"{instance_path}/cache/search-thumbnails/{uuid}.jpg"):
+            os.remove(f"{instance_path}/cache/search-thumbnails/{uuid}.jpg")
 
     db.execute(
         """

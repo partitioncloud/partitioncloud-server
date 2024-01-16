@@ -1,8 +1,10 @@
 import os
 import shutil
 import sqlite3
-from hooks import utils
 from colorama import Fore, Style
+
+from . import utils
+from . import config
 
 """
  v1.3.*
@@ -159,5 +161,13 @@ def move_instance():
     for path in paths:
         shutil.move(
             os.path.join("partitioncloud", path),
-            os.path.join("instance", path)
+            os.path.join(config.instance, path)
         )
+
+
+def move_thumbnails():
+    shutil.rmtree("partitioncloud/static/thumbnails", ignore_errors=True)
+    shutil.rmtree("partitioncloud/static/search-thumbnails", ignore_errors=True)
+
+    os.makedirs(os.path.join(config.instance, "cache", "thumbnails"), exist_ok=True)
+    os.makedirs(os.path.join(config.instance, "cache", "search-thumbnails"), exist_ok=True)

@@ -2,10 +2,15 @@ import random
 import string
 import sqlite3
 
+from . import config
+
 
 def run_sqlite_command(*args):
     """Run a command against the database"""
-    con = sqlite3.connect("instance/partitioncloud.sqlite")
+    con = sqlite3.connect(os.path.join(
+        config.instance,
+        "partitioncloud.sqlite"
+    ))
     cur = con.cursor()
     cur.execute(*args)
     con.commit()
@@ -14,7 +19,10 @@ def run_sqlite_command(*args):
 
 def get_sqlite_data(*args):
     """Get data from the db"""
-    con = sqlite3.connect("instance/partitioncloud.sqlite")
+    con = sqlite3.connect(os.path.join(
+        config.instance,
+        "partitioncloud.sqlite"
+    ))
     cur = con.cursor()
     data = cur.execute(*args)
     new_data = list(data)

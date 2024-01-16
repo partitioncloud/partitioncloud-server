@@ -43,8 +43,8 @@ class Partition():
         db.commit()
 
         os.remove(f"{instance_path}/partitions/{self.uuid}.pdf")
-        if os.path.exists(f"partitioncloud/static/thumbnails/{self.uuid}.jpg"):
-            os.remove(f"partitioncloud/static/thumbnails/{self.uuid}.jpg")
+        if os.path.exists(f"{instance_path}/cache/thumbnails/{self.uuid}.jpg"):
+            os.remove(f"{instance_path}/cache/thumbnails/{self.uuid}.jpg")
 
         db.execute(
             """

@@ -2,15 +2,11 @@
 **/__pycache__
 
 # config
-.vscode
+.vscode/
 
 # data
-instance
-partitioncloud/partitions
-partitioncloud/search-partitions
-partitioncloud/static/thumbnails
-partitioncloud/static/search-thumbnails
-partitioncloud/attachments
+instance/
 
-.venv
-backups
+
+.venv/
+backups/

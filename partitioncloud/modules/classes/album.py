@@ -133,8 +133,8 @@ class Album():
                 attachment.delete(instance_path)
 
             os.remove(f"{instance_path}/partitions/{partition['uuid']}.pdf")
-            if os.path.exists(f"partitioncloud/static/thumbnails/{partition['uuid']}.jpg"):
-                os.remove(f"partitioncloud/static/thumbnails/{partition['uuid']}.jpg")
+            if os.path.exists(f"{instance_path}/cache/thumbnails/{partition['uuid']}.jpg"):
+                os.remove(f"{instance_path}/cache/thumbnails/{partition['uuid']}.jpg")
 
         partitions = db.execute(
             """

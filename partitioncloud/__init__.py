@@ -12,7 +12,7 @@ from flask import Flask, g, redirect, render_template, request, send_file, flash
 from werkzeug.security import generate_password_hash
 
 from .modules.utils import User, Album, get_all_albums
-from .modules import albums, auth, partition, admin, groupe
+from .modules import albums, auth, partition, admin, groupe, thumbnails
 from .modules.auth import admin_required, login_required
 from .modules.db import get_db
 
@@ -66,6 +66,7 @@ app.register_blueprint(admin.bp)
 app.register_blueprint(groupe.bp)
 app.register_blueprint(albums.bp)
 app.register_blueprint(partition.bp)
+app.register_blueprint(thumbnails.bp)
 
 __version__ = get_version()
 
@@ -105,35 +106,6 @@ def add_user():
 
         flash(error)
     return render_template("auth/register.html", albums=get_all_albums(), user=current_user)
-
-
-@app.route("/static/search-thumbnails/<uuid>.jpg")
-@login_required
-def search_thumbnail(uuid):
-    """
-    Renvoie l'apercu d'un résultat de recherche
-    """
-    db = get_db()
-    part = db.execute(
-        """
-        SELECT uuid, url FROM search_results
-        WHERE uuid = ?
-        """,
-        (uuid,)
-    ).fetchone()
-
-    if part is None:
-        abort(404)
-    if not os.path.exists(os.path.join(app.static_folder, "search-thumbnails", f"{uuid}.jpg")):
-        os.system(
-            f'/usr/bin/convert -thumbnail\
-            "178^>" -background white -alpha \
-            remove -crop 178x178+0+0 \
-            {app.instance_path}/search-partitions/{uuid}.pdf[0] \
-            partitioncloud/static/search-thumbnails/{uuid}.jpg'
-        )
-
-    return send_file(os.path.join(app.static_folder, "search-thumbnails", f"{uuid}.jpg"))
 
 
 @app.before_request
