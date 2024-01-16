@@ -1,6 +1,6 @@
 <dialog id="share">
     <center>
-        <img src="{{ share_qrlink }}" id="share-qrcode"><br/>
+        <img src="{{ share_qrlink }}" id="share-qrcode" loading="lazy"><br/>
         <div id="share-url" onclick='navigator.clipboard.writeText("{{ share_link }}")'>
             {{ share_link }}
         </div>

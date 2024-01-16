@@ -10,7 +10,7 @@
   <div class="partition-container">
     <a href="/partition/{{ partition['uuid'] }}">
       <div class="partition" id="partition-{{ partition['uuid'] }}">
-        <img class="partition-thumbnail" src="/thumbnails/{{ partition['uuid'] }}.jpg">
+        <img class="partition-thumbnail" src="/thumbnails/{{ partition['uuid'] }}.jpg" loading="lazy">
         <div class="partition-description">
           <div class="partition-name">{{ partition["name"] }}</div>
           <div class="partition-author">{{ partition["author"] }}</div>
@@ -48,7 +48,7 @@
   <div class="partition-container">
     <a href="/partition/search/{{ partition['uuid'] }}">
       <div class="partition" id="partition-{{ partition['uuid'] }}">
-        <img class="partition-thumbnail" src="/thumbnails/search/{{ partition['uuid'] }}.jpg">
+        <img class="partition-thumbnail" src="/thumbnails/search/{{ partition['uuid'] }}.jpg" loading="lazy">
         <div class="partition-description">
           <div class="partition-name">{{ partition["name"] }}</div>
         </div>

@@ -12,7 +12,7 @@
       <tr>
         <td>Fichier</td>
         <td><a href="/partition/{{ partition.uuid }}">
-          <img class="partition-thumbnail" src="/thumbnails/{{ partition.uuid }}.jpg">
+          <img class="partition-thumbnail" src="/thumbnails/{{ partition.uuid }}.jpg" loading="lazy">
         </a></td>
       </tr>
       {% if partition.source != "unknown" and partition.source != "upload" %}
