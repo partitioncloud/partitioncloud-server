@@ -356,6 +356,11 @@ img.partition-thumbnail {
     transform: translateX(-22px) translateY(-115px);
 }
 
+.partition-name {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
 
 /** Albums grid in groupe view */
 #albums-grid > a > .album {
