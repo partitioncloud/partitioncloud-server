@@ -43,9 +43,9 @@ usage () {
 }
 
 if [[ $1 && $(type "$1") = *"is a"*"function"* || $(type "$1") == *"est une fonction"* ]]; then
-	# Import config
+    # Import config
     source "default_config.py"
-    [[ ! -x" $INSTANCE_PATH/config.py" ]] && source "$INSTANCE_PATH/config.py"
+    [[ ! -x "$INSTANCE_PATH/config.py" ]] && source "$INSTANCE_PATH/config.py"
     $1 ${*:2} # Call the function
 else
 	usage
