@@ -19,3 +19,8 @@ BASE_URL="http://localhost:5000"
 
 # Session expiration, in days
 MAX_AGE=31
+
+# Instance path ie. where are all the files + the database stored
+# Keep in mind that this config option can only be loaded from default_config.py,
+# as the custom config is stored in $INSTANCE_PATH/
+INSTANCE_PATH="instance"

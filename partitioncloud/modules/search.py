@@ -49,19 +49,19 @@ def local_search(query, partitions):
     return selection
 
 
-def download_search_result(element):
+def download_search_result(element, instance_path):
     uuid = element["uuid"]
     url = element["url"]
 
     try:
-        urllib.request.urlretrieve(url, f"partitioncloud/search-partitions/{uuid}.pdf")
+        urllib.request.urlretrieve(url, f"{instance_path}/search-partitions/{uuid}.pdf")
 
     except (urllib.error.HTTPError, urllib.error.URLError):
-        with open(f"partitioncloud/search-partitions/{uuid}.pdf", 'a', encoding="utf8") as _:
+        with open(f"{instance_path}/search-partitions/{uuid}.pdf", 'a', encoding="utf8") as _:
             pass # Create empty file
 
 
-def online_search(query, num_queries):
+def online_search(query, num_queries, instance_path):
     """
     Renvoie les 3 résultats les plus pertinents depuis google
     """
@@ -103,7 +103,12 @@ def online_search(query, num_queries):
     except urllib.error.URLError: # Unable to access network
         return []
 
-    threads = [threading.Thread(target=download_search_result, args=(elem,)) for elem in partitions]
+    threads = [
+        threading.Thread(
+            target=download_search_result,
+            args=(elem, instance_path)
+        ) for elem in partitions
+    ]
 
     for thread in threads:
         thread.start()
@@ -114,7 +119,7 @@ def online_search(query, num_queries):
     for element in partitions.copy():
         uuid = element["uuid"]
         url = element["url"]
-        if os.stat(f"partitioncloud/search-partitions/{uuid}.pdf").st_size == 0:
+        if os.stat(f"{instance_path}/search-partitions/{uuid}.pdf").st_size == 0:
             print("An error occured", url)
             db.execute(
                 """
@@ -125,14 +130,14 @@ def online_search(query, num_queries):
             )
             db.commit()
 
-            os.remove(f"partitioncloud/search-partitions/{uuid}.pdf")
+            os.remove(f"{instance_path}/search-partitions/{uuid}.pdf")
 
             partitions.remove(element)
 
     return partitions
 
 
-def flush_cache():
+def flush_cache(instance_path):
     """
     Supprimer les résultats de recherche datant de plus de 15 minutes
     """
@@ -146,7 +151,7 @@ def flush_cache():
     for element in expired_cache:
         uuid = element["uuid"]
         try:
-            os.remove(f"partitioncloud/search-partitions/{uuid}.pdf")
+            os.remove(f"{instance_path}/search-partitions/{uuid}.pdf")
         except FileNotFoundError:
             pass
         try:

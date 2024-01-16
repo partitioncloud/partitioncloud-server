@@ -33,6 +33,7 @@ hooks = [
         ],
     ),
     ("v1.4.1", [("Install qrcode", v1_hooks.install_qrcode)]),
+    ("v1.5.0", [("Move to instance directory", v1_hooks.move_instance)])
 ]
 
 
@@ -86,10 +87,10 @@ def backup_instance(version, verbose=True):
             os.path.join(dest, "search-partitions"),
         ),
     ]
-    for src, dst in paths:
+    for src, dst in paths: # Only the first one exists after v1.5.0
         if os.path.exists(src):
             print_verbose(f"\tBacking up {src}")
-            shutil.copy_tree(src, dst)
+            shutil.copytree(src, dst)
 
 
 def print_hooks(hooks_list):
@@ -108,7 +109,7 @@ def apply_hooks(hooks_list):
 
 
 def migrate(current, target, skip_backup=False, prog_name="scripts/migration.py"):
-    """"""
+    """Migrate from one version to another"""
     print(f"Trying to migrate from {current} to {target}")
 
     assert is_newer(target, current)
@@ -132,7 +133,7 @@ def migrate(current, target, skip_backup=False, prog_name="scripts/migration.py"
         )
         print(
             f"If something goes wrong, recover with {Style.BRIGHT}{Fore.BLUE}{prog_name}\
-                 --restore {current}{Style.RESET_ALL}"
+ --restore {current}{Style.RESET_ALL}"
         )
     else:
         print("Skipping automatic backup")
@@ -168,13 +169,13 @@ def restore(version):
             os.path.join(dest, "search-partitions"),
         ),
     ]
-    for src, dst in paths:
+    for src, dst in paths: # Only the first one exists after v1.5.0
         if os.path.exists(src):
             shutil.rmtree(src)
 
         if os.path.exists(dst):
             print(f"\tRestoring {src}")
-            shutil.copy_tree(dst, src)
+            shutil.copytree(dst, src)
         else:
             print(
                 f"\t{Fore.RED}No available backup for {src}, \

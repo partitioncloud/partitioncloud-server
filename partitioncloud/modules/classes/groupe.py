@@ -21,7 +21,7 @@ class Groupe():
         self.albums = None
         self.admins = None
 
-    def delete(self):
+    def delete(self, instance_path):
         """
         Supprime le groupe, et les albums laissés orphelins (sans utilisateur)
         """
@@ -63,7 +63,7 @@ class Groupe():
 
         for i in data:
             album = Album(id=i["id"])
-            album.delete()
+            album.delete(instance_path)
 
 
     def get_users(self):

@@ -29,7 +29,7 @@ class Attachment():
         self.filetype = data["filetype"]
         self.partition_uuid = data["partition_uuid"]
 
-    def delete(self):
+    def delete(self, instance_path):
         db = get_db()
         db.execute(
             """
@@ -40,7 +40,7 @@ class Attachment():
         )
         db.commit()
 
-        os.remove(f"partitioncloud/attachments/{self.uuid}.{self.filetype}")
+        os.remove(f"{instance_path}/attachments/{self.uuid}.{self.filetype}")
 
     def __repr__(self):
         return f"{self.name}.{self.filetype}"

@@ -42,7 +42,7 @@ def search_page():
 
     query = request.form["query"]
     nb_queries = abs(int(request.form["nb-queries"]))
-    search.flush_cache()
+    search.flush_cache(current_app.instance_path)
     partitions_local = search.local_search(query, utils.get_all_partitions())
 
     user = User(user_id=session.get("user_id"))
@@ -52,7 +52,7 @@ def search_page():
             nb_queries = min(current_app.config["MAX_ONLINE_QUERIES"], nb_queries)
         else:
             nb_queries = min(10, nb_queries) # Query limit is 10 for an admin
-        google_results = search.online_search(query, nb_queries)
+        google_results = search.online_search(query, nb_queries, current_app.instance_path)
     else:
         google_results = []
 
@@ -207,7 +207,7 @@ def delete_album(uuid):
         flash(error)
         return redirect(request.referrer)
 
-    album.delete()
+    album.delete(current_app.instance_path)
 
     flash("Album supprimé.")
     return redirect("/albums")
@@ -278,20 +278,32 @@ def add_partition(album_uuid):
             )
             db.commit()
 
+            partition_path = os.path.join(
+                current_app.instance_path,
+                "partitions",
+                f"{partition_uuid}.pdf"
+            )
+
             if partition_type == "file":
                 file = request.files["file"]
-                file.save(f"partitioncloud/partitions/{partition_uuid}.pdf")
+                file.save(partition_path)
             else:
+                search_partition_path = os.path.join(
+                    current_app.instance_path,
+                    "search-partitions",
+                    f"{search_uuid}.pdf"
+                )
+
                 shutil.copyfile(
-                    f"partitioncloud/search-partitions/{search_uuid}.pdf",
-                    f"partitioncloud/partitions/{partition_uuid}.pdf"
+                    search_partition_path,
+                    partition_path
                 )
 
             os.system(
                 f'/usr/bin/convert -thumbnail\
                 "178^>" -background white -alpha \
                 remove -crop 178x178+0+0 \
-                partitioncloud/partitions/{partition_uuid}.pdf[0] \
+                {partition_path}[0] \
                 partitioncloud/static/thumbnails/{partition_uuid}.jpg'
             )
             db.commit()

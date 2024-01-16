@@ -1,25 +1,27 @@
 #!/bin/bash
 
+INSTANCE_PATH="instance"
+
 init () {
-    mkdir -p "instance"
-    mkdir -p "partitioncloud/partitions"
-    mkdir -p "partitioncloud/attachments"
-    mkdir -p "partitioncloud/search-partitions"
-    mkdir -p "partitioncloud/static/thumbnails"
-    mkdir -p "partitioncloud/static/search-thumbnails"
+    mkdir -p "$INSTANCE_PATH"
+    mkdir -p "$INSTANCE_PATH/partitions"
+    mkdir -p "$INSTANCE_PATH/attachments"
+    mkdir -p "$INSTANCE_PATH/search-partitions"
+    mkdir -p "$INSTANCE_PATH/static/thumbnails"
+    mkdir -p "$INSTANCE_PATH/static/search-thumbnails"
     
-    if ! test -f "instance/config.py"; then
-        echo "SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex())')" > instance/config.py
+    if ! test -f "$INSTANCE_PATH/config.py"; then
+        echo "SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex())')" > "$INSTANCE_PATH/config.py"
     fi
 
-    if test -f "instance/partitioncloud.sqlite"; then
+    if test -f "$INSTANCE_PATH/partitioncloud.sqlite"; then
         printf "Souhaitez vous supprimer la base de données existante ? [y/n] "
         read -r CONFIRMATION
         [[ $CONFIRMATION == y ]] || exit 1
     fi
-    sqlite3 "instance/partitioncloud.sqlite" '.read partitioncloud/schema.sql'
+    sqlite3 "$INSTANCE_PATH/partitioncloud.sqlite" '.read partitioncloud/schema.sql'
     echo "Base de données créé"
-    sqlite3 "instance/partitioncloud.sqlite" '.read partitioncloud/init.sql'
+    sqlite3 "$INSTANCE_PATH/partitioncloud.sqlite" '.read partitioncloud/init.sql'
     echo "Utilisateur root:root ajouté"
 }
 
@@ -43,7 +45,7 @@ usage () {
 if [[ $1 && $(type "$1") = *"is a"*"function"* || $(type "$1") == *"est une fonction"* ]]; then
 	# Import config
     source "default_config.py"
-    [[ ! -x instance/config.py ]] && source "instance/config.py"
+    [[ ! -x" $INSTANCE_PATH/config.py" ]] && source "$INSTANCE_PATH/config.py"
     $1 ${*:2} # Call the function
 else
 	usage

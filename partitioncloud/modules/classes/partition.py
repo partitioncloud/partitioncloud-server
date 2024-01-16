@@ -29,7 +29,7 @@ class Partition():
         else:
             raise LookupError
 
-    def delete(self):
+    def delete(self, instance_path):
         self.load_attachments()
 
         db = get_db()
@@ -42,7 +42,7 @@ class Partition():
         )
         db.commit()
 
-        os.remove(f"partitioncloud/partitions/{self.uuid}.pdf")
+        os.remove(f"{instance_path}/partitions/{self.uuid}.pdf")
         if os.path.exists(f"partitioncloud/static/thumbnails/{self.uuid}.jpg"):
             os.remove(f"partitioncloud/static/thumbnails/{self.uuid}.jpg")
 
@@ -56,7 +56,7 @@ class Partition():
         db.commit()
 
         for attachment in self.attachments:
-            attachment.delete()
+            attachment.delete(instance_path)
 
     def update(self, name=None, author="", body=""):
         if name is None:

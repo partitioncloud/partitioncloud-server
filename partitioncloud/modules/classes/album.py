@@ -82,7 +82,7 @@ class Album():
         ).fetchall()
 
 
-    def delete(self):
+    def delete(self, instance_path):
         """
         Supprimer l'album
         """
@@ -130,9 +130,9 @@ class Album():
             attachments = [Attachment(data=i) for i in data]
 
             for attachment in attachments:
-                attachment.delete()
+                attachment.delete(instance_path)
 
-            os.remove(f"partitioncloud/partitions/{partition['uuid']}.pdf")
+            os.remove(f"{instance_path}/partitions/{partition['uuid']}.pdf")
             if os.path.exists(f"partitioncloud/static/thumbnails/{partition['uuid']}.jpg"):
                 os.remove(f"partitioncloud/static/thumbnails/{partition['uuid']}.jpg")
 

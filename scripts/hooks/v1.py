@@ -1,4 +1,5 @@
 import os
+import shutil
 import sqlite3
 from hooks import utils
 from colorama import Fore, Style
@@ -142,3 +143,21 @@ def base_url_parameter_added():
 
 def install_qrcode():
     os.system("pip install qrcode -qq")
+
+
+"""
+ v1.5.*
+"""
+
+
+def move_instance():
+    paths = [
+        "attachments",
+        "partitions",
+        "search-partitions"
+    ]
+    for path in paths:
+        shutil.move(
+            os.path.join("partitioncloud", path),
+            os.path.join("instance", path)
+        )

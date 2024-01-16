@@ -3,7 +3,7 @@
 Groupe module
 """
 from flask import (Blueprint, abort, flash, redirect, render_template,
-                   request, session)
+                   request, session, current_app)
 
 from .auth import login_required
 from .db import get_db
@@ -155,7 +155,7 @@ def delete_groupe(uuid):
         flash(error)
         return redirect(request.referrer)
 
-    groupe.delete()
+    groupe.delete(current_app.instance_path)
 
     flash("Groupe supprimé.")
     return redirect("/albums")

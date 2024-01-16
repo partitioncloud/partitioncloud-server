@@ -4,7 +4,8 @@ Partition module
 """
 import os
 from uuid import uuid4
-from flask import Blueprint, abort, send_file, render_template, request, redirect, flash, session
+from flask import (Blueprint, abort, send_file, render_template,
+                    request, redirect, flash, session, current_app)
 
 from .db import get_db
 from .auth import login_required, admin_required
@@ -21,9 +22,11 @@ def get_partition(uuid):
         abort(404)
 
 
-    return send_file(
-        os.path.join("partitions", f"{uuid}.pdf"),
-        download_name = f"{partition.name}.pdf"
+    return send_file(os.path.join(
+            current_app.instance_path,
+            "partitions",
+            f"{uuid}.pdf"
+        ), download_name = f"{partition.name}.pdf"
     )
 
 @bp.route("/<uuid>/attachments")
@@ -51,7 +54,7 @@ def add_attachment(uuid):
     user = User(user_id=session.get("user_id"))
 
     if user.id != partition.user_id and user.access_level != 1:
-        flash("Cette partition ne vous appartient pas")
+        flash("Cette partition ne vous current_appartient pas")
         return redirect(request.referrer)
 
     error = None # À mettre au propre
@@ -90,7 +93,11 @@ def add_attachment(uuid):
             db.commit()
 
             file = request.files["file"]
-            file.save(f"partitioncloud/attachments/{attachment_uuid}.{ext}")
+            file.save(os.path.join(
+                current_app.instance_path,
+                "attachments",
+                f"{attachment_uuid}.{ext}"
+            ))
             break
 
         except db.IntegrityError:
@@ -114,9 +121,11 @@ def get_attachment(uuid, filetype):
 
     assert filetype == attachment.filetype
 
-    return send_file(
-        os.path.join("attachments", f"{uuid}.{attachment.filetype}"),
-        download_name = f"{attachment.name}.{attachment.filetype}"
+    return send_file(os.path.join(
+            current_app.instance_path,
+            "attachments",
+            f"{uuid}.{attachment.filetype}"
+        ), download_name = f"{attachment.name}.{attachment.filetype}"
     )
 
 
@@ -223,7 +232,7 @@ def delete(uuid):
     if request.method == "GET":
         return render_template("partition/delete.html", partition=partition, user=user)
 
-    partition.delete()
+    partition.delete(current_app.instance_path)
 
     flash("Partition supprimée.")
     return redirect("/albums")
@@ -245,7 +254,13 @@ def partition_search(uuid):
         abort(404)
     if request.args.get("redirect") == "true" and partition["url"] is not None:
         return redirect(partition["url"])
-    return send_file(os.path.join("search-partitions", f"{uuid}.pdf"))
+
+    return send_file(os.path.join(
+            current_app.instance_path,
+            "search-partitions",
+            f"{uuid}.pdf"
+        )
+    )
 
 
 @bp.route("/")
