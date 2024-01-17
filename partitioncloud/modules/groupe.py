@@ -9,6 +9,7 @@ from .auth import login_required
 from .db import get_db
 from .utils import User, Album, Groupe
 from . import utils
+from . import logging
 
 bp = Blueprint("groupe", __name__, url_prefix="/groupe")
 
@@ -63,6 +64,8 @@ def create_groupe():
     db = get_db()
     error = None
 
+    user = User(user_id=session["user_id"])
+
     if not name or name.strip() == "":
         error = "Un nom est requis. Le groupe n'a pas été créé"
 
@@ -92,6 +95,8 @@ def create_groupe():
                 break
             except db.IntegrityError:
                 pass
+
+        logging.log([name, uuid, user.username], logging.LogEntry.NEW_GROUPE)
 
         if "response" in request.args and request.args["response"] == "json":
             return {
@@ -193,6 +198,8 @@ def create_album_req(groupe_uuid):
             (groupe.id, album.id)
         )
         db.commit()
+
+        logging.log([album.name, album.uuid, user.username], logging.LogEntry.NEW_ALBUM)
 
         if "response" in request.args and request.args["response"] == "json":
             return {

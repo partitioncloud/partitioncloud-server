@@ -13,7 +13,7 @@ from flask import (Blueprint, abort, flash, redirect, render_template,
 from .auth import login_required
 from .db import get_db
 from .utils import User, Album
-from . import search, utils
+from . import search, utils, logging
 
 
 bp = Blueprint("albums", __name__, url_prefix="/albums")
@@ -116,6 +116,8 @@ def create_album_req():
     db = get_db()
     error = None
 
+    user = User(user_id=session["user_id"])
+
     if not name or name.strip() == "":
         error = "Un nom est requis. L'album n'a pas été créé"
 
@@ -130,6 +132,8 @@ def create_album_req():
             (session.get("user_id"), album.id),
         )
         db.commit()
+
+        logging.log([album.name, album.uuid, user.username], logging.LogEntry.NEW_ALBUM)
 
         if "response" in request.args and request.args["response"] == "json":
             return {
@@ -217,7 +221,7 @@ def delete_album(uuid):
 @login_required
 def add_partition(album_uuid):
     """
-    Ajouter une partition à un album (par upload)
+    Ajouter une partition à un album (nouveau fichier)
     """
     T = TypeVar("T")
     def get_opt_string(dictionary: dict[T, str], key: T):
@@ -265,6 +269,7 @@ def add_partition(album_uuid):
     author = get_opt_string(request.form, "author")
     body = get_opt_string(request.form, "body")
 
+    partition_uuid: str
     while True:
         try:
             partition_uuid = str(uuid4())
@@ -307,6 +312,11 @@ def add_partition(album_uuid):
         except db.IntegrityError:
             pass
 
+    logging.log(
+        [request.form["name"], partition_uuid, user.username],
+        logging.LogEntry.NEW_PARTITION
+    )
+
     if "response" in request.args and request.args["response"] == "json":
         return {
             "status": "ok",
@@ -320,7 +330,7 @@ def add_partition(album_uuid):
 @login_required
 def add_partition_from_search():
     """
-    Ajout d'une partition (depuis la recherche)
+    Ajout d'une partition (depuis la recherche locale)
     """
     user = User(user_id=session.get("user_id"))
     error = None

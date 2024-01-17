@@ -12,6 +12,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db import get_db
 from .utils import User
+from . import logging
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -120,7 +121,14 @@ def register():
         if error is not None:
             flash(error)
         else:
+            user = User(name=username)
+
             flash("Utilisateur créé avec succès. Vous pouvez vous connecter.")
+
+            logging.log(
+                [user.username, user.id, False],
+                logging.LogEntry.NEW_USER
+            )
 
     return render_template("auth/register.html")
 
@@ -139,12 +147,16 @@ def login():
         ).fetchone()
 
         if (user is None) or not check_password_hash(user["password"], password):
+            logging.log([username], logging.LogEntry.FAILED_LOGIN)
             error = "Nom d'utilisateur ou mot de passe incorrect."
 
         if error is None:
             # store the user id in a new session and return to the index
             session.clear()
             session["user_id"] = user["id"]
+
+            logging.log([username], logging.LogEntry.LOGIN)
+
             return redirect(url_for("albums.index"))
 
         flash(error)

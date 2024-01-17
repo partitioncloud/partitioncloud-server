@@ -12,7 +12,7 @@ from flask import Flask, g, redirect, render_template, request, send_file, flash
 from werkzeug.security import generate_password_hash
 
 from .modules.utils import User, Album, get_all_albums
-from .modules import albums, auth, partition, admin, groupe, thumbnails
+from .modules import albums, auth, partition, admin, groupe, thumbnails, logging
 from .modules.auth import admin_required, login_required
 from .modules.db import get_db
 
@@ -33,6 +33,11 @@ def load_config():
             ".",
             os.path.join(app.instance_path, "config.py")
         )
+
+        if spec is None:
+            print("[ERROR] Failed to load $INSTANCE_PATH/config.py")
+            sys.exit(1)
+
         user_config = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(user_config)
 
@@ -49,6 +54,8 @@ def load_config():
     app.config.from_mapping(
         DATABASE=os.path.join(app.instance_path, f"{__name__}.sqlite"),
     )
+
+    logging.log_file = os.path.join(app.instance_path, "logs.txt")
 
 
 def get_version():
@@ -70,6 +77,8 @@ app.register_blueprint(partition.bp)
 app.register_blueprint(thumbnails.bp)
 
 __version__ = get_version()
+
+logging.log([], logging.LogEntry.SERVER_RESTART)
 
 
 @app.route("/")
@@ -96,6 +105,12 @@ def add_user():
         if error is None:
             # Success, go to the login page.
             user = User(name=username)
+
+            logging.log(
+                [user.username, user.id, True, current_user.username],
+                logging.LogEntry.NEW_USER
+            )
+
             try:
                 if album_uuid != "":
                     user.join_album(album_uuid)
