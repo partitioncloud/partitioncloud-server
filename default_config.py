@@ -24,3 +24,6 @@ MAX_AGE=31
 # Keep in mind that this config option can only be loaded from default_config.py,
 # as the custom config is stored in $INSTANCE_PATH/
 INSTANCE_PATH="instance"
+
+# Events to log
+ENABLED_LOGS=["NEW_GROUPE", "NEW_ALBUM", "NEW_PARTITION", "NEW_USER", "SERVER_RESTART", "FAILED_LOGIN"]

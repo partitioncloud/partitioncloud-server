@@ -15,6 +15,19 @@ class LogEntry(Enum):
     SERVER_RESTART = 6
     FAILED_LOGIN = 7
 
+    def from_string(entry: str):
+        mapping = {
+            "LOGIN": LogEntry.LOGIN,
+            "NEW_GROUPE": LogEntry.NEW_GROUPE,
+            "NEW_ALBUM": LogEntry.NEW_ALBUM,
+            "NEW_PARTITION": LogEntry.NEW_PARTITION,
+            "NEW_USER": LogEntry.NEW_USER,
+            "SERVER_RESTART": LogEntry.SERVER_RESTART,
+            "FAILED_LOGIN": LogEntry.FAILED_LOGIN
+        }
+        # Will return KeyError if not available
+        return mapping[entry]
+
 
 def add_entry(entry: str) -> None:
     date = datetime.now().strftime("%y-%b-%Y %H:%M:%S")

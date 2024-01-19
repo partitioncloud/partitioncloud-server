@@ -55,7 +55,17 @@ def load_config():
         DATABASE=os.path.join(app.instance_path, f"{__name__}.sqlite"),
     )
 
+
+def setup_logging():
     logging.log_file = os.path.join(app.instance_path, "logs.txt")
+    enabled = []
+    for event in app.config["ENABLED_LOGS"]:
+        try:
+            enabled.append(logging.LogEntry.from_string(event))
+        except KeyError:
+            print(f"[ERROR] There is an error in your config: Unknown event {event}")
+
+    logging.enabled = enabled
 
 
 def get_version():
@@ -68,6 +78,7 @@ def get_version():
 
 
 load_config()
+setup_logging()
 
 app.register_blueprint(auth.bp)
 app.register_blueprint(admin.bp)
