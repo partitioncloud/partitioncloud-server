@@ -1,0 +1,10 @@
+@import url('/static/style/colors.css');
+
+body {
+    background-color: var(--color-crust);
+    color: var(--color-text);
+}
+
+pre {
+    white-space: pre;
+}

@@ -1,0 +1,10 @@
+{% set scripts=["scripts/logs.js"] %}
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Logs{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<iframe type="text/plain" id="logs-embed" src="/admin/logs.txt" frameborder="0" width="100%" height="100%"></iframe>
+{% endblock %}

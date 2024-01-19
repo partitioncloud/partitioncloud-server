@@ -2,7 +2,8 @@
 """
 Admin Panel
 """
-from flask import Blueprint, render_template, session
+import os
+from flask import Blueprint, render_template, session, current_app, send_file
 
 from .db import get_db
 from .auth import admin_required
@@ -34,4 +35,29 @@ def index():
         "admin/index.html",
         users=users,
         user=current_user
+    )
+
+
+@bp.route("/logs")
+@admin_required
+def logs():
+    """
+    Admin panel logs page
+    """
+    user = User(user_id=session.get("user_id"))
+
+    return render_template(
+        "admin/logs.html",
+        user=user
+    )
+
+
+@bp.route("/logs.txt")
+@admin_required
+def logs_txt():
+    """
+    Admin panel logs page
+    """
+    return send_file(
+        os.path.join(current_app.instance_path, "logs.txt")
     )
