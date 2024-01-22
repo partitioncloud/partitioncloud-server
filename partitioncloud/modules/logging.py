@@ -30,7 +30,7 @@ class LogEntry(Enum):
 
 
 def add_entry(entry: str) -> None:
-    date = datetime.now().strftime("%y-%b-%Y %H:%M:%S")
+    date = datetime.now().strftime('%y-%b-%Y %H:%M:%S')
 
     with open(log_file, 'a', encoding="utf8") as f:
         f.write(f"[{date}] {entry}\n")

@@ -1,4 +1,5 @@
 flask
+flask-babel
 google
 colorama
 qrcode

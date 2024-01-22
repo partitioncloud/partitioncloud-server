@@ -6,6 +6,7 @@ import os
 from uuid import uuid4
 from flask import (Blueprint, abort, send_file, render_template,
                     request, redirect, flash, session, current_app)
+from flask_babel import _
 
 from .db import get_db
 from .auth import login_required, admin_required
@@ -54,12 +55,12 @@ def add_attachment(uuid):
     user = User(user_id=session.get("user_id"))
 
     if user.id != partition.user_id and user.access_level != 1:
-        flash("Cette partition ne vous current_appartient pas")
+        flash(_("Cette partition ne vous appartient pas"))
         return redirect(request.referrer)
 
     error = None # À mettre au propre
     if "file" not in request.files:
-        error = "Aucun fichier n'a été fourni."
+        error = _("Aucun fichier n'a été fourni.")
     else:
         if "name" not in request.form or request.form["name"] == "":
             name = ".".join(request.files["file"].filename.split(".")[:-1])
@@ -67,12 +68,12 @@ def add_attachment(uuid):
             name = request.form["name"]
 
         if name == "":
-            error = "Pas de nom de fichier"
+            error = _("Pas de nom de fichier")
         else:
             filename = request.files["file"].filename
             ext = filename.split(".")[-1]
             if ext not in ["mid", "mp3"]:
-                error = "Extension de fichier non supportée"
+                error = _("Extension de fichier non supportée")
 
     if error is not None:
         flash(error)
@@ -140,7 +141,7 @@ def edit(uuid):
 
     user = User(user_id=session.get("user_id"))
     if user.access_level != 1 and partition.user_id != user.id:
-        flash("Vous n'êtes pas autorisé à modifier cette partition.")
+        flash(_("Vous n'êtes pas autorisé à modifier cette partition."))
         return redirect("/albums")
 
     if request.method == "GET":
@@ -149,11 +150,11 @@ def edit(uuid):
     error = None
 
     if "name" not in request.form or request.form["name"].strip() == "":
-        error = "Un titre est requis."
+        error = _("Un titre est requis.")
     elif "author" not in request.form:
-        error = "Un nom d'auteur est requis (à minima nul)"
+        error = _("Un nom d'auteur est requis (à minima nul)")
     elif "body" not in request.form:
-        error = "Des paroles sont requises (à minima nulles)"
+        error = _("Des paroles sont requises (à minima nulles)")
 
     if error is not None:
         flash(error)
@@ -165,7 +166,7 @@ def edit(uuid):
         body=request.form["body"]
     )
 
-    flash(f"Partition {request.form['name']} modifiée avec succès.")
+    flash(_("Partition %(name)s modifiée avec succès.", name=request.form['name']))
     return redirect("/albums")
 
 
@@ -195,11 +196,11 @@ def details(uuid):
     error = None
 
     if "name" not in request.form or request.form["name"].strip() == "":
-        error = "Un titre est requis."
+        error = _("Un titre est requis.")
     elif "author" not in request.form:
-        error = "Un nom d'auteur est requis (à minima nul)"
+        error = _("Un nom d'auteur est requis (à minima nul)")
     elif "body" not in request.form:
-        error = "Des paroles sont requises (à minima nulles)"
+        error = _("Des paroles sont requises (à minima nulles)")
 
     if error is not None:
         flash(error)
@@ -211,7 +212,7 @@ def details(uuid):
         body=request.form["body"]
     )
 
-    flash(f"Partition {request.form['name']} modifiée avec succès.")
+    flash(_("Partition %(name)s modifiée avec succès.", name=request.form['name']))
     return redirect("/albums")
 
 
@@ -226,7 +227,7 @@ def delete(uuid):
     user = User(user_id=session.get("user_id"))
 
     if user.access_level != 1 and partition.user_id != user.id:
-        flash("Vous n'êtes pas autorisé à supprimer cette partition.")
+        flash(_("Vous n'êtes pas autorisé à supprimer cette partition."))
         return redirect("/albums")
 
     if request.method == "GET":
@@ -234,7 +235,7 @@ def delete(uuid):
 
     partition.delete(current_app.instance_path)
 
-    flash("Partition supprimée.")
+    flash(_("Partition supprimée."))
     return redirect("/albums")
 
 

@@ -9,6 +9,7 @@ from typing import TypeVar
 
 from flask import (Blueprint, abort, flash, redirect, render_template,
                    request, session, current_app)
+from flask_babel import _
 
 from .auth import login_required
 from .db import get_db
@@ -37,7 +38,7 @@ def search_page():
     Résultats de recherche
     """
     if "query" not in request.form or request.form["query"] == "":
-        flash("Aucun terme de recherche spécifié.")
+        flash(_("Aucun terme de recherche spécifié."))
         return redirect("/albums")
 
     query = request.form["query"]
@@ -119,7 +120,7 @@ def create_album_req():
     user = User(user_id=session["user_id"])
 
     if not name or name.strip() == "":
-        error = "Un nom est requis. L'album n'a pas été créé"
+        error = _("Un nom est requis. L'album n'a pas été créé")
 
     if error is None:
         uuid = utils.create_album(name)
@@ -156,10 +157,10 @@ def join_album(uuid):
     try:
         user.join_album(uuid)
     except LookupError:
-        flash("Cet album n'existe pas.")
+        flash(_("Cet album n'existe pas."))
         return redirect(request.referrer)
 
-    flash("Album ajouté à la collection.")
+    flash(_("Album ajouté à la collection."))
     return redirect(request.referrer)
 
 
@@ -173,15 +174,15 @@ def quit_album(uuid):
     album = Album(uuid=uuid)
     users = album.get_users()
     if user.id not in [u["id"] for u in users]:
-        flash("Vous ne faites pas partie de cet album")
+        flash(_("Vous ne faites pas partie de cet album"))
         return redirect(request.referrer)
 
     if len(users) == 1:
-        flash("Vous êtes seul dans cet album, le quitter entraînera sa suppression.")
+        flash(_("Vous êtes seul dans cet album, le quitter entraînera sa suppression."))
         return redirect(f"/albums/{uuid}#delete")
 
     user.quit_album(uuid)
-    flash("Album quitté.")
+    flash(_("Album quitté."))
     return redirect("/albums")
 
 
@@ -200,9 +201,9 @@ def delete_album(uuid):
     error = None
     users = album.get_users()
     if len(users) > 1:
-        error = "Vous n'êtes pas seul dans cet album."
+        error = _("Vous n'êtes pas seul dans cet album.")
     elif len(users) == 1 and users[0]["id"] != user.id:
-        error = "Vous ne possédez pas cet album."
+        error = _("Vous ne possédez pas cet album.")
 
     if user.access_level == 1:
         error = None
@@ -213,7 +214,7 @@ def delete_album(uuid):
 
     album.delete(current_app.instance_path)
 
-    flash("Album supprimé.")
+    flash(_("Album supprimé."))
     return redirect("/albums")
 
 
@@ -236,15 +237,15 @@ def add_partition(album_uuid):
     source = "upload" # source type: upload, unknown or url
 
     if (not user.is_participant(album.uuid)) and (user.access_level != 1):
-        flash("Vous ne participez pas à cet album.")
+        flash(_("Vous ne faites pas partie de cet album"))
         return redirect(request.referrer)
 
     error = None
 
     if "name" not in request.form:
-        error = "Un titre est requis."
+        error = _("Un titre est requis.")
     elif "file" not in request.files and "partition-uuid" not in request.form:
-        error = "Aucun fichier n'a été fourni."
+        error = _("Aucun fichier n'a été fourni.")
     elif "file" not in request.files:
         partition_type = "uuid"
         search_uuid = request.form["partition-uuid"]
@@ -256,7 +257,7 @@ def add_partition(album_uuid):
             (search_uuid,)
         ).fetchone()
         if data is None:
-            error = "Les résultats de la recherche ont expiré."
+            error = _("Les résultats de la recherche ont expiré.")
         else:
             source = data["url"]
     else:
@@ -322,7 +323,7 @@ def add_partition(album_uuid):
             "status": "ok",
             "uuid": partition_uuid
         }
-    flash(f"Partition {request.form['name']} ajoutée")
+    flash(_("Partition %(partition_name)s ajoutée", partition_name=request.form['name']))
     return redirect(f"/albums/{album.uuid}")
 
 
@@ -336,13 +337,13 @@ def add_partition_from_search():
     error = None
 
     if "album-uuid" not in request.form:
-        error = "Il est nécessaire de sélectionner un album."
+        error = _("Il est nécessaire de sélectionner un album.")
     elif "partition-uuid" not in request.form:
-        error = "Il est nécessaire de sélectionner une partition."
+        error = _("Il est nécessaire de sélectionner une partition.")
     elif "partition-type" not in request.form:
-        error = "Il est nécessaire de spécifier un type de partition."
+        error = _("Il est nécessaire de spécifier un type de partition.")
     elif (not user.is_participant(request.form["album-uuid"])) and (user.access_level != 1):
-        error = "Vous ne participez pas à cet album."
+        error = _("Vous ne faites pas partie de cet album")
 
     if error is not None:
         flash(error)
@@ -362,9 +363,9 @@ def add_partition_from_search():
 
         if data is None:
             album.add_partition(request.form["partition-uuid"])
-            flash("Partition ajoutée.")
+            flash(_("Partition ajoutée."))
         else:
-            flash("Partition déjà dans l'album.")
+            flash(_("Partition déjà dans l'album."))
 
         return redirect(f"/albums/{album.uuid}")
 
@@ -376,5 +377,5 @@ def add_partition_from_search():
             user=user
         )
 
-    flash("Type de partition inconnu.")
+    flash(_("Type de partition inconnu."))
     return redirect("/albums")
