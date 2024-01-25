@@ -5,22 +5,15 @@
 
 {% block dialogs %}
 <dialog id="add-partition">
-  <h2>Ajouter une partition à {{ album.name }}</h2>
-  <form action="/albums/{{ album.uuid }}/add-partition" method="post" enctype="multipart/form-data">
-      <input name="name" type="text" required="" placeholder="Titre"><br/>
-      <input name="author" type="text" placeholder="Auteur"><br/>
-      <textarea id="paroles" name="body" type="text" placeholder="Paroles"></textarea><br/>
-      <input name="file" type="file" accept=".pdf" required=""><br/>
-      <input type="submit" value="Ajouter">
-  </form>
+  {% include 'components/add_partition.html' %}
   <a href="#!" class="close-dialog">Close</a>
 </dialog>
 <dialog id="delete">
-  <h2>Supprimer l'album</h2>
-  Êtes vous sûr de vouloir supprimer cet album ?
+  <h2>{{ _("Supprimer l'album") }}</h2>
+  {{ _("Êtes vous sûr de vouloir supprimer cet album ?") }}
   <br/><br/>
   <form method="post" action="/albums/{{ album.uuid }}/delete">
-    <input type="submit" style="background-color: var(--color-red);" value="Supprimer">
+    <input type="submit" style="background-color: var(--color-red);" value="{{ _('Supprimer') }}">
   </form>
   <a href="#!" class="close-dialog">Close</a>
 </dialog>
@@ -38,7 +31,7 @@
 {% block content %}
 <header id="album-header">
   <h2 id="album-title">
-    {% if groupe %}<a href="/groupe/{{ groupe.uuid }}">{{ groupe.name}}</a> /
+    {% if groupe %}<a href="/groupe/{{ groupe.uuid }}">{{ groupe.name }}</a> /
     {% endif %}
     {{ album.name }}
   </h2>
@@ -55,16 +48,16 @@
         +
         <div class="dropdown-content dp1">
             {% if g.user %}
-            <a href="#add-partition">Ajouter une partition</a>
+            <a href="#add-partition">{{ _("Ajouter une partition") }}</a>
             {% endif %}
             {% if not_participant %}
-            <a href="/albums/{{ album.uuid }}/join">Rejoindre</a>
+            <a href="/albums/{{ album.uuid }}/join">{{ _("Rejoindre") }}</a>
             {% elif album.users | length > 1 %}
-            <a href="/albums/{{ album.uuid }}/quit">Quitter</a>
+            <a href="/albums/{{ album.uuid }}/quit">{{ _("Quitter") }}</a>
             {% endif %}
-            <a href="#share">Partager</a>
+            <a href="#share">{{ _("Partager") }}</a>
             {% if g.user.access_level == 1 or (not not_participant and album.users | length == 1) %}
-            <a id="delete-album" href="#delete">Supprimer</a>
+            <a id="delete-album" href="#delete">{{ _("Supprimer") }}</a>
             {% endif %}
         </div>
       </div>
@@ -98,6 +91,6 @@
 </section>
 {% else %}
 <br/>
-<section id="partitions-grid" style="display: inline;">Aucune partition disponible</section>
+<section id="partitions-grid" style="display: inline;">{{ _("Aucune partition disponible") }}</section>
 {% endif %}
 {% endblock %}

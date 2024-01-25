@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}{{ _("Home") }}{% endblock %}
 
 {% block content %}
 <div style="text-align: center;">
-Bonjour <i><b>{{ user.username }}</b></i> !<br/>
-Aucun album sélectionné
+{% set user_name %}
+<i><b>{{ user.username }}</b></i>
+{% endset %}
+{{ _("Bonjour %(user_name)s !", user_name=user_name) }}<br/>
+{{ _("Aucun album sélectionné") }}
 </div>
 {% endblock %}

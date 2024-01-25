@@ -2,11 +2,11 @@
 
 
 {% block content %}
-<h2>{% block title %}Connexion{% endblock %}</h2>
+<h2>{% block title %}{{ _("Connexion") }}{% endblock %}</h2>
 
   <form method="post">
-    <input type="text" name="username" id="username" placeholder="Nom d'utilisateur" required><br/>
-    <input type="password" name="password" id="password" placeholder="Mot de passe" required><br/>
-    <input type="submit" value="Se connecter">
+    <input type="text" name="username" id="username" placeholder="{{ _('Nom d\'utilisateur') }}" required><br/>
+    <input type="password" name="password" id="password" placeholder="{{ _('Mot de passe') }}" required><br/>
+    <input type="submit" value="{{ _('Se connecter') }}">
   </form>
 {% endblock %}

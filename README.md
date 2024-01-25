@@ -75,11 +75,11 @@ Modifier le fichier de configuration créé dans `instance/`
 # Extraire les données
 pybabel extract -F babel.cfg -k _l -o partitioncloud/translations/messages.pot .
 # Créer un nouveau fichier
-pybabel init -i partitioncloud/translations/messages.pot -d partitioncloud/translations -l $COUNTRY_CODE
+pybabel init -i partitioncloud/translations/messages.pot -d partitioncloud/translations/ -l $COUNTRY_CODE
 # Modifier translations/$COUNTRY_CODE/LC_MESSAGES/messages.po
 # Ajouter $COUNTRY_CODE dans default_config.py: LANGUAGES
 # Compiler les nouvelles translations avant de démarrer le serveur
-pybabel compile -d partitioncloud/translations
+pybabel compile -d partitioncloud/translations/
 ```
 
 ### Mettre à jour une traduction
@@ -88,7 +88,7 @@ pybabel compile -d partitioncloud/translations
 # Récupérer les données les plus récentes
 pybabel extract -F babel.cfg -k _l -o partitioncloud/translations/messages.pot .
 # Les ajouter aux traductions
-pybabel update -i partitioncloud/translations/messages.pot -d partitioncloud/translations
+pybabel update -i partitioncloud/translations/messages.pot -d partitioncloud/translations/
 ```
 
 ## TODO

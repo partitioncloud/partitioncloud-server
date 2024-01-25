@@ -5,20 +5,20 @@
 
 {% block dialogs %}
 <dialog id="create-groupe-album">
-  <h2>Créer un nouvel album dans le groupe {{ groupe.name }}</h2>
+  <h2>{{ _("Ajouter un album au groupe %(name)s", name=groupe.name) }}</h2>
   <form action="/groupe/{{ groupe.uuid }}/create-album" method="post">
-      <input type="text" name="name" id="name" placeholder="Nom" required><br/>
-      <input type="submit" value="Ajouter">
+      <input type="text" name="name" id="name" placeholder="{{ _('Nom') }}" required><br/>
+      <input type="submit" value="{{ _('Ajouter') }}">
   </form>
   <a href="#!" class="close-dialog">Close</a>
 </dialog>
 <dialog id="delete">
-  <h2>Supprimer le groupe</h2>
-  Êtes vous sûr de vouloir supprimer ce groupe ? Cela supprimera les albums
-  sous-jacents et leurs partitions si personne ne les a rejoints (indépendamment du groupe).
+  <h2>{{ _("Supprimer le groupe") }}</h2>
+  {{ _("Êtes vous sûr de vouloir supprimer ce groupe ? Cela supprimera les albums
+  sous-jacents et leurs partitions si personne ne les a rejoints (indépendamment du groupe).") }}
   <br/><br/>
   <form method="post" action="/groupe/{{ groupe.uuid }}/delete">
-    <input type="submit" style="background-color: var(--color-red);" value="Supprimer">
+    <input type="submit" style="background-color: var(--color-red);" value="{{ _('Supprimer') }}">
   </form>
   <a href="#!" class="close-dialog">Close</a>
 </dialog>
@@ -44,14 +44,14 @@
         +
         <div class="dropdown-content dp1">
         {% if not_participant %}
-          <a href="/groupe/{{ groupe.uuid }}/join">Rejoindre</a>
+          <a href="/groupe/{{ groupe.uuid }}/join">{{ _("Rejoindre") }}</a>
         {% elif groupe.users | length > 1 %}
-          <a href="/groupe/{{ groupe.uuid }}/quit">Quitter</a>
+          <a href="/groupe/{{ groupe.uuid }}/quit">{{ _("Quitter") }}</a>
         {% endif %}
-        <a href="#share">Partager</a>
+        <a href="#share">{{ _("Partager") }}</a>
         {% if g.user.access_level == 1 or user.id in groupe.get_admins() %}
-          <a href="#create-groupe-album">Ajouter un album</a>
-          <a id="delete-album" href="#delete">Supprimer</a>
+          <a href="#create-groupe-album">{{ _("Ajouter un album") }}</a>
+          <a id="delete-album" href="#delete">{{ _("Supprimer") }}</a>
         {% endif %}
         </div>
       </div>
@@ -71,6 +71,11 @@
 </section>
 {% else %}
 <br/>
-<div id="albums-grid" style="display: inline;">Aucun album disponible. <a href="#create-groupe-album">En créer un</a></div>
+{% set create %}
+  <a href="#create-groupe-album">{{ _("En créer un") }}</a>
+{% endset %}
+<div id="albums-grid" style="display: inline;">
+  {{ _("Aucun album disponible. %(create)s", create=create) }}
+</div>
 {% endif %}
 {% endblock %}

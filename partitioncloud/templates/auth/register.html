@@ -2,21 +2,21 @@
 
 
 {% block content %}
-<h2>{% block title %}Créer un compte{% endblock %}</h2>
+<h2>{% block title %}{{ _("Créer un compte") }}{% endblock %}</h2>
 
 <form method="post" id="add-user-form">
   {% if g.user.access_level == 1 %}
     <!-- Uniquement pour /add-user -->
-    <label for="album_uuid">Ajouter à un album: </label><br/>
+    <label for="album_uuid">{{ _("Ajouter à un album:") }}</label><br/>
     <select name="album_uuid" id="album_uuid" form="add-user-form" style="margin-bottom:15px;">
-    <option value="">Aucun</option>
+    <option value="">{{ _("Aucun") }}</option>
     {% for album in albums %}
       <option value="{{ album['uuid'] }}">{{ album["name"] }}</option>
     {% endfor %}
     </select><br/>
   {% endif %}
-  <input type="text" name="username" id="username" placeholder="Nom d'utilisateur" required><br/>
-  <input type="password" name="password" id="password" placeholder="Mot de passe" required><br/>
-  <input type="submit" value="Créer un compte">
+  <input type="text" name="username" id="username" placeholder="{{ _('Nom d\'utilisateur') }}" required><br/>
+  <input type="password" name="password" id="password" placeholder="{{ _('Mot de passe') }}" required><br/>
+  <input type="submit" value="{{ _('Créer un compte') }}">
 </form>
 {% endblock %}

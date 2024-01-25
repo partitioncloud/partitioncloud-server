@@ -2,27 +2,27 @@
 
 
 {% block content %}
-<h2>{% block title %}Panneau d'administration{% endblock %}</h2>
+<h2>{% block title %}{{ _("Panneau d'administration") }}{% endblock %}</h2>
 
 <div id="actions-rapides">
     <a href="/add-user">
-        <div class="button">Nouvel utilisateur</div>
+        <div class="button">{{ _("Nouvel utilisateur") }}</div>
     </a>
     <a href="/partition">
-        <div class="button">Voir les partitions</div>
+        <div class="button">{{ _("Voir les partitions") }}</div>
     </a>
     <a href="/admin/logs">
-        <div class="button">Voir les logs</div>
+        <div class="button">{{ _("Voir les logs") }}</div>
     </a>
 </div>
 <div class="x-scrollable">
     <table>
         <thead>
             <tr>
-                <th scope="col">Utilisateur</th>
-                <th scope="col">Albums</th>
-                <th scope="col">Partitions</th>
-                <th scope="col">Privilèges</th>
+                <th scope="col">{{ _("Utilisateur") }}</th>
+                <th scope="col">{{ _("Albums") }}</th>
+                <th scope="col">{{ _("Partitions") }}</th>
+                <th scope="col">{{ _("Privilèges") }}</th>
             </tr>
         </thead>
         <tbody>
