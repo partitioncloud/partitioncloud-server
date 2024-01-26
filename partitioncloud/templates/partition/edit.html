@@ -39,7 +39,7 @@
       </tr>
       <tr>
         <td>{{ _("Attachments") }}</td>
-        {% set _ = partition.load_attachments() %}
+        {{ partition.load_attachments() }}
         <td><a href="/partition/{{ partition.uuid }}/attachments">
           {% if partition.attachments %}
             {% set number=partition.attachments | length %}

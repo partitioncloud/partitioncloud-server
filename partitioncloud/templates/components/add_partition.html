@@ -6,6 +6,8 @@
   <textarea id="lyrics" name="body" type="text" placeholder="{{ _('lyrics') }}"></textarea><br/>
   {% if partition_uuid %}
     <input name="partition-uuid" value="{{ partition_uuid }}" type="hidden">
+  {% else %}
+    <input name="file" type="file" accept=".pdf" required=""><br/>
   {% endif %}
   <input type="submit" value="{{ _('Add') }}" />
 </form>
