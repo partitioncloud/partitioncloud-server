@@ -54,7 +54,7 @@ def add_attachments():
 
 
 def install_colorama():
-    os.system("pip install colorama -qq")
+    utils.install_package("colorama")
 
 
 """
@@ -144,7 +144,7 @@ def base_url_parameter_added():
 
 
 def install_qrcode():
-    os.system("pip install qrcode -qq")
+    utils.install_package("qrcode")
 
 
 """
@@ -171,3 +171,12 @@ def move_thumbnails():
 
     os.makedirs(os.path.join(config.instance, "cache", "thumbnails"), exist_ok=True)
     os.makedirs(os.path.join(config.instance, "cache", "search-thumbnails"), exist_ok=True)
+
+
+"""
+ v1.7.*
+"""
+
+
+def install_babel():
+    utils.install_package("flask-babel")
