@@ -34,10 +34,12 @@ translations () {
 }
 
 start () {
+    pybabel compile -d partitioncloud/translations/
     flask run --port=$PORT
 }
 
 production () {
+    pybabel compile -d partitioncloud/translations/
     FLASK_APP=partitioncloud /usr/bin/gunicorn \
     wsgi:app \
     --bind 0.0.0.0:$PORT
@@ -56,8 +58,8 @@ usage () {
     echo -e "\t$0 start"
     echo -e "\t$0 production"
     echo -e "\t$0 translations"
-
 }
+
 
 RESULT=$(type "$1")
 if [[ $1 && $RESULT = *"is a"*"function"* || $RESULT == *"est une fonction"* ]]; then
