@@ -2,15 +2,15 @@
 
 {% extends 'base.html' %}
 
-{% block title %}{{ _("Attachments de %(name)s", name=partition.name) }}{% endblock %}
+{% block title %}{{ _("Attachments of %(name)s", name=partition.name) }}{% endblock %}
 
 {% block dialogs %}
 <dialog id="create-attachment">
-    <h2>{{ _("Ajouter un attachment à %(name)s", name=partition.name) }}</h2>
+    <h2>{{ _("Add an attachment to %(name)s", name=partition.name) }}</h2>
     <form action="/partition/{{ partition.uuid }}/add-attachment" method="post" enctype="multipart/form-data">
-        <input type="text" name="name" id="name" placeholder="{{ _('Nom') }}"><br/>
+        <input type="text" name="name" id="name" placeholder="{{ _('Name') }}"><br/>
         <input name="file" type="file" accept=".mp3,.mid" required=""><br/>
-        <input type="submit" value="{{ _('Ajouter') }}">
+        <input type="submit" value="{{ _('Add') }}">
     </form>
     <a href="#!" class="close-dialog">Close</a>
 </dialog>
@@ -19,8 +19,8 @@
 {% block content %}
 <object id="pdf-embed" width="400" height="500" type="application/pdf" data="/partition/{{ partition.uuid }}">
     <p>
-        {{ _("Impossible d'afficher le pdf dans ce navigateur.
-        Il est conseillé d'utiliser Firefox sur Android.") }}
+        {{ _("No pdf viewer available in this browser.
+        You can use Firefox on Android.") }}
     </p>
 </object>
 
@@ -43,7 +43,7 @@
                     src="/partition/attachment/{{ attachment.uuid }}.mid"
                     sound-font visualizer="#midi-visualizer" data-js-focus-visible>
                 </midi-player>
-                <noscript>{{ _("JavaScript est nécessaire pour lire les fichiers MIDI") }}</noscript>
+                <noscript>{{ _("JavaScript is mandatory to read MIDI files") }}</noscript>
             </td>
             <td>🎵 {{ attachment.name }}</td>
             {% endif %}
@@ -57,7 +57,7 @@
 <br/>
 {% if user %}
 <div class="centered">
-    <a href="#create-attachment"><button>{{ _("Ajouter un attachment") }}</button></a>
+    <a href="#create-attachment"><button>{{ _("Add an attachment") }}</button></a>
 </div>
 {% endif %}
 {% endblock %}

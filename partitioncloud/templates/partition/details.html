@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>{% block title %}{{ _('Détails de "%(name)s"', name=partition.name)}}{% endblock %}</h2>
+<h2>{% block title %}{{ _('Details of "%(name)s"', name=partition.name)}}{% endblock %}</h2>
 <br/>
 
 <form action="/partition/{{ partition.uuid }}/edit" method="post" enctype="multipart/form-data">
@@ -9,7 +9,7 @@
     <tbody>
       <tr>
         <td>
-          {{ _("Responsable de l'ajout") }}
+          {{ _("Added by") }}
         </td>
         <td>
           {% if user is not none %}
@@ -20,13 +20,13 @@
             </div>
           </div>
           {% else %}
-            {{ _("Inconnu") }}
+            {{ _("Unknown") }}
           {% endif %}
         </td>
       </tr>
       <tr>
         <td>
-          {{ _("Type d'ajout") }}
+          {{ _("Type") }}
         </td>
         <td>
           {% if partition.source == "unknown" or partition.source == "upload" %}
@@ -49,41 +49,41 @@
         </td>
       </tr>
       <tr>
-        <td>{{ _("Fichier") }}</td>
+        <td>{{ _("File") }}</td>
         <td><a href="/partition/{{ partition.uuid }}">
             <img class="partition-thumbnail" src="/thumbnails/{{ partition.uuid }}.jpg" loading="lazy">
         </a></td>
       </tr>
       <tr>
-        <td>{{ _("Titre") }}</td>
-        <td><input name="name" type="text" value="{{ partition.name }}" placeholder="{{ _('Titre') }}" required /><br/></td>
+        <td>{{ _("Title") }}</td>
+        <td><input name="name" type="text" value="{{ partition.name }}" placeholder="{{ _('Title') }}" required /><br/></td>
       </tr>
       <tr>
-        <td>{{ _("Auteur") }}</td>
-        <td><input name="author" type="text" value="{{ partition.author }}" placeholder="{{ _('Auteur') }}" /><br/></td>
+        <td>{{ _("Author") }}</td>
+        <td><input name="author" type="text" value="{{ partition.author }}" placeholder="{{ _('Author') }}" /><br/></td>
       </tr>
       <tr>
-        <td>{{ _("Paroles") }}</td>
-        <td><textarea id="paroles" name="body" type="text" placeholder="{{ _('Paroles') }}">{{ partition.body }}</textarea><br/></td>
+        <td>{{ _("Lyrics") }}</td>
+        <td><textarea id="lyrics" name="body" type="text" placeholder="{{ _('Lyrics') }}">{{ partition.body }}</textarea><br/></td>
       </tr>
       <tr>
-        <td>{{ _("Pièces jointes") }}</td>
+        <td>{{ _("Attachments") }}</td>
         {% set _ = partition.load_attachments() %}
         <td><a href="/partition/{{ partition.uuid }}/attachments">
           {% if partition.attachments %}
             {% set number=partition.attachments | length %}
-            {{ _("Oui, %(number)s", number=number) }}
+            {{ _("Yes, %(number)s", number=number) }}
           {% else %}
-            {{ _("En rajouter") }}
+            {{ _("Add one") }}
           {% endif %}
         </a></td>
       </tr>
     </tbody>
   </table>
-  <input type="submit" value="{{ _('Mettre à jour') }}" />
+  <input type="submit" value="{{ _('Update') }}" />
 </form>
 <a href="/partition/{{ partition.uuid }}/delete">
-  <button id="delete-partition">{{ _("Supprimer") }}</button>
+  <button id="delete-partition">{{ _("Delete") }}</button>
 </a>
 
 {% endblock %}

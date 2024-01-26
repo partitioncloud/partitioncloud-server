@@ -2,9 +2,9 @@
 
 
 {% block content %}
-<h2>{% block title %}{{ _('Résultats de la recherche "%(query)s', query=query)}}{% endblock %}</h2>
+<h2>{% block title %}{{ _('Search results for "%(query)s"', query=query)}}{% endblock %}</h2>
 {% if partitions|length != 0 %}
-<h3>{{ _("Résultats dans la bibliothèque locale") }}</h3>
+<h3>{{ _("Results in current database") }}</h3>
 <div id="partitions-grid">
   {% for partition in partitions %}
   <div class="partition-container">
@@ -35,14 +35,14 @@
       </select>
       <input type="hidden" value="{{ partition['uuid'] }}" name="partition-uuid">
       <input type="hidden" value="local_file" name="partition-type">
-      <input type="submit" value="{{ _('Ajouter à l'album') }}" class="add-to-album">
+      <input type="submit" value="{{ _('Add to album') }}" class="add-to-album">
     </form>
   </div>
   {% endfor %}
 </div>
 {% endif %}
 {% if google_results|length != 0 %}
-<h3>{{ _("Résultats de la recherche en ligne") }}</h3>
+<h3>{{ _("Online search results") }}</h3>
 <div id="partitions-grid">
   {% for partition in google_results %}
   <div class="partition-container">
@@ -67,13 +67,13 @@
       </select>
       <input type="hidden" value="{{ partition['uuid'] }}" name="partition-uuid">
       <input type="hidden" value="online_search" name="partition-type">
-      <input type="submit" value="{{ _('Ajouter à l'album') }}">
+      <input type="submit" value="{{ _('Add to album') }}">
     </form>
   </div>
   {% endfor %}
 </div>
 {% endif %}
 {% if google_results|length == 0 and partitions|length == 0 %}
-{{ _("Aucun résultat. Essayez d'augmenter le nombre de recherches en ligne ou d'affiner votre recherche.") }}
+{{ _("No results available. Try to tweak your query or increase the amount of online searches.") }}
 {% endif %}
 {% endblock %}

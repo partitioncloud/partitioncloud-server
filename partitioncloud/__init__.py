@@ -132,10 +132,10 @@ def add_user():
             try:
                 if album_uuid != "":
                     user.join_album(album_uuid)
-                flash(_("Utilisateur %(username)s créé", username=username))
+                flash(_("Created user %(username)s", username=username))
                 return redirect("/albums")
             except LookupError:
-                flash(_("Cet album n'existe pas. L'utilisateur %(username)s a été créé", username=username))
+                flash(_("This album does not exists, but user %(username)s has been created", username=username))
                 return redirect("/albums")
 
         flash(error)

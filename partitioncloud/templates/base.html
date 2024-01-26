@@ -20,21 +20,21 @@
     {% block dialogs %}{% endblock %}
     {% if g.user %}
     <dialog id="create-album">
-      <h2>{{ _("Créer un nouvel album") }}</h2>
+      <h2>{{ _("New Album") }}</h2>
       <form action="/albums/create-album" method="post">
-        <input type="text" name="name" id="name" placeholder="{{ _('Nom') }}" required><br/>
-        <input type="submit" value="{{ _('Créer') }}">
+        <input type="text" name="name" id="name" placeholder="{{ _('Name') }}" required><br/>
+        <input type="submit" value="{{ _('Create') }}">
       </form>
       <br/>
       <br/>
-      {{ _("Je souhaite créer plusieurs albums et pouvoir tous les partager avec un seul lien.") }} <a href="#create-groupe">{{ _("Créer un groupe") }}</a>.
+      {{ _("I want to create a collection of albums.") }} <a href="#create-groupe">{{ _("Create group") }}</a>.
       <a href="#!" class="close-dialog">Close</a>
     </dialog>
     <dialog id="create-groupe">
-      <h2>{{ _("Créer un nouveau groupe") }}</h2>
+      <h2>{{ _("Create new group") }}</h2>
       <form action="/groupe/create-groupe" method="post">
-        <input type="text" name="name" id="name" placeholder="{{ _('Nom') }}" required><br/>
-        <input type="submit" value="{{ _('Créer') }}">
+        <input type="text" name="name" id="name" placeholder="{{ _('Name') }}" required><br/>
+        <input type="submit" value="{{ _('Create') }}">
       </form>
       <a href="#!" class="close-dialog">Close</a>
     </dialog>
@@ -58,9 +58,9 @@
     <div id="sidebar">
       {% if g.user %}
       <form id="search-form" action="/albums/search" method="post">
-        <input type="search" id="search-bar" required="" placeholder="{{ _('Rechercher') }}" name="query">
+        <input type="search" id="search-bar" required="" placeholder="{{ _('Search') }}" name="query">
         <br>
-        <select id="nb-queries" name="nb-queries" title="{{ _('Nombre de recherches en ligne') }}">
+        <select id="nb-queries" name="nb-queries" title="{{ _('Number of online searches') }}">
           {% for i in range(0, user.max_queries+1) %}
           <option value="{{ i }}">{{ i }}</option>
           {% endfor %}
@@ -72,7 +72,7 @@
       {% if g.user %}
       <a href="#create-album">
         <div class="create-button">
-            {{ _("Créer un album") }}
+            {{ _("New album") }}
         </div>
       </a>
       {% endif %}
@@ -89,7 +89,7 @@
               </summary>
               <div class="groupe-albums-cover">
                 {% if groupe.get_albums() | length == 0 %}
-                  Aucun album 
+                  {{ _("No albums") }}
                 {% else %}
                   {% for album in groupe.get_albums() %}
                   <a href="/groupe/{{ groupe.uuid }}/{{ album['uuid'] }}">
@@ -108,7 +108,7 @@
 
         <section id="albums">
           {% if user.get_albums() | length == 0 %}
-          <div style="text-align: center;"><i>{{ _("Aucun album disponible") }}</i></div>
+          <div style="text-align: center;"><i>{{ _("No album available") }}</i></div>
           {% else %}
           {% for album in user.albums %}
           <a href="/albums/{{ album['uuid'] }}">
@@ -122,7 +122,7 @@
       </section>
       {% else %}
       <section id="sidebar-navigation">
-        <div style="text-align: center;"><i>{{ _("Connectez vous pour avoir accès à vos albums") }}</i></div>
+        <div style="text-align: center;"><i>{{ _("Log in to see your albums") }}</i></div>
       </section>
       {% endif %}
 
@@ -136,7 +136,7 @@
                 <path d="M9 12h12l-3 -3"></path>
                 <path d="M18 15l3 -3"></path>
               </svg>
-              {{ _("Déconnexion") }}
+              {{ _("Log out") }}
             </button>
           </a><br/>
           {% if g.user.access_level == 1 %}
@@ -151,7 +151,7 @@
               <path d="M17.27 20l-1.3 .75"></path>
               <path d="M15.97 17.25l1.3 .75"></path>
               <path d="M20.733 20l1.3 .75"></path>
-            </svg>{{ _("Panneau admin") }}
+            </svg>{{ _("Admin Panel") }}
             </button></a><br/>
           {% endif %}
           <div class="user">
@@ -163,9 +163,9 @@
           </div>
         {% else %}
           {% if not config.DISABLE_REGISTER %}
-            <a href="{{ url_for('auth.register') }}"><button>{{ _("Créer un compte") }}</button></a>
+            <a href="{{ url_for('auth.register') }}"><button>{{ _("Create account") }}</button></a>
           {% endif %}
-          <a href="{{ url_for('auth.login') }}"><button>{{ _("Se connecter") }}</button></a>
+          <a href="{{ url_for('auth.login') }}"><button>{{ _("Log in") }}</button></a>
         {% endif %}
       </div>
     </div>

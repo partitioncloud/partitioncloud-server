@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ _("Supprimer %(name)s", name=album.name) }}{% endblock %}
+{% block title %}{{ _("Delete %(name)s", name=album.name) }}{% endblock %}
 
 {% block content %}
-{{ _("Êtes vous sûr de vouloir supprimer cet album ?") }}
+{{ _("Do you really want to delete this album?") }}
 <form method="post">
-  <input type="submit" value="{{ _('Supprimer') }}">
+  <input type="submit" value="{{ _('Delete') }}">
 </form>
 <a class="button-href" href="/albums/{{ album.uuid }}">
-  <button id="cancel-deletion">{{ _("Annuler") }}</button>
+  <button id="cancel-deletion">{{ _("Cancel") }}</button>
 </a>
 
 {% endblock %}

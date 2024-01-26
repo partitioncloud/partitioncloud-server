@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}{{ _("Supprimer %(name)s", name=partition.name) }}{% endblock %}</h1>
+<h1>{% block title %}{{ _("Delete %(name)s", name=partition.name) }}{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-{{ _("Êtes vous sûr de vouloir supprimer cette partition ?") }}
+{{ _("Do you really want to delete this score?") }}
 <form method="post">
-  <input type="submit" id="delete-partition" value="{{ _('Supprimer') }}">
+  <input type="submit" id="delete-partition" value="{{ _('Delete') }}">
 </form>
 <a class="button-href" href="/partition/{{ partition.uuid }}/edit">
-  <button id="cancel-deletion">{{ _("Annuler") }}</button>
+  <button id="cancel-deletion">{{ _("Cancel") }}</button>
 </a>
 
 {% endblock %}

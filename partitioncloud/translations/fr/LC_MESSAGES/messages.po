@@ -18,248 +18,241 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.14.0\n"
 
-#: partitioncloud/__init__.py:136
+#: partitioncloud/__init__.py:135
 #, python-format
-msgid "Utilisateur %(username)s créé"
+msgid "Created user %(username)s"
 msgstr "Utilisateur %(username)s créé"
 
-#: partitioncloud/__init__.py:139
+#: partitioncloud/__init__.py:138
 #, python-format
-msgid "Cet album n'existe pas. L'utilisateur %(username)s a été créé"
+msgid "This album does not exists, but user %(username)s has been created"
 msgstr "Cet album n'existe pas. L'utilisateur %(username)s a été créé"
 
 #: partitioncloud/modules/albums.py:41
-msgid "Aucun terme de recherche spécifié."
+msgid "Missing search query"
 msgstr "Aucun terme de recherche spécifié."
 
-#: partitioncloud/modules/albums.py:123 partitioncloud/modules/groupe.py:185
-msgid "Un nom est requis. L'album n'a pas été créé"
-msgstr "Un nom est requis. L'album n'a pas été créé"
+#: partitioncloud/modules/albums.py:123 partitioncloud/modules/groupe.py:71
+#: partitioncloud/modules/groupe.py:185
+msgid "Missing name."
+msgstr "Un nom est requis."
 
 #: partitioncloud/modules/albums.py:160
-msgid "Cet album n'existe pas."
+msgid "This album does not exist."
 msgstr "Cet album n'existe pas."
 
 #: partitioncloud/modules/albums.py:163
-msgid "Album ajouté à la collection."
+msgid "Album added to collection."
 msgstr "Album ajouté à la collection."
 
 #: partitioncloud/modules/albums.py:177 partitioncloud/modules/albums.py:240
 #: partitioncloud/modules/albums.py:346
-msgid "Vous ne faites pas partie de cet album"
+msgid "You are not a member of this album"
 msgstr "Vous ne faites pas partie de cet album"
 
 #: partitioncloud/modules/albums.py:181
-msgid "Vous êtes seul dans cet album, le quitter entraînera sa suppression."
+msgid "You are alone here, quitting means deleting this album."
 msgstr "Vous êtes seul dans cet album, le quitter entraînera sa suppression."
 
 #: partitioncloud/modules/albums.py:185
-msgid "Album quitté."
+msgid "Album quitted."
 msgstr "Album quitté."
 
 #: partitioncloud/modules/albums.py:204
-msgid "Vous n'êtes pas seul dans cet album."
+msgid "You are not alone in this album."
 msgstr "Vous n'êtes pas seul dans cet album."
 
 #: partitioncloud/modules/albums.py:206
-msgid "Vous ne possédez pas cet album."
+msgid "You don't own this album."
 msgstr "Vous ne possédez pas cet album."
 
 #: partitioncloud/modules/albums.py:217
-msgid "Album supprimé."
+msgid "Album deleted."
 msgstr "Album supprimé."
 
 #: partitioncloud/modules/albums.py:246 partitioncloud/modules/partition.py:153
 #: partitioncloud/modules/partition.py:199
-msgid "Un titre est requis."
+msgid "Missing title"
 msgstr "Un titre est requis."
 
 #: partitioncloud/modules/albums.py:248 partitioncloud/modules/partition.py:63
-msgid "Aucun fichier n'a été fourni."
+msgid "Missing file"
 msgstr "Aucun fichier n'a été fourni."
 
 #: partitioncloud/modules/albums.py:260
-msgid "Les résultats de la recherche ont expiré."
+msgid "Search results expired"
 msgstr "Les résultats de la recherche ont expiré."
 
 #: partitioncloud/modules/albums.py:326
 #, python-format
-msgid "Partition %(partition_name)s ajoutée"
+msgid "Score %(partition_name)s added"
 msgstr "Partition %(partition_name)s ajoutée"
 
 #: partitioncloud/modules/albums.py:340
-msgid "Il est nécessaire de sélectionner un album."
+msgid "Selecting an album is mandatory."
 msgstr "Il est nécessaire de sélectionner un album."
 
 #: partitioncloud/modules/albums.py:342
-msgid "Il est nécessaire de sélectionner une partition."
+msgid "Selecting a score is mandatory."
 msgstr "Il est nécessaire de sélectionner une partition."
 
 #: partitioncloud/modules/albums.py:344
-msgid "Il est nécessaire de spécifier un type de partition."
+msgid "Please specify a score type."
 msgstr "Il est nécessaire de spécifier un type de partition."
 
 #: partitioncloud/modules/albums.py:366
-msgid "Partition ajoutée."
+msgid "Score added"
 msgstr "Partition ajoutée."
 
 #: partitioncloud/modules/albums.py:368
-msgid "Partition déjà dans l'album."
+msgid "Score is already in the album."
 msgstr "Partition déjà dans l'album."
 
 #: partitioncloud/modules/albums.py:380
-msgid "Type de partition inconnu."
+msgid "Unknown score type."
 msgstr "Type de partition inconnu."
 
 #: partitioncloud/modules/auth.py:27 partitioncloud/modules/auth.py:54
-msgid "Vous devez être connecté pour accéder à cette page."
+msgid "You need to login to access this resource."
 msgstr "Vous devez être connecté pour accéder à cette page."
 
 #: partitioncloud/modules/auth.py:59
-msgid "Droits insuffisants."
+msgid "Missing rights."
 msgstr "Droits insuffisants."
 
 #: partitioncloud/modules/auth.py:85
-msgid "Un nom d'utilisateur est requis."
+msgid "Missing username."
 msgstr "Un nom d'utilisateur est requis."
 
 #: partitioncloud/modules/auth.py:87
-msgid "Un mot de passe est requis."
+msgid "Missing password."
 msgstr "Un mot de passe est requis."
 
 #: partitioncloud/modules/auth.py:100
 #, python-format
-msgid "Le nom d'utilisateur %(username)s est déjà pris."
+msgid "Username %(username)s is not available."
 msgstr "Le nom d'utilisateur %(username)s est déjà pris."
 
 #: partitioncloud/modules/auth.py:113
-msgid ""
-"L'enregistrement de nouveaux utilisateurs a été désactivé par "
-"l'administrateur."
+msgid "New users registration is disabled by owner."
 msgstr ""
 "L'enregistrement de nouveaux utilisateurs a été désactivé par "
 "l'administrateur."
 
 #: partitioncloud/modules/auth.py:127
-msgid "Utilisateur créé avec succès. Vous pouvez vous connecter."
+msgid "Successfully created new user. You can log in."
 msgstr "Utilisateur créé avec succès. Vous pouvez vous connecter."
 
 #: partitioncloud/modules/auth.py:152
-msgid "Nom d'utilisateur ou mot de passe incorrect."
+msgid "Incorrect username or password"
 msgstr "Nom d'utilisateur ou mot de passe incorrect."
 
-#: partitioncloud/modules/groupe.py:71
-msgid "Un nom est requis. Le groupe n'a pas été créé"
-msgstr "Un nom est requis. Le groupe n'a pas été créé"
-
 #: partitioncloud/modules/groupe.py:120
-msgid "Ce groupe n'existe pas."
+msgid "Unknown group."
 msgstr "Ce groupe n'existe pas."
 
 #: partitioncloud/modules/groupe.py:123
-msgid "Groupe ajouté à la collection."
+msgid "Group added to collection."
 msgstr "Groupe ajouté à la collection."
 
 #: partitioncloud/modules/groupe.py:134
-msgid "Vous ne faites pas partie de ce groupe"
+msgid "You are not a member of this group."
 msgstr "Vous ne faites pas partie de ce groupe"
 
 #: partitioncloud/modules/groupe.py:138
-msgid "Vous êtes seul dans ce groupe, le quitter entraînera sa suppression."
+msgid "You are alone here, quitting means deleting this group."
 msgstr "Vous êtes seul dans ce groupe, le quitter entraînera sa suppression."
 
 #: partitioncloud/modules/groupe.py:142
-msgid "Groupe quitté."
+msgid "Group quitted."
 msgstr "Groupe quitté."
 
 #: partitioncloud/modules/groupe.py:155
-msgid "Vous n'êtes pas seul dans ce groupe."
+msgid "You are not alone in this group."
 msgstr "Vous n'êtes pas seul dans ce groupe."
 
 #: partitioncloud/modules/groupe.py:166
-msgid "Groupe supprimé."
+msgid "Group deleted."
 msgstr "Groupe supprimé."
 
 #: partitioncloud/modules/groupe.py:188
-msgid "Vous n'êtes pas administrateur de ce groupe"
+msgid "You are not admin of this group."
 msgstr "Vous n'êtes pas administrateur de ce groupe"
 
 #: partitioncloud/modules/partition.py:58
-msgid "Cette partition ne vous appartient pas"
+msgid "You don't own this score."
 msgstr "Cette partition ne vous appartient pas"
 
 #: partitioncloud/modules/partition.py:71
-msgid "Pas de nom de fichier"
+msgid "Missing filename."
 msgstr "Pas de nom de fichier"
 
 #: partitioncloud/modules/partition.py:76
-msgid "Extension de fichier non supportée"
+msgid "Unsupported file type."
 msgstr "Extension de fichier non supportée"
 
 #: partitioncloud/modules/partition.py:144
-msgid "Vous n'êtes pas autorisé à modifier cette partition."
+msgid "You are not allowed to edit this file."
 msgstr "Vous n'êtes pas autorisé à modifier cette partition."
 
 #: partitioncloud/modules/partition.py:155
 #: partitioncloud/modules/partition.py:201
-msgid "Un nom d'auteur est requis (à minima nul)"
+msgid "Missing author in request body (can be null)."
 msgstr "Un nom d'auteur est requis (à minima nul)"
 
 #: partitioncloud/modules/partition.py:157
 #: partitioncloud/modules/partition.py:203
-msgid "Des paroles sont requises (à minima nulles)"
+msgid "Missing lyrics (can be null)."
 msgstr "Des paroles sont requises (à minima nulles)"
 
 #: partitioncloud/modules/partition.py:169
 #: partitioncloud/modules/partition.py:215
 #, python-format
-msgid "Partition %(name)s modifiée avec succès."
+msgid "Successfully modified %(name)s"
 msgstr "Partition %(name)s modifiée avec succès."
 
 #: partitioncloud/modules/partition.py:230
-msgid "Vous n'êtes pas autorisé à supprimer cette partition."
+msgid "You are not allowed to delete this score."
 msgstr "Vous n'êtes pas autorisé à supprimer cette partition."
 
 #: partitioncloud/modules/partition.py:238
-msgid "Partition supprimée."
+msgid "Score deleted."
 msgstr "Partition supprimée."
 
 #: partitioncloud/templates/base.html:23
-msgid "Créer un nouvel album"
+msgid "New Album"
 msgstr "Créer un nouvel album"
 
 #: partitioncloud/templates/base.html:25 partitioncloud/templates/base.html:36
 #: partitioncloud/templates/groupe/index.html:10
 #: partitioncloud/templates/partition/attachments.html:11
-msgid "Nom"
+msgid "Name"
 msgstr "Nom"
 
 #: partitioncloud/templates/base.html:26 partitioncloud/templates/base.html:37
-msgid "Créer"
+msgid "Create"
 msgstr "Créer"
 
 #: partitioncloud/templates/base.html:30
-msgid ""
-"Je souhaite créer plusieurs albums et pouvoir tous les partager avec un "
-"seul lien."
+msgid "I want to create a collection of albums."
 msgstr ""
 "Je souhaite créer plusieurs albums et pouvoir tous les partager avec un "
 "seul lien."
 
 #: partitioncloud/templates/base.html:30
-msgid "Créer un groupe"
+msgid "Create group"
 msgstr "Créer un groupe"
 
 #: partitioncloud/templates/base.html:34
-msgid "Créer un nouveau groupe"
+msgid "Create new group"
 msgstr "Créer un nouveau groupe"
 
 #: partitioncloud/templates/base.html:61
-msgid "Rechercher"
+msgid "Search"
 msgstr "Rechercher"
 
 #: partitioncloud/templates/base.html:63
-msgid "Nombre de recherches en ligne"
+msgid "Number of online searches"
 msgstr "Nombre de recherches en ligne"
 
 #: partitioncloud/templates/admin/index.html:23
@@ -269,62 +262,67 @@ msgid "Albums"
 msgstr "Albums"
 
 #: partitioncloud/templates/base.html:75
-msgid "Créer un album"
+msgid "New album"
 msgstr "Créer un album"
 
+#: partitioncloud/templates/base.html:92
+msgid "No albums"
+msgstr "Aucun album disponible"
+
 #: partitioncloud/templates/base.html:111
-msgid "Aucun album disponible"
+msgid "No album available"
 msgstr "Aucun album disponible"
 
 #: partitioncloud/templates/base.html:125
-msgid "Connectez vous pour avoir accès à vos albums"
+msgid "Log in to see your albums"
 msgstr "Connectez vous pour avoir accès à vos albums"
 
 #: partitioncloud/templates/base.html:139
-msgid "Déconnexion"
+msgid "Log out"
 msgstr "Déconnexion"
 
 #: partitioncloud/templates/base.html:154
-msgid "Panneau admin"
+msgid "Admin Panel"
 msgstr "Panneau admin"
 
 #: partitioncloud/templates/auth/register.html:5
 #: partitioncloud/templates/auth/register.html:20
 #: partitioncloud/templates/base.html:166
-msgid "Créer un compte"
+msgid "Create account"
 msgstr "Créer un compte"
 
+#: partitioncloud/templates/auth/login.html:5
 #: partitioncloud/templates/auth/login.html:10
 #: partitioncloud/templates/base.html:168
-msgid "Se connecter"
+msgid "Log in"
 msgstr "Se connecter"
 
 #: partitioncloud/templates/admin/index.html:5
-msgid "Panneau d'administration"
+msgid "Administration Panel"
 msgstr "Panneau d'administration"
 
 #: partitioncloud/templates/admin/index.html:9
-msgid "Nouvel utilisateur"
+msgid "New user"
 msgstr "Nouvel utilisateur"
 
 #: partitioncloud/templates/admin/index.html:12
-msgid "Voir les partitions"
+msgid "See scores"
 msgstr "Voir les partitions"
 
 #: partitioncloud/templates/admin/index.html:15
-msgid "Voir les logs"
+msgid "See logs"
 msgstr "Voir les logs"
 
 #: partitioncloud/templates/admin/index.html:22
-msgid "Utilisateur"
+msgid "User"
 msgstr "Utilisateur"
 
 #: partitioncloud/templates/admin/index.html:24
-msgid "Partitions"
+msgid "Scores"
 msgstr "Partitions"
 
 #: partitioncloud/templates/admin/index.html:25
-msgid "Privilèges"
+msgid "Admin privileges"
 msgstr "Privilèges"
 
 #: partitioncloud/templates/admin/logs.html:5
@@ -332,66 +330,66 @@ msgid "Logs"
 msgstr "Logs"
 
 #: partitioncloud/templates/admin/partitions.html:4
-msgid "Liste des partitions"
+msgid "Scores list"
 msgstr "Liste des partitions"
 
 #: partitioncloud/templates/admin/partitions.html:31
 #: partitioncloud/templates/albums/album.html:94
-msgid "Aucune partition disponible"
+msgid "No available scores"
 msgstr "Aucune partition disponible"
 
 #: partitioncloud/templates/albums/add-partition.html:3
-msgid "Ajout de partition"
+msgid "New score"
 msgstr "Ajout de partition"
 
 #: partitioncloud/templates/albums/album.html:12
-msgid "Supprimer l'album"
+msgid "Delete l'album"
 msgstr "Supprimer l'album"
 
 #: partitioncloud/templates/albums/album.html:13
 #: partitioncloud/templates/albums/delete-album.html:6
-msgid "Êtes vous sûr de vouloir supprimer cet album ?"
+msgid "Do you really want to delete this album?"
 msgstr "Êtes vous sûr de vouloir supprimer cet album ?"
 
 #: partitioncloud/templates/albums/album.html:16
 #: partitioncloud/templates/albums/album.html:60
 #: partitioncloud/templates/albums/delete-album.html:8
-#: partitioncloud/templates/groupe/index.html:21
-#: partitioncloud/templates/groupe/index.html:54
+#: partitioncloud/templates/groupe/index.html:20
+#: partitioncloud/templates/groupe/index.html:53
 #: partitioncloud/templates/partition/delete.html:10
 #: partitioncloud/templates/partition/details.html:86
 #: partitioncloud/templates/partition/edit.html:57
-msgid "Supprimer"
+msgid "Delete"
 msgstr "Supprimer"
 
 #: partitioncloud/templates/albums/album.html:51
-msgid "Ajouter une partition"
+msgid "Add a score"
 msgstr "Ajouter une partition"
 
 #: partitioncloud/templates/albums/album.html:54
-#: partitioncloud/templates/groupe/index.html:47
-msgid "Rejoindre"
+#: partitioncloud/templates/groupe/index.html:46
+msgid "Join"
 msgstr "Rejoindre"
 
 #: partitioncloud/templates/albums/album.html:56
-#: partitioncloud/templates/groupe/index.html:49
-msgid "Quitter"
+#: partitioncloud/templates/groupe/index.html:48
+msgid "Quit"
 msgstr "Quitter"
 
 #: partitioncloud/templates/albums/album.html:58
-#: partitioncloud/templates/groupe/index.html:51
-msgid "Partager"
+#: partitioncloud/templates/groupe/index.html:50
+msgid "Share"
 msgstr "Partager"
 
 #: partitioncloud/templates/albums/delete-album.html:3
 #: partitioncloud/templates/partition/delete.html:4
 #, python-format
-msgid "Supprimer %(name)s"
+msgid "Delete %(name)s"
 msgstr "Supprimer %(name)s"
 
 #: partitioncloud/templates/albums/delete-album.html:11
 #: partitioncloud/templates/partition/delete.html:13
-msgid "Annuler"
+msgid "Cancel"
 msgstr "Annuler"
 
 #: partitioncloud/templates/albums/index.html:3
@@ -400,189 +398,206 @@ msgstr "Accueil"
 
 #: partitioncloud/templates/albums/index.html:10
 #, python-format
-msgid "Bonjour %(user_name)s !"
+msgid "Hi %(user_name)s !"
 msgstr "Bonjour %(user_name)s !"
 
 #: partitioncloud/templates/albums/index.html:11
-msgid "Aucun album sélectionné"
+msgid "No album selected"
 msgstr "Aucun album sélectionné"
 
-#: partitioncloud/templates/auth/login.html:5
-msgid "Connexion"
-msgstr "Connexion"
+#: partitioncloud/templates/albums/search.html:5
+#, python-format
+msgid "Search results for \"%(query)s\""
+msgstr "Résultats de la recherche pour \"%(query)s\""
+
+#: partitioncloud/templates/albums/search.html:7
+msgid "Results in current database"
+msgstr "Résultats dans la recherche locale"
+
+#: partitioncloud/templates/albums/search.html:38
+#: partitioncloud/templates/albums/search.html:70
+msgid "Add to album"
+msgstr "Ajouter à un album"
+
+#: partitioncloud/templates/albums/search.html:45
+msgid "Online search results"
+msgstr "Résultats de la recherche en ligne"
+
+#: partitioncloud/templates/albums/search.html:77
+msgid ""
+"No results available. Try to tweak your query or increase the amount of "
+"online searches."
+msgstr ""
+"Aucun résultat disponible. Essayez d'affiner votre recherche ou "
+"d'augmenter le nombre de résultats en ligne"
 
 #: partitioncloud/templates/auth/login.html:8
 #: partitioncloud/templates/auth/register.html:18
-msgid "Nom d'utilisateur"
+msgid "Username"
 msgstr "Nom d'utilisateur"
 
 #: partitioncloud/templates/auth/login.html:9
 #: partitioncloud/templates/auth/register.html:19
-msgid "Mot de passe"
+msgid "Password"
 msgstr "Mot de passe"
 
 #: partitioncloud/templates/auth/register.html:10
-msgid "Ajouter à un album:"
+msgid "Add to album:"
 msgstr "Ajouter à un album:"
 
 #: partitioncloud/templates/auth/register.html:12
-msgid "Aucun"
+msgid "None"
 msgstr "Aucun"
 
 #: partitioncloud/templates/components/add_partition.html:1
 #, python-format
-msgid "Ajouter une partition à %(name)s"
+msgid "Add a score to %(name)s"
 msgstr "Ajouter une partition à %(name)s"
 
 #: partitioncloud/templates/components/add_partition.html:4
-msgid "titre"
+msgid "title"
 msgstr "titre"
 
 #: partitioncloud/templates/components/add_partition.html:5
-msgid "auteur"
+msgid "author"
 msgstr "auteur"
 
 #: partitioncloud/templates/components/add_partition.html:6
-msgid "paroles"
+msgid "lyrics"
 msgstr "paroles"
 
 #: partitioncloud/templates/components/add_partition.html:10
 #: partitioncloud/templates/groupe/index.html:11
 #: partitioncloud/templates/partition/attachments.html:13
-msgid "Ajouter"
+msgid "Add"
 msgstr "Ajouter"
 
 #: partitioncloud/templates/groupe/index.html:8
 #, python-format
-msgid "Ajouter un album au groupe %(name)s"
+msgid "Add an album to group %(name)s"
 msgstr "Ajouter un album au groupe %(name)s"
 
 #: partitioncloud/templates/groupe/index.html:16
-msgid "Supprimer le groupe"
+msgid "Delete group"
 msgstr "Supprimer le groupe"
 
 #: partitioncloud/templates/groupe/index.html:17
-msgid ""
-"Êtes vous sûr de vouloir supprimer ce groupe ? Cela supprimera les albums"
-"\n"
-"  sous-jacents et leurs partitions si personne ne les a rejoints "
-"(indépendamment du groupe)."
+msgid "Do you really want to delete this group and the albums it contains?"
 msgstr ""
 "Êtes vous sûr de vouloir supprimer ce groupe ? Cela supprimera les albums"
-"\n"
 "  sous-jacents et leurs partitions si personne ne les a rejoints "
 "(indépendamment du groupe)."
 
-#: partitioncloud/templates/groupe/index.html:53
-msgid "Ajouter un album"
+#: partitioncloud/templates/groupe/index.html:52
+msgid "Add an album"
 msgstr "Ajouter un album"
 
-#: partitioncloud/templates/groupe/index.html:75
-msgid "En créer un"
+#: partitioncloud/templates/groupe/index.html:74
+msgid "Create one"
 msgstr "En créer un"
 
-#: partitioncloud/templates/groupe/index.html:78
+#: partitioncloud/templates/groupe/index.html:77
 #, python-format
-msgid "Aucun album disponible. %(create)s"
+msgid "No available album. %(create)s"
 msgstr "Aucun album disponible. %(create)s"
 
 #: partitioncloud/templates/partition/attachments.html:5
 #, python-format
-msgid "Attachments de %(name)s"
+msgid "Attachments of %(name)s"
 msgstr "Attachments de %(name)s"
 
 #: partitioncloud/templates/partition/attachments.html:9
 #, python-format
-msgid "Ajouter un attachment à %(name)s"
+msgid "Add an attachment to %(name)s"
 msgstr "Ajouter un attachment à %(name)s"
 
 #: partitioncloud/templates/partition/attachments.html:22
 msgid ""
-"Impossible d'afficher le pdf dans ce navigateur.\n"
-"        Il est conseillé d'utiliser Firefox sur Android."
+"No pdf viewer available in this browser.\n"
+"        You can use Firefox on Android."
 msgstr ""
 "Impossible d'afficher le pdf dans ce navigateur.\n"
 "        Il est conseillé d'utiliser Firefox sur Android."
 
 #: partitioncloud/templates/partition/attachments.html:46
-msgid "JavaScript est nécessaire pour lire les fichiers MIDI"
+msgid "JavaScript is mandatory to read MIDI files"
 msgstr "JavaScript est nécessaire pour lire les fichiers MIDI"
 
 #: partitioncloud/templates/partition/attachments.html:60
-msgid "Ajouter un attachment"
+msgid "Add an attachment"
 msgstr "Ajouter un attachment"
 
 #: partitioncloud/templates/partition/delete.html:8
-msgid "Êtes vous sûr de vouloir supprimer cette partition ?"
+msgid "Do you really want to delete this score?"
 msgstr "Êtes vous sûr de vouloir supprimer cette partition ?"
 
 #: partitioncloud/templates/partition/details.html:4
 #, python-format
-msgid "Détails de \"%(name)s\""
+msgid "Details of \"%(name)s\""
 msgstr "Détails de \"%(name)s\""
 
 #: partitioncloud/templates/partition/details.html:12
-msgid "Responsable de l'ajout"
+msgid "Added by"
 msgstr "Responsable de l'ajout"
 
 #: partitioncloud/templates/partition/details.html:23
-msgid "Inconnu"
+msgid "Unknown"
 msgstr "Inconnu"
 
 #: partitioncloud/templates/partition/details.html:29
-msgid "Type d'ajout"
+msgid "Type"
 msgstr "Type d'ajout"
 
 #: partitioncloud/templates/partition/details.html:52
 #: partitioncloud/templates/partition/edit.html:13
-msgid "Fichier"
+msgid "File"
 msgstr "Fichier"
 
 #: partitioncloud/templates/partition/details.html:58
 #: partitioncloud/templates/partition/details.html:59
 #: partitioncloud/templates/partition/edit.html:29
 #: partitioncloud/templates/partition/edit.html:30
-msgid "Titre"
+msgid "Title"
 msgstr "Titre"
 
 #: partitioncloud/templates/partition/details.html:62
 #: partitioncloud/templates/partition/details.html:63
 #: partitioncloud/templates/partition/edit.html:33
 #: partitioncloud/templates/partition/edit.html:34
-msgid "Auteur"
+msgid "Author"
 msgstr "Auteur"
 
 #: partitioncloud/templates/partition/details.html:66
 #: partitioncloud/templates/partition/details.html:67
 #: partitioncloud/templates/partition/edit.html:37
 #: partitioncloud/templates/partition/edit.html:38
-msgid "Paroles"
+msgid "Lyrics"
 msgstr "Paroles"
 
 #: partitioncloud/templates/partition/details.html:70
 #: partitioncloud/templates/partition/edit.html:41
-msgid "Pièces jointes"
+msgid "Attachments"
 msgstr "Pièces jointes"
 
 #: partitioncloud/templates/partition/details.html:75
 #: partitioncloud/templates/partition/edit.html:46
 #, python-format
-msgid "Oui, %(number)s"
+msgid "Yes, %(number)s"
 msgstr "Oui, %(number)s"
 
 #: partitioncloud/templates/partition/details.html:77
 #: partitioncloud/templates/partition/edit.html:48
-msgid "En rajouter"
+msgid "Add one"
 msgstr "En rajouter"
 
 #: partitioncloud/templates/partition/details.html:83
 #: partitioncloud/templates/partition/edit.html:54
-msgid "Mettre à jour"
+msgid "Update"
 msgstr "Mettre à jour"
 
 #: partitioncloud/templates/partition/edit.html:6
 #, python-format
-msgid "Modifier \"%(name)s\""
+msgid "Modify \"%(name)s\""
 msgstr "Modifier \"%(name)s\""
 
 #: partitioncloud/templates/partition/edit.html:21

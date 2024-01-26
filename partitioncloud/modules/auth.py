@@ -24,7 +24,7 @@ def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
-            flash(_("Vous devez être connecté pour accéder à cette page."))
+            flash(_("You need to login to access this resource."))
             return redirect(url_for("auth.login"))
 
         return view(**kwargs)
@@ -51,12 +51,12 @@ def admin_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
-            flash(_("Vous devez être connecté pour accéder à cette page."))
+            flash(_("You need to login to access this resource."))
             return redirect(url_for("auth.login"))
 
         user = User(user_id=session.get("user_id"))
         if user.access_level != 1:
-            flash(_("Droits insuffisants."))
+            flash(_("Missing rights."))
             return redirect("/albums")
 
         return view(**kwargs)
@@ -82,9 +82,9 @@ def create_user(username: str, password: str) -> Optional[str]:
     """Adds a new user to the database"""
     error = None
     if not username:
-        error = _("Un nom d'utilisateur est requis.")
+        error = _("Missing username.")
     elif not password:
-        error = _("Un mot de passe est requis.")
+        error = _("Missing password.")
 
     try:
         db = get_db()
@@ -97,7 +97,7 @@ def create_user(username: str, password: str) -> Optional[str]:
     except db.IntegrityError:
         # The username was already taken, which caused the
         # commit to fail. Show a validation error.
-        error = _("Le nom d'utilisateur %(username)s est déjà pris.", username=username)
+        error = _("Username %(username)s is not available.", username=username)
 
     return error # may be None
 
@@ -110,7 +110,7 @@ def register():
     password for security.
     """
     if current_app.config["DISABLE_REGISTER"]:
-        flash(_("L'enregistrement de nouveaux utilisateurs a été désactivé par l'administrateur."))
+        flash(_("New users registration is disabled by owner."))
         return redirect(url_for("auth.login"))
 
     if request.method == "POST":
@@ -124,7 +124,7 @@ def register():
         else:
             user = User(name=username)
 
-            flash(_("Utilisateur créé avec succès. Vous pouvez vous connecter."))
+            flash(_("Successfully created new user. You can log in."))
 
             logging.log(
                 [user.username, user.id, False],
@@ -149,7 +149,7 @@ def login():
 
         if (user is None) or not check_password_hash(user["password"], password):
             logging.log([username], logging.LogEntry.FAILED_LOGIN)
-            error = _("Nom d'utilisateur ou mot de passe incorrect.")
+            error = _("Incorrect username or password")
 
         if error is None:
             # store the user id in a new session and return to the index

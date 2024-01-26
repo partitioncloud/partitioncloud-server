@@ -55,12 +55,12 @@ def add_attachment(uuid):
     user = User(user_id=session.get("user_id"))
 
     if user.id != partition.user_id and user.access_level != 1:
-        flash(_("Cette partition ne vous appartient pas"))
+        flash(_("You don't own this score."))
         return redirect(request.referrer)
 
     error = None # À mettre au propre
     if "file" not in request.files:
-        error = _("Aucun fichier n'a été fourni.")
+        error = _("Missing file")
     else:
         if "name" not in request.form or request.form["name"] == "":
             name = ".".join(request.files["file"].filename.split(".")[:-1])
@@ -68,12 +68,12 @@ def add_attachment(uuid):
             name = request.form["name"]
 
         if name == "":
-            error = _("Pas de nom de fichier")
+            error = _("Missing filename.")
         else:
             filename = request.files["file"].filename
             ext = filename.split(".")[-1]
             if ext not in ["mid", "mp3"]:
-                error = _("Extension de fichier non supportée")
+                error = _("Unsupported file type.")
 
     if error is not None:
         flash(error)
@@ -141,7 +141,7 @@ def edit(uuid):
 
     user = User(user_id=session.get("user_id"))
     if user.access_level != 1 and partition.user_id != user.id:
-        flash(_("Vous n'êtes pas autorisé à modifier cette partition."))
+        flash(_("You are not allowed to edit this file."))
         return redirect("/albums")
 
     if request.method == "GET":
@@ -150,11 +150,11 @@ def edit(uuid):
     error = None
 
     if "name" not in request.form or request.form["name"].strip() == "":
-        error = _("Un titre est requis.")
+        error = _("Missing title")
     elif "author" not in request.form:
-        error = _("Un nom d'auteur est requis (à minima nul)")
+        error = _("Missing author in request body (can be null).")
     elif "body" not in request.form:
-        error = _("Des paroles sont requises (à minima nulles)")
+        error = _("Missing lyrics (can be null).")
 
     if error is not None:
         flash(error)
@@ -166,7 +166,7 @@ def edit(uuid):
         body=request.form["body"]
     )
 
-    flash(_("Partition %(name)s modifiée avec succès.", name=request.form['name']))
+    flash(_("Successfully modified %(name)s", name=request.form['name']))
     return redirect("/albums")
 
 
@@ -196,11 +196,11 @@ def details(uuid):
     error = None
 
     if "name" not in request.form or request.form["name"].strip() == "":
-        error = _("Un titre est requis.")
+        error = _("Missing title")
     elif "author" not in request.form:
-        error = _("Un nom d'auteur est requis (à minima nul)")
+        error = _("Missing author in request body (can be null).")
     elif "body" not in request.form:
-        error = _("Des paroles sont requises (à minima nulles)")
+        error = _("Missing lyrics (can be null).")
 
     if error is not None:
         flash(error)
@@ -212,7 +212,7 @@ def details(uuid):
         body=request.form["body"]
     )
 
-    flash(_("Partition %(name)s modifiée avec succès.", name=request.form['name']))
+    flash(_("Successfully modified %(name)s", name=request.form['name']))
     return redirect("/albums")
 
 
@@ -227,7 +227,7 @@ def delete(uuid):
     user = User(user_id=session.get("user_id"))
 
     if user.access_level != 1 and partition.user_id != user.id:
-        flash(_("Vous n'êtes pas autorisé à supprimer cette partition."))
+        flash(_("You are not allowed to delete this score."))
         return redirect("/albums")
 
     if request.method == "GET":
@@ -235,7 +235,7 @@ def delete(uuid):
 
     partition.delete(current_app.instance_path)
 
-    flash(_("Partition supprimée."))
+    flash(_("Score deleted."))
     return redirect("/albums")
 
 
