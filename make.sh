@@ -25,14 +25,30 @@ init () {
     echo "Utilisateur root:root ajouté"
 }
 
+translations () {
+    # Rajouter les chaînes non traduites
+    pybabel extract -F babel.cfg -k _l -o partitioncloud/translations/messages.pot .
+    pybabel update -i partitioncloud/translations/messages.pot -d partitioncloud/translations/
+    # Compiler
+    pybabel compile -d partitioncloud/translations/
+}
+
 start () {
+    pybabel compile -d partitioncloud/translations/
     flask run --port=$PORT
 }
 
 production () {
+    pybabel compile -d partitioncloud/translations/
     FLASK_APP=partitioncloud /usr/bin/gunicorn \
     wsgi:app \
     --bind 0.0.0.0:$PORT
+}
+
+load_config () {
+    # Load variables PORT and INSTANCE_PATH
+    eval $(cat $1 | grep -E "^PORT=")
+    eval $(cat $1 | grep -E "^INSTANCE_PATH=")
 }
 
 
@@ -40,15 +56,19 @@ usage () {
     echo "Usage:"
     echo -e "\t$0 init"
     echo -e "\t$0 start"
+    echo -e "\t$0 production"
+    echo -e "\t$0 translations"
 }
 
-if [[ $1 && $(type "$1") = *"is a"*"function"* || $(type "$1") == *"est une fonction"* ]]; then
+
+RESULT=$(type "$1")
+if [[ $1 && $RESULT = *"is a"*"function"* || $RESULT == *"est une fonction"* ]]; then
     # Import config
-    source "default_config.py"
-    [[ ! -x "$INSTANCE_PATH/config.py" ]] && source "$INSTANCE_PATH/config.py"
+    load_config "default_config.py"
+    [[ ! -x "$INSTANCE_PATH/config.py" ]] && load_config "$INSTANCE_PATH/config.py"
     $1 ${*:2} # Call the function
 else
 	usage
-	echo $(type "$1")
+	echo $RESULT
 	exit 1
 fi

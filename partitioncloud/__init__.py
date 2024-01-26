@@ -10,6 +10,7 @@ import importlib.util
 
 from flask import Flask, g, redirect, render_template, request, send_file, flash, session, abort
 from werkzeug.security import generate_password_hash
+from flask_babel import Babel, _
 
 from .modules.utils import User, Album, get_all_albums
 from .modules import albums, auth, partition, admin, groupe, thumbnails, logging
@@ -17,6 +18,12 @@ from .modules.auth import admin_required, login_required
 from .modules.db import get_db
 
 app = Flask(__name__)
+
+def get_locale():
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
+
+babel = Babel(app, locale_selector=get_locale)
+
 
 
 def load_config():
@@ -125,10 +132,10 @@ def add_user():
             try:
                 if album_uuid != "":
                     user.join_album(album_uuid)
-                flash(f"Utilisateur {username} créé")
+                flash(_("Created user %(username)s", username=username))
                 return redirect("/albums")
             except LookupError:
-                flash(f"Cet album n'existe pas. L'utilisateur {username} a été créé")
+                flash(_("This album does not exists, but user %(username)s has been created", username=username))
                 return redirect("/albums")
 
         flash(error)

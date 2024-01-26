@@ -27,6 +27,7 @@ git clone https://github.com/partitioncloud/partitioncloud-server.git
 cd partitioncloud-server
 # Install dependencies
 pip install -r requirements.txt
+pybabel compile -d partitioncloud/translations
 # Create database and folders
 ./make.sh init
 ```
@@ -65,6 +66,30 @@ Modifier le fichier de configuration créé dans `instance/`
 
 ![Recherche](https://github.com/partitioncloud/partitioncloud-server/assets/67148092/745bf3e3-37e9-40cd-80d2-14670bce1a45)
 
+
+## Translations
+
+### Créer une nouvelle traduction
+
+```bash
+# Extraire les données
+pybabel extract -F babel.cfg -k _l -o partitioncloud/translations/messages.pot .
+# Créer un nouveau fichier
+pybabel init -i partitioncloud/translations/messages.pot -d partitioncloud/translations/ -l $COUNTRY_CODE
+# Modifier translations/$COUNTRY_CODE/LC_MESSAGES/messages.po
+# Ajouter $COUNTRY_CODE dans default_config.py: LANGUAGES
+# Compiler les nouvelles translations avant de démarrer le serveur
+pybabel compile -d partitioncloud/translations/
+```
+
+### Mettre à jour une traduction
+
+```bash
+# Récupérer les données les plus récentes
+pybabel extract -F babel.cfg -k _l -o partitioncloud/translations/messages.pot .
+# Les ajouter aux traductions
+pybabel update -i partitioncloud/translations/messages.pot -d partitioncloud/translations/
+```
 
 ## TODO
 - [ ] Modifier son mot de passe

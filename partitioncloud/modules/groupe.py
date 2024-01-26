@@ -4,6 +4,7 @@ Groupe module
 """
 from flask import (Blueprint, abort, flash, redirect, render_template,
                    request, session, current_app)
+from flask_babel import _
 
 from .auth import login_required
 from .db import get_db
@@ -67,7 +68,7 @@ def create_groupe():
     user = User(user_id=session["user_id"])
 
     if not name or name.strip() == "":
-        error = "Un nom est requis. Le groupe n'a pas été créé"
+        error = _("Missing name.")
 
     if error is None:
         while True:
@@ -116,10 +117,10 @@ def join_groupe(uuid):
     try:
         user.join_groupe(uuid)
     except LookupError:
-        flash("Ce groupe n'existe pas.")
+        flash(_("Unknown group."))
         return redirect(f"/groupe/{uuid}")
 
-    flash("Groupe ajouté à la collection.")
+    flash(_("Group added to collection."))
     return redirect(f"/groupe/{uuid}")
 
 
@@ -130,15 +131,15 @@ def quit_groupe(uuid):
     groupe = Groupe(uuid=uuid)
     users = groupe.get_users()
     if user.id not in [u["id"] for u in users]:
-        flash("Vous ne faites pas partie de ce groupe")
+        flash(_("You are not a member of this group."))
         return redirect(f"/groupe/{uuid}")
 
     if len(users) == 1:
-        flash("Vous êtes seul dans ce groupe, le quitter entraînera sa suppression.")
+        flash(_("You are alone here, quitting means deleting this group."))
         return redirect(f"/groupe/{uuid}#delete")
 
     user.quit_groupe(groupe.uuid)
-    flash("Groupe quitté.")
+    flash(_("Group quitted."))
     return redirect("/albums")
 
 
@@ -151,7 +152,7 @@ def delete_groupe(uuid):
     error = None
     users = groupe.get_users()
     if len(users) > 1:
-        error = "Vous n'êtes pas seul dans ce groupe."
+        error = _("You are not alone in this group.")
 
     if user.access_level == 1 or user.id not in groupe.get_admins():
         error = None
@@ -162,7 +163,7 @@ def delete_groupe(uuid):
 
     groupe.delete(current_app.instance_path)
 
-    flash("Groupe supprimé.")
+    flash(_("Group deleted."))
     return redirect("/albums")
 
 
@@ -181,10 +182,10 @@ def create_album_req(groupe_uuid):
     error = None
 
     if not name or name.strip() == "":
-        error = "Un nom est requis. L'album n'a pas été créé"
+        error = _("Missing name.")
 
     if user.id not in groupe.get_admins():
-        error ="Vous n'êtes pas administrateur de ce groupe"
+        error = _("You are not admin of this group.")
 
     if error is None:
         uuid = utils.create_album(name)

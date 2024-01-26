@@ -1,15 +1,7 @@
 {% extends 'base.html' %}
 
-{% block title %}Ajout de partition{% endblock %}
+{% block title %}{{ _("New score") }}{% endblock %}
 
 {% block content %}
-<h2>Ajouter une partition à {{ album.name }}</h2>
-
-<form action="/albums/{{ album.uuid }}/add-partition" method="post" enctype="multipart/form-data">
-  <input name="name" type="text" placeholder="titre" required/><br/>
-  <input name="author" type="text" placeholder="auteur"/><br/>
-  <textarea id="paroles" name="body" type="text" placeholder="paroles"></textarea><br/>
-  <input name="partition-uuid" value="{{ partition_uuid }}" type="hidden">
-  <input type="submit" value="Ajouter" />
-</form>
+  {% include 'components/add_partition.html' %}
 {% endblock %}

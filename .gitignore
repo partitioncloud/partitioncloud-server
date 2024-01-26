@@ -1,6 +1,10 @@
 # cache
 **/__pycache__
 
+# translations
+**.mo
+**.pot
+
 # config
 .vscode/
 

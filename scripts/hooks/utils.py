@@ -1,7 +1,9 @@
 import os
+import sys
 import random
 import string
 import sqlite3
+from colorama import Fore, Style
 
 from . import config
 
@@ -40,3 +42,29 @@ def new_uuid():
 def format_uuid(uuid):
     """Format old uuid4 format"""
     return uuid.upper()[:6]
+
+
+def install_package(package):
+    print(f"\nThe following python package needs to be installed: {Style.BRIGHT}{Fore.YELLOW}{package}{Style.RESET_ALL}")
+    print(f"1. Install with {Style.BRIGHT}pip{Style.RESET_ALL} (automatic)")
+    print(f"2. Install manually (other package manager)")
+    option = input("Select an option: ")
+    try:
+        choice = int(option)
+
+        if choice == 1:
+            return_value = os.system(f"pip install {package} -qq")
+            if return_value == 0:
+                return
+            print(f"{Fore.RED}Installation with pip failed{Style.RESET_ALL}")
+            sys.exit(return_value)
+            
+        elif choice == 2:
+            input("Install via you preferred option, and hit [Enter] when done")
+            return
+
+    except ValueError:
+        pass
+
+    print(f"{Fore.RED}Please enter a valid option{Style.RESET_ALL}")
+    return install_package(package)
