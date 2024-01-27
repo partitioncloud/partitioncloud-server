@@ -153,7 +153,7 @@ def inject_default_variables():
     """Inject the version number in the template variables"""
     if __version__ == "unknown":
         return {"version": ''}
-    return {"version": __version__}
+    return {"version": __version__, "lang": get_locale()}
 
 
 @app.after_request

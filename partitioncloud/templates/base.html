@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ lang }}">
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="description" content="{{ self.title() }}" />
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#eff1f5">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#1e1e2e">
   <title>{% block title %}{% endblock %} - PartitionCloud</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='style/mobile.css') }}">
