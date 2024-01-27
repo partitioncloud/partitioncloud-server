@@ -19,4 +19,8 @@
     input:checked#slide-sidebar~#content-container {
         position: initial;
     }
+
+    input:checked#slide-sidebar~#footer,#content-container {
+        min-width: unset;
+    }
 }
