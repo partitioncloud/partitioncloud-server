@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-01-25 16:19+0100\n"
+"POT-Creation-Date: 2024-01-29 18:32+0100\n"
 "PO-Revision-Date: 2024-01-22 15:24+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.14.0\n"
 
-#: partitioncloud/__init__.py:135
+#: partitioncloud/__init__.py:147
 #, python-format
 msgid "Created user %(username)s"
 msgstr "Utilisateur %(username)s créé"
 
-#: partitioncloud/__init__.py:138
+#: partitioncloud/__init__.py:150
 #, python-format
 msgid "This album does not exists, but user %(username)s has been created"
 msgstr "Cet album n'existe pas. L'utilisateur %(username)s a été créé"
@@ -143,7 +143,7 @@ msgstr ""
 msgid "Successfully created new user. You can log in."
 msgstr "Utilisateur créé avec succès. Vous pouvez vous connecter."
 
-#: partitioncloud/modules/auth.py:152
+#: partitioncloud/modules/auth.py:153
 msgid "Incorrect username or password"
 msgstr "Nom d'utilisateur ou mot de passe incorrect."
 
@@ -219,83 +219,109 @@ msgstr "Vous n'êtes pas autorisé à supprimer cette partition."
 msgid "Score deleted."
 msgstr "Partition supprimée."
 
-#: partitioncloud/templates/base.html:23
+#: partitioncloud/templates/base.html:25
 msgid "New Album"
 msgstr "Créer un nouvel album"
 
-#: partitioncloud/templates/base.html:25 partitioncloud/templates/base.html:36
+#: partitioncloud/templates/base.html:27 partitioncloud/templates/base.html:38
 #: partitioncloud/templates/groupe/index.html:10
 #: partitioncloud/templates/partition/attachments.html:11
 msgid "Name"
 msgstr "Nom"
 
-#: partitioncloud/templates/base.html:26 partitioncloud/templates/base.html:37
+#: partitioncloud/templates/base.html:28 partitioncloud/templates/base.html:39
 msgid "Create"
 msgstr "Créer"
 
-#: partitioncloud/templates/base.html:30
+#: partitioncloud/templates/base.html:32
 msgid "I want to create a collection of albums."
 msgstr ""
 "Je souhaite créer plusieurs albums et pouvoir tous les partager avec un "
 "seul lien."
 
-#: partitioncloud/templates/base.html:30
+#: partitioncloud/templates/base.html:32
 msgid "Create group"
 msgstr "Créer un groupe"
 
-#: partitioncloud/templates/base.html:34
+#: partitioncloud/templates/base.html:36
 msgid "Create new group"
 msgstr "Créer un nouveau groupe"
 
-#: partitioncloud/templates/base.html:61
+#: partitioncloud/templates/base.html:63
 msgid "Search"
 msgstr "Rechercher"
 
-#: partitioncloud/templates/base.html:63
+#: partitioncloud/templates/base.html:65
 msgid "Number of online searches"
 msgstr "Nombre de recherches en ligne"
 
 #: partitioncloud/templates/admin/index.html:23
-#: partitioncloud/templates/base.html:71
+#: partitioncloud/templates/base.html:73
 #: partitioncloud/templates/partition/details.html:41
 msgid "Albums"
 msgstr "Albums"
 
-#: partitioncloud/templates/base.html:75
+#: partitioncloud/templates/base.html:77
 msgid "New album"
 msgstr "Créer un album"
 
-#: partitioncloud/templates/base.html:92
+#: partitioncloud/templates/base.html:94
 msgid "No albums"
 msgstr "Aucun album disponible"
 
-#: partitioncloud/templates/base.html:111
+#: partitioncloud/templates/base.html:113
 msgid "No album available"
 msgstr "Aucun album disponible"
 
-#: partitioncloud/templates/base.html:125
+#: partitioncloud/templates/base.html:127
 msgid "Log in to see your albums"
 msgstr "Connectez vous pour avoir accès à vos albums"
 
-#: partitioncloud/templates/base.html:139
+#: partitioncloud/templates/base.html:141
 msgid "Log out"
 msgstr "Déconnexion"
 
-#: partitioncloud/templates/base.html:154
+#: partitioncloud/templates/base.html:156
 msgid "Admin Panel"
 msgstr "Panneau admin"
 
 #: partitioncloud/templates/auth/register.html:5
 #: partitioncloud/templates/auth/register.html:20
-#: partitioncloud/templates/base.html:166
+#: partitioncloud/templates/base.html:168
 msgid "Create account"
 msgstr "Créer un compte"
 
 #: partitioncloud/templates/auth/login.html:5
 #: partitioncloud/templates/auth/login.html:10
-#: partitioncloud/templates/base.html:168
+#: partitioncloud/templates/base.html:170
+#: partitioncloud/templates/launch.html:26
 msgid "Log in"
 msgstr "Se connecter"
+
+#: partitioncloud/templates/launch.html:33
+msgid ""
+"PartitionCloud is an open-source score library server, to help you in all"
+" your musical activities"
+msgstr ""
+"PartitionCloud est une bibliothèque de partitions open-source, pour vous "
+"aider dans toutes vos activités musicales"
+
+#: partitioncloud/templates/launch.html:38
+msgid "Let's go !"
+msgstr "C'est parti !"
+
+#: partitioncloud/templates/launch.html:44
+msgid "Check code"
+msgstr "Voir le code"
+
+#: partitioncloud/templates/launch.html:55
+#, python-format
+msgid ""
+"This instance is used by %(users)s users with a total of %(scores)s "
+"scores."
+msgstr ""
+"Cette instance est utilisée par %(users)s personnes avec un total de "
+"%(scores)s partitions."
 
 #: partitioncloud/templates/admin/index.html:5
 msgid "Administration Panel"
@@ -466,7 +492,7 @@ msgstr "auteur"
 msgid "lyrics"
 msgstr "paroles"
 
-#: partitioncloud/templates/components/add_partition.html:10
+#: partitioncloud/templates/components/add_partition.html:12
 #: partitioncloud/templates/groupe/index.html:11
 #: partitioncloud/templates/partition/attachments.html:13
 msgid "Add"

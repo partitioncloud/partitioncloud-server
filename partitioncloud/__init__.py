@@ -8,11 +8,11 @@ import datetime
 import subprocess
 import importlib.util
 
-from flask import Flask, g, redirect, render_template, request, send_file, flash, session, abort
+from flask import Flask, g, redirect, render_template, request, send_file, flash, session, abort, url_for
 from werkzeug.security import generate_password_hash
 from flask_babel import Babel, _
 
-from .modules.utils import User, Album, get_all_albums
+from .modules.utils import User, Album, get_all_albums, user_count, partition_count
 from .modules import albums, auth, partition, admin, groupe, thumbnails, logging
 from .modules.auth import admin_required, login_required
 from .modules.db import get_db
@@ -101,8 +101,20 @@ logging.log([], logging.LogEntry.SERVER_RESTART)
 
 @app.route("/")
 def home():
-    """Redirect to home"""
-    return redirect("/albums/")
+    """Show launch page if enabled"""
+    if g.user is None:
+        if app.config["LAUNCH_PAGE"]:
+            return redirect(url_for("launch_page"))
+        return redirect(url_for("auth.login"))
+    return redirect(url_for("albums.index"))
+
+
+@app.route("/launch")
+def launch_page():
+    """Show launch page if enabled"""
+    if not app.config["LAUNCH_PAGE"]:
+        return home()
+    return render_template("launch.html", user_count=user_count(), partition_count=partition_count())
 
 
 @app.route("/add-user", methods=["GET", "POST"])
@@ -133,10 +145,10 @@ def add_user():
                 if album_uuid != "":
                     user.join_album(album_uuid)
                 flash(_("Created user %(username)s", username=username))
-                return redirect("/albums")
+                return redirect(url_for("albums.index"))
             except LookupError:
                 flash(_("This album does not exists, but user %(username)s has been created", username=username))
-                return redirect("/albums")
+                return redirect(url_for("albums.index"))
 
         flash(error)
     return render_template("auth/register.html", albums=get_all_albums(), user=current_user)

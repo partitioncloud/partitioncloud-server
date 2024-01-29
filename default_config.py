@@ -30,3 +30,6 @@ ENABLED_LOGS=["NEW_GROUPE", "NEW_ALBUM", "NEW_PARTITION", "NEW_USER", "SERVER_RE
 
 # Available languages
 LANGUAGES=['en', 'fr']
+
+# Show Launch page
+LAUNCH_PAGE=True

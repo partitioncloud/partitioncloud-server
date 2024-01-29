@@ -130,6 +130,7 @@ def register():
                 [user.username, user.id, False],
                 logging.LogEntry.NEW_USER
             )
+        return redirect(url_for("auth.login"))
 
     return render_template("auth/register.html")
 
@@ -169,4 +170,4 @@ def login():
 def logout():
     """Clear the current session, including the stored user id."""
     session.clear()
-    return redirect(url_for("auth.login"))
+    return redirect("/")

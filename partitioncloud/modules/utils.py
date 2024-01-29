@@ -72,3 +72,25 @@ def get_all_albums():
             "uuid": a["uuid"]
         } for a in albums
     ]
+
+
+def user_count():
+    db = get_db()
+    count = db.execute(
+        """
+        SELECT COUNT(*) as count FROM user
+        """
+    ).fetchone()
+
+    return count[0]
+
+
+def partition_count():
+    db = get_db()
+    count = db.execute(
+        """
+        SELECT COUNT(*) FROM partition
+        """
+    ).fetchone()
+    
+    return count[0]
