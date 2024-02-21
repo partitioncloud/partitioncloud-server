@@ -180,3 +180,11 @@ def move_thumbnails():
 
 def install_babel():
     utils.install_package("flask-babel")
+
+
+"""
+ v1.8.*
+"""
+
+def install_pypdf():
+    utils.install_package("pypdf")

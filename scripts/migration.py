@@ -35,7 +35,8 @@ hooks = [
     ("v1.4.1", [("Install qrcode", v1_hooks.install_qrcode)]),
     ("v1.5.0", [("Move to instance directory", v1_hooks.move_instance)]),
     ("v1.5.1", [("Move thumbnails", v1_hooks.move_thumbnails)]),
-    ("v1.7.0", [("Install babel", v1_hooks.install_babel)])
+    ("v1.7.0", [("Install babel", v1_hooks.install_babel)]),
+    ("v1.8.2", [("Install pypdf", v1_hooks.install_pypdf)])
 ]
 
 

@@ -8,6 +8,7 @@ import threading
 import socket
 import os
 
+import pypdf
 import googlesearch
 
 from .db import get_db
@@ -52,12 +53,17 @@ def local_search(query, partitions):
 def download_search_result(element, instance_path):
     uuid = element["uuid"]
     url = element["url"]
+    filename = f"{instance_path}/search-partitions/{uuid}.pdf"
 
     try:
-        urllib.request.urlretrieve(url, f"{instance_path}/search-partitions/{uuid}.pdf")
+        urllib.request.urlretrieve(url, filename)
+        pypdf.PdfReader(filename)
 
-    except (urllib.error.HTTPError, urllib.error.URLError):
-        with open(f"{instance_path}/search-partitions/{uuid}.pdf", 'a', encoding="utf8") as _:
+    except (urllib.error.HTTPError, urllib.error.URLError,
+            pypdf.errors.PdfReadError, pypdf.errors.PdfStreamError):
+        if os.path.exists(filename):
+            os.remove(filename)
+        with open(filename, 'a', encoding="utf8") as _:
             pass # Create empty file
 
 
