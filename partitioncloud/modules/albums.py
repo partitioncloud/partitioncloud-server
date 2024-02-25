@@ -3,7 +3,9 @@
 Albums module
 """
 import os
+import pypdf
 import shutil
+
 from uuid import uuid4
 from typing import TypeVar
 
@@ -262,6 +264,12 @@ def add_partition(album_uuid):
             source = data["url"]
     else:
         partition_type = "file"
+
+        try:
+            pypdf.PdfReader(request.files["file"])
+            request.files["file"].seek(0)
+        except (pypdf.errors.PdfReadError, pypdf.errors.PdfStreamError):
+            error = _("Invalid PDF file")
 
     if error is not None:
         flash(error)
