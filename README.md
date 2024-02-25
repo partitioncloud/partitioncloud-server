@@ -97,4 +97,4 @@ pybabel update -i partitioncloud/translations/messages.pot -d partitioncloud/tra
 - [ ] Ajouter config:DISABLE_DARK_MODE
 - [x] Ajouter config:DISABLE_REGISTER
 - [ ] Ajouter config:ONLINE_SEARCH_BASE_QUERY pour la recherche google, actuellement 'filetype:pdf partition'
-- [ ] Ajouter un Dockerfile
+- [x] Ajouter un Dockerfile

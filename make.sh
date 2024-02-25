@@ -9,7 +9,7 @@ init () {
     mkdir -p "$INSTANCE_PATH/search-partitions"
     mkdir -p "$INSTANCE_PATH/cache/thumbnails"
     mkdir -p "$INSTANCE_PATH/cache/search-thumbnails"
-    
+
     if ! test -f "$INSTANCE_PATH/config.py"; then
         echo "SECRET_KEY=\"$(python3 -c 'import secrets; print(secrets.token_hex())')\"" > "$INSTANCE_PATH/config.py"
     fi
@@ -18,6 +18,7 @@ init () {
         printf "Souhaitez vous supprimer la base de données existante ? [y/n] "
         read -r CONFIRMATION
         [[ $CONFIRMATION == y ]] || exit 1
+        rm "$INSTANCE_PATH/partitioncloud.sqlite"
     fi
     sqlite3 "$INSTANCE_PATH/partitioncloud.sqlite" '.read partitioncloud/schema.sql'
     echo "Base de données créé"
@@ -40,7 +41,7 @@ start () {
 
 production () {
     pybabel compile -d partitioncloud/translations/
-    FLASK_APP=partitioncloud /usr/bin/gunicorn \
+    FLASK_APP=partitioncloud gunicorn \
     wsgi:app \
     --bind 0.0.0.0:$PORT
 }
@@ -65,7 +66,11 @@ RESULT=$(type "$1")
 if [[ $1 && $RESULT = *"is a"*"function"* || $RESULT == *"est une fonction"* ]]; then
     # Import config
     load_config "default_config.py"
-    [[ ! -x "$INSTANCE_PATH/config.py" ]] && load_config "$INSTANCE_PATH/config.py"
+
+    if test -f "instance/config.py"; then
+        load_config "instance/config.py"
+    fi
+
     $1 ${*:2} # Call the function
 else
 	usage
