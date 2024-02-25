@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ _("Settings") }}{% endblock %}
+
+
+{% block dialogs %}
+<dialog id="delete-account">
+  <h2>{{ _("Delete account") }}</h2>
+  {% set username %}
+    <b>{{ inspected_user.username }}</b>
+  {% endset %}
+  {% set irreversible_bold %}
+    <b>irreversible</b>
+  {% endset %}
+  {{ _("Do you really want to delete %(username)s's account ? This action is %(irreversible_bold)s.", username=username, irreversible_bold=irreversible_bold) }}
+  <br/><br/>
+  <form method="post" action="/settings/delete-account">
+    <input type="hidden" id="user_id" name="user_id" value="{{ inspected_user.id }}">
+    <input type="submit" class="red-confirm" value="{{ _('Delete') }}">
+  </form>
+  <a href="#!" class="close-dialog">Close</a>
+</dialog>
+{% endblock %}
+
+
+{% block content %}
+{{ _("User %(username)s has %(album_count)s albums"), username=inspected_user.username, album_count=len(inspected_user.get_albums()) }}
+<form action="/settings/change-password" method="post">
+    <h3>{{ _("Change password") }}</h3>
+    {% if not skip_old_password %}
+        <input type="password" id="old-password" name="old_password" placeholder="{{ _('old password') }}"/><br/>
+    {% endif %}
+    <input type="password" id="new-password" name="new_password" placeholder="{{ _('new password') }}"/><br/>
+    <input type="password" id="confirm-new-password" name="confirm_new_password" placeholder="{{ _('confirm new password') }}"/><br/>
+    <input type="hidden" id="user_id" name="user_id" value="{{ inspected_user.id }}">
+    <input type="Submit" value="{{ _('confirm') }}">
+</form>
+
+<h3>{{ _("Delete account") }}</h3>
+<a href="#delete-account"><button class="red-confirm">{{ _("Delete account") }}</button></a>
+
+{% endblock %}

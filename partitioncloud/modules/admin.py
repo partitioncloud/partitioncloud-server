@@ -19,7 +19,6 @@ def index():
     Admin panel home page
     """
     current_user = User(user_id=session.get("user_id"))
-    current_user.get_albums() # We need to do that before we close the db
     db = get_db()
     users_id = db.execute(
         """
@@ -34,6 +33,23 @@ def index():
     return render_template(
         "admin/index.html",
         users=users,
+        user=current_user
+    )
+
+@bp.route("/user/<user_id>")
+@admin_required
+def user_inspect(user_id):
+    """
+    Inspect user
+    """
+    current_user = User(user_id=session.get("user_id"))
+    db = get_db()
+    inspected_user = User(user_id=user_id)
+
+    return render_template(
+        "settings/index.html",
+        skip_old_password=True,
+        inspected_user=inspected_user,
         user=current_user
     )
 

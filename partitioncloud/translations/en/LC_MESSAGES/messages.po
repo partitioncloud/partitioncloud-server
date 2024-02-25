@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-01-29 18:32+0100\n"
+"POT-Creation-Date: 2024-02-25 15:18+0100\n"
 "PO-Revision-Date: 2024-01-22 15:38+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.14.0\n"
 
-#: partitioncloud/__init__.py:147
+#: partitioncloud/__init__.py:148
 #, python-format
 msgid "Created user %(username)s"
 msgstr "Created user %(username)s"
 
-#: partitioncloud/__init__.py:150
+#: partitioncloud/__init__.py:151
 #, python-format
 msgid "This album does not exists, but user %(username)s has been created"
 msgstr "This album does not exists, but user %(username)s has been created"
@@ -116,7 +116,8 @@ msgstr "Unknown score type."
 msgid "You need to login to access this resource."
 msgstr "You need to login to access this resource."
 
-#: partitioncloud/modules/auth.py:59
+#: partitioncloud/modules/auth.py:59 partitioncloud/modules/settings.py:46
+#: partitioncloud/modules/settings.py:69
 msgid "Missing rights."
 msgstr "Missing rights."
 
@@ -124,7 +125,7 @@ msgstr "Missing rights."
 msgid "Missing username."
 msgstr "Missing username."
 
-#: partitioncloud/modules/auth.py:87
+#: partitioncloud/modules/auth.py:87 partitioncloud/modules/settings.py:81
 msgid "Missing password."
 msgstr "Missing password."
 
@@ -217,79 +218,103 @@ msgstr "You are not allowed to delete this score."
 msgid "Score deleted."
 msgstr "Score deleted."
 
-#: partitioncloud/templates/base.html:25
+#: partitioncloud/modules/settings.py:37 partitioncloud/modules/settings.py:60
+msgid "Missing user id."
+msgstr "Missing user id."
+
+#: partitioncloud/modules/settings.py:50
+msgid "User successfully deleted."
+msgstr "User successfully deleted."
+
+#: partitioncloud/modules/settings.py:73
+msgid "Missing old password."
+msgstr "Missing old password."
+
+#: partitioncloud/modules/settings.py:77
+msgid "Incorrect password."
+msgstr "Incorrect password."
+
+#: partitioncloud/modules/settings.py:85
+msgid "Password and its confirmation differ."
+msgstr "Password and its confirmation differ."
+
+#: partitioncloud/modules/settings.py:89
+msgid "Successfully updated password."
+msgstr "Successfully updated password."
+
+#: partitioncloud/templates/base.html:26
 msgid "New Album"
 msgstr "New Album"
 
-#: partitioncloud/templates/base.html:27 partitioncloud/templates/base.html:38
+#: partitioncloud/templates/base.html:28 partitioncloud/templates/base.html:39
 #: partitioncloud/templates/groupe/index.html:10
 #: partitioncloud/templates/partition/attachments.html:11
 msgid "Name"
 msgstr "Name"
 
-#: partitioncloud/templates/base.html:28 partitioncloud/templates/base.html:39
+#: partitioncloud/templates/base.html:29 partitioncloud/templates/base.html:40
 msgid "Create"
 msgstr "Create"
 
-#: partitioncloud/templates/base.html:32
+#: partitioncloud/templates/base.html:33
 msgid "I want to create a collection of albums."
 msgstr "I want to create a collection of albums."
 
-#: partitioncloud/templates/base.html:32
+#: partitioncloud/templates/base.html:33
 msgid "Create group"
 msgstr "Create group"
 
-#: partitioncloud/templates/base.html:36
+#: partitioncloud/templates/base.html:37
 msgid "Create new group"
 msgstr "Create new group"
 
-#: partitioncloud/templates/base.html:63
+#: partitioncloud/templates/base.html:64
 msgid "Search"
 msgstr "Search"
 
-#: partitioncloud/templates/base.html:65
+#: partitioncloud/templates/base.html:66
 msgid "Number of online searches"
 msgstr "Number of online searches"
 
 #: partitioncloud/templates/admin/index.html:23
-#: partitioncloud/templates/base.html:73
+#: partitioncloud/templates/base.html:74
 #: partitioncloud/templates/partition/details.html:41
 msgid "Albums"
 msgstr "Albums"
 
-#: partitioncloud/templates/base.html:77
+#: partitioncloud/templates/base.html:78
 msgid "New album"
 msgstr "New album"
 
-#: partitioncloud/templates/base.html:94
+#: partitioncloud/templates/base.html:95
 msgid "No albums"
 msgstr "No albums"
 
-#: partitioncloud/templates/base.html:113
+#: partitioncloud/templates/base.html:114
 msgid "No album available"
 msgstr "No album available"
 
-#: partitioncloud/templates/base.html:127
+#: partitioncloud/templates/base.html:128
 msgid "Log in to see your albums"
 msgstr "Log in to see your albums"
 
-#: partitioncloud/templates/base.html:141
+#: partitioncloud/templates/base.html:142
 msgid "Log out"
 msgstr "Log out"
 
-#: partitioncloud/templates/base.html:156
+#: partitioncloud/templates/base.html:157
 msgid "Admin Panel"
 msgstr "Admin Panel"
 
 #: partitioncloud/templates/auth/register.html:5
 #: partitioncloud/templates/auth/register.html:20
-#: partitioncloud/templates/base.html:168
+#: partitioncloud/templates/base.html:169
 msgid "Create account"
 msgstr "Create account"
 
 #: partitioncloud/templates/auth/login.html:5
 #: partitioncloud/templates/auth/login.html:10
-#: partitioncloud/templates/base.html:170
+#: partitioncloud/templates/base.html:171
 #: partitioncloud/templates/launch.html:26
 msgid "Log in"
 msgstr "Log in"
@@ -315,9 +340,7 @@ msgstr "Check code"
 msgid ""
 "This instance is used by %(users)s users with a total of %(scores)s "
 "scores."
-msgstr ""
-"This instance has %(users)s users with a total of %(scores)s "
-"scores."
+msgstr "This instance has %(users)s users with a total of %(scores)s scores."
 
 #: partitioncloud/templates/admin/index.html:5
 msgid "Administration Panel"

@@ -4,7 +4,7 @@
 
 /** Various settings (variables) */
 :root {
-    --sidebar-size: max(10vw, 160px);
+    --sidebar-size: max(10vw, 250px);
     --sidebar-sz-plus10: calc(var(--sidebar-size) + 10px);
     --sidebar-sz-moins20: calc(var(--sidebar-size) - 20px);
 }
@@ -333,6 +333,7 @@ img.partition-thumbnail {
 
 .user {
     display: flex;
+    color: var(--color-text);
 }
 
 .username {
@@ -387,12 +388,13 @@ a#delete-album {
     transform: translateY(-17%);
 }
 
-#settings-container>.user {
+#settings-container > a > .user {
     margin-top: 6px;
     border-radius: 3px;
+    padding: 3px;
 }
 
-#settings-container>.user:hover {
+#settings-container > a > .user:hover {
     background-color: var(--color-mantle);
 }
 
@@ -538,6 +540,8 @@ input[type="file"] {
 /** Dangerous buttons */
 button#logout:hover,
 a#delete-album:hover,
+.red-confirm,
+input[type="submit"].red-confirm,
 #delete-partition {
     background-color: var(--color-red);
     color: var(--color-mantle);

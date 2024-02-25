@@ -92,8 +92,9 @@ pybabel update -i partitioncloud/translations/messages.pot -d partitioncloud/tra
 ```
 
 ## TODO
-- [ ] Modifier son mot de passe
-- [ ] Supprimer un utilisateur
+- [x] Modifier son mot de passe
+- [x] Supprimer un utilisateur
 - [ ] Ajouter config:DISABLE_DARK_MODE
 - [x] Ajouter config:DISABLE_REGISTER
 - [ ] Ajouter config:ONLINE_SEARCH_BASE_QUERY pour la recherche google, actuellement 'filetype:pdf partition'
+- [ ] Ajouter un Dockerfile

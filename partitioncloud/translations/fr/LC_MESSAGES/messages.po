@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-01-29 18:32+0100\n"
+"POT-Creation-Date: 2024-02-25 15:18+0100\n"
 "PO-Revision-Date: 2024-01-22 15:24+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.14.0\n"
 
-#: partitioncloud/__init__.py:147
+#: partitioncloud/__init__.py:148
 #, python-format
 msgid "Created user %(username)s"
 msgstr "Utilisateur %(username)s créé"
 
-#: partitioncloud/__init__.py:150
+#: partitioncloud/__init__.py:151
 #, python-format
 msgid "This album does not exists, but user %(username)s has been created"
 msgstr "Cet album n'existe pas. L'utilisateur %(username)s a été créé"
@@ -116,7 +116,8 @@ msgstr "Type de partition inconnu."
 msgid "You need to login to access this resource."
 msgstr "Vous devez être connecté pour accéder à cette page."
 
-#: partitioncloud/modules/auth.py:59
+#: partitioncloud/modules/auth.py:59 partitioncloud/modules/settings.py:46
+#: partitioncloud/modules/settings.py:69
 msgid "Missing rights."
 msgstr "Droits insuffisants."
 
@@ -124,7 +125,7 @@ msgstr "Droits insuffisants."
 msgid "Missing username."
 msgstr "Un nom d'utilisateur est requis."
 
-#: partitioncloud/modules/auth.py:87
+#: partitioncloud/modules/auth.py:87 partitioncloud/modules/settings.py:81
 msgid "Missing password."
 msgstr "Un mot de passe est requis."
 
@@ -219,81 +220,105 @@ msgstr "Vous n'êtes pas autorisé à supprimer cette partition."
 msgid "Score deleted."
 msgstr "Partition supprimée."
 
-#: partitioncloud/templates/base.html:25
+#: partitioncloud/modules/settings.py:37 partitioncloud/modules/settings.py:60
+msgid "Missing user id."
+msgstr "Identifiant d'utilisateur manquant."
+
+#: partitioncloud/modules/settings.py:50
+msgid "User successfully deleted."
+msgstr "Utilisateur supprimée."
+
+#: partitioncloud/modules/settings.py:73
+msgid "Missing old password."
+msgstr "Ancien mot de passe manquant."
+
+#: partitioncloud/modules/settings.py:77
+msgid "Incorrect password."
+msgstr "Mot de passe incorrect."
+
+#: partitioncloud/modules/settings.py:85
+msgid "Password and its confirmation differ."
+msgstr "Le mot de passe et sa confirmation diffèrent"
+
+#: partitioncloud/modules/settings.py:89
+msgid "Successfully updated password."
+msgstr "Mot de passe mis à jour."
+
+#: partitioncloud/templates/base.html:26
 msgid "New Album"
 msgstr "Créer un nouvel album"
 
-#: partitioncloud/templates/base.html:27 partitioncloud/templates/base.html:38
+#: partitioncloud/templates/base.html:28 partitioncloud/templates/base.html:39
 #: partitioncloud/templates/groupe/index.html:10
 #: partitioncloud/templates/partition/attachments.html:11
 msgid "Name"
 msgstr "Nom"
 
-#: partitioncloud/templates/base.html:28 partitioncloud/templates/base.html:39
+#: partitioncloud/templates/base.html:29 partitioncloud/templates/base.html:40
 msgid "Create"
 msgstr "Créer"
 
-#: partitioncloud/templates/base.html:32
+#: partitioncloud/templates/base.html:33
 msgid "I want to create a collection of albums."
 msgstr ""
 "Je souhaite créer plusieurs albums et pouvoir tous les partager avec un "
 "seul lien."
 
-#: partitioncloud/templates/base.html:32
+#: partitioncloud/templates/base.html:33
 msgid "Create group"
 msgstr "Créer un groupe"
 
-#: partitioncloud/templates/base.html:36
+#: partitioncloud/templates/base.html:37
 msgid "Create new group"
 msgstr "Créer un nouveau groupe"
 
-#: partitioncloud/templates/base.html:63
+#: partitioncloud/templates/base.html:64
 msgid "Search"
 msgstr "Rechercher"
 
-#: partitioncloud/templates/base.html:65
+#: partitioncloud/templates/base.html:66
 msgid "Number of online searches"
 msgstr "Nombre de recherches en ligne"
 
 #: partitioncloud/templates/admin/index.html:23
-#: partitioncloud/templates/base.html:73
+#: partitioncloud/templates/base.html:74
 #: partitioncloud/templates/partition/details.html:41
 msgid "Albums"
 msgstr "Albums"
 
-#: partitioncloud/templates/base.html:77
+#: partitioncloud/templates/base.html:78
 msgid "New album"
 msgstr "Créer un album"
 
-#: partitioncloud/templates/base.html:94
+#: partitioncloud/templates/base.html:95
 msgid "No albums"
 msgstr "Aucun album disponible"
 
-#: partitioncloud/templates/base.html:113
+#: partitioncloud/templates/base.html:114
 msgid "No album available"
 msgstr "Aucun album disponible"
 
-#: partitioncloud/templates/base.html:127
+#: partitioncloud/templates/base.html:128
 msgid "Log in to see your albums"
 msgstr "Connectez vous pour avoir accès à vos albums"
 
-#: partitioncloud/templates/base.html:141
+#: partitioncloud/templates/base.html:142
 msgid "Log out"
 msgstr "Déconnexion"
 
-#: partitioncloud/templates/base.html:156
+#: partitioncloud/templates/base.html:157
 msgid "Admin Panel"
 msgstr "Panneau admin"
 
 #: partitioncloud/templates/auth/register.html:5
 #: partitioncloud/templates/auth/register.html:20
-#: partitioncloud/templates/base.html:168
+#: partitioncloud/templates/base.html:169
 msgid "Create account"
 msgstr "Créer un compte"
 
 #: partitioncloud/templates/auth/login.html:5
 #: partitioncloud/templates/auth/login.html:10
-#: partitioncloud/templates/base.html:170
+#: partitioncloud/templates/base.html:171
 #: partitioncloud/templates/launch.html:26
 msgid "Log in"
 msgstr "Se connecter"

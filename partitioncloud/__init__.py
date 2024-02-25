@@ -13,7 +13,7 @@ from werkzeug.security import generate_password_hash
 from flask_babel import Babel, _
 
 from .modules.utils import User, Album, get_all_albums, user_count, partition_count
-from .modules import albums, auth, partition, admin, groupe, thumbnails, logging
+from .modules import albums, auth, partition, admin, groupe, thumbnails, logging, settings
 from .modules.auth import admin_required, login_required
 from .modules.db import get_db
 
@@ -91,6 +91,7 @@ app.register_blueprint(auth.bp)
 app.register_blueprint(admin.bp)
 app.register_blueprint(groupe.bp)
 app.register_blueprint(albums.bp)
+app.register_blueprint(settings.bp)
 app.register_blueprint(partition.bp)
 app.register_blueprint(thumbnails.bp)
 

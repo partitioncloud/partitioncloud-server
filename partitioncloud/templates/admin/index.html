@@ -34,7 +34,9 @@
                             title="{{ user.username }}">
                             {{ user.username[0] | upper }}
                         </div>
-                        <div class="table-username">{{ user.username }}</div>
+                        <div class="table-username">
+                          <a href="/admin/user/{{ user.id }}">{{ user.username }}</a>
+                        </div>
                     </div>
                 </td>
                 <td>{{ user.albums | length }}</td>

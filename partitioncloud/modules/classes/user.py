@@ -1,4 +1,5 @@
 from flask import current_app
+from werkzeug.security import generate_password_hash
 
 from ..db import get_db
 from .album import Album
@@ -28,6 +29,7 @@ class User():
     def __init__(self, user_id=None, name=None):
         self.id = user_id
         self.username = name
+        self.password = None
         self.albums = None
         self.groupes = None
         self.partitions = None
@@ -58,6 +60,7 @@ class User():
 
             self.id = data["id"]
             self.username = data["username"]
+            self.password = data["password"]
             self.access_level = data["access_level"]
             self.color = self.get_color()
             if self.access_level == 1:
@@ -198,12 +201,10 @@ class User():
         db.execute(
             """
             DELETE FROM contient_user
-            JOIN album
-                ON album.id = album_id
-            WHERE user_id = ?
-            AND album.uuid = ?
+            WHERE album_id IN (SELECT id FROM album WHERE uuid = ?)
+            AND user_id = ?
             """,
-            (self.id, album_uuid)
+            (album_uuid, self.id)
         )
         db.commit()
 
@@ -219,6 +220,49 @@ class User():
             """,
             (self.id, groupe.id)
         )
+        db.commit()
+
+    def update_password(self, new_password):
+        db = get_db()
+
+        db.execute(
+            """
+            UPDATE user SET password=?
+            WHERE id=?
+            """,
+            (generate_password_hash(new_password), self.id)
+        )
+
+        db.commit()
+
+
+    def delete(self):
+        instance_path = current_app.config["INSTANCE_PATH"]
+        for groupe in self.get_groupes():
+            self.quit_groupe(groupe.uuid)
+
+            if groupe.get_users() == []:
+                groupe.delete(instance_path)
+
+
+        for album_data in self.get_albums():
+            uuid = album_data["uuid"]
+            self.quit_album(uuid)
+
+            album = Album(uuid=uuid)
+            if album.get_users() == []:
+                album.delete(instance_path)
+
+        db = get_db()
+
+        db.execute(
+            """
+            DELETE FROM user
+            WHERE id=?
+            """,
+            (self.id,)
+        )
+
         db.commit()
 
 

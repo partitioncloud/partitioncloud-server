@@ -157,13 +157,13 @@
             </svg>{{ _("Admin Panel") }}
             </button></a><br/>
           {% endif %}
-          <div class="user">
+          <a href="/settings"><div class="user">
             <div class="user-profile-picture" style="background-color:{{ user.color }};"
               title="{{ user.username }}">
               {{ user.username[0] | upper }}
             </div>
             <div class="username">{{ user.username }}</div>
-          </div>
+          </div></a>
         {% else %}
           {% if not config.DISABLE_REGISTER %}
             <a href="{{ url_for('auth.register') }}"><button>{{ _("Create account") }}</button></a>
