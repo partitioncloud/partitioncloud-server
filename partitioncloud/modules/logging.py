@@ -60,7 +60,7 @@ def log(content: list[Union[str, bool, int]], log_type: LogEntry) -> None:
                 description = f"New user {content[0]}[{content[1]}]"
             else:
                 description = f"New user {content[0]}[{content[1]}] added by {content[3]}"
-                
+
         case LogEntry.SERVER_RESTART: # content = ()
             description = "Server just restarted"
 

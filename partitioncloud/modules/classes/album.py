@@ -114,7 +114,7 @@ class Album():
             """
             SELECT partition.uuid FROM partition
             WHERE NOT EXISTS (
-                SELECT NULL FROM contient_partition 
+                SELECT NULL FROM contient_partition
                 WHERE partition.uuid = partition_uuid
             )
             """
@@ -142,7 +142,7 @@ class Album():
             WHERE uuid IN (
                 SELECT partition.uuid FROM partition
                 WHERE NOT EXISTS (
-                    SELECT NULL FROM contient_partition 
+                    SELECT NULL FROM contient_partition
                     WHERE partition.uuid = partition_uuid
                 )
             )

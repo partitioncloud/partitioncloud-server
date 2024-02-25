@@ -17,7 +17,7 @@ async function hideSidebarNoAnim () {
   /* The transition needs to be invisible as if it was loaded that way */
   content_container.style.transitionDuration = "0s";
   sidebar_indicator.style.transitionDuration = "0s";
-  
+
   sidebar_toggle.checked = true;
 
   /* We need to set a sleep because we want to reset the transition duration only once it ended*/

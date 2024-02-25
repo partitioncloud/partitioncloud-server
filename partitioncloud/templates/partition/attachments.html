@@ -27,7 +27,7 @@
 <script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.5.0"></script>
 <midi-visualizer type="staff" id="midi-visualizer"></midi-visualizer>
 
-        
+
 {% if partition.attachments | length > 0 %}
 <div id="attachments">
     <table>
@@ -38,7 +38,7 @@
             <td><audio controls src="/partition/attachment/{{ attachment.uuid }}.mp3"></td>
             <td>🎙️ {{ attachment.name }}</td>
             {% elif attachment.filetype == "mid" %}
-            
+
             <td><midi-player
                     src="/partition/attachment/{{ attachment.uuid }}.mid"
                     sound-font visualizer="#midi-visualizer" data-js-focus-visible>

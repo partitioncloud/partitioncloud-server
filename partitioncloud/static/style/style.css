@@ -656,7 +656,7 @@ td {
 /** Attachment page */
 #pdf-embed {
     margin: auto;
-    
+
     width: 100%;
     width: -moz-available;
     width: -webkit-fill-available;

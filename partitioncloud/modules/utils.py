@@ -92,5 +92,5 @@ def partition_count():
         SELECT COUNT(*) FROM partition
         """
     ).fetchone()
-    
+
     return count[0]

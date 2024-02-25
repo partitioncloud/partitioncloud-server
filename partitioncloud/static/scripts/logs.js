@@ -2,7 +2,7 @@ let logsEmbed = document.getElementById("logs-embed");
 
 logsEmbed.addEventListener("load", () => {
     var cssLink = document.createElement("link");
-    
+
     cssLink.href = "/static/style/logs.css";
     cssLink.rel = "stylesheet";
     cssLink.type = "text/css";

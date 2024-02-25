@@ -58,7 +58,7 @@ def install_package(package):
                 return
             print(f"{Fore.RED}Installation with pip failed{Style.RESET_ALL}")
             sys.exit(return_value)
-            
+
         elif choice == 2:
             input("Install via you preferred option, and hit [Enter] when done")
             return
