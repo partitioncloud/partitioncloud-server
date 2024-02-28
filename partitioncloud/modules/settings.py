@@ -27,7 +27,8 @@ def index():
     return render_template(
         "settings/index.html",
         inspected_user=user,
-        user=user
+        user=user,
+        deletion_allowed=not current_app.config["DISABLE_ACCOUNT_DELETION"]
     )
 
 
@@ -47,6 +48,10 @@ def delete_account():
         log_data = [mod_user.username, mod_user.id]
         if cur_user.id != mod_user.id:
             flash(_("Missing rights."))
+            return redirect(request.referrer)
+
+        if current_app.config["DISABLE_ACCOUNT_DELETION"]:
+            flash(_("You are not allowed to delete your account."))
             return redirect(request.referrer)
     else:
         log_data = [mod_user.username, mod_user.id, cur_user.username]

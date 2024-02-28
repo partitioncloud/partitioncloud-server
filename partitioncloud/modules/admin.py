@@ -50,7 +50,8 @@ def user_inspect(user_id):
         "settings/index.html",
         skip_old_password=True,
         inspected_user=inspected_user,
-        user=current_user
+        user=current_user,
+        deletion_allowed=True
     )
 
 

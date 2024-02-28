@@ -35,8 +35,9 @@
     <input type="hidden" id="user_id" name="user_id" value="{{ inspected_user.id }}">
     <input type="Submit" value="{{ _('confirm') }}">
 </form>
-
-<h3>{{ _("Delete account") }}</h3>
-<a href="#delete-account"><button class="red-confirm">{{ _("Delete account") }}</button></a>
+{% if deletion_allowed %}
+  <h3>{{ _("Delete account") }}</h3>
+  <a href="#delete-account"><button class="red-confirm">{{ _("Delete account") }}</button></a>
+{% endif %}
 
 {% endblock %}
