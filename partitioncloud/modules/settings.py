@@ -11,6 +11,7 @@ from flask_babel import _
 from .db import get_db
 from .auth import login_required
 from .utils import User
+from . import logging
 
 
 bp = Blueprint("settings", __name__, url_prefix="/settings")
@@ -33,6 +34,7 @@ def index():
 @bp.route("/delete-account", methods=["POST"])
 @login_required
 def delete_account():
+    log_data = None
     if "user_id" not in request.form:
         flash(_("Missing user id."))
         return redirect(request.referrer)
@@ -42,12 +44,16 @@ def delete_account():
     mod_user = User(user_id=user_id)
 
     if cur_user.access_level != 1:
+        log_data = [mod_user.username, mod_user.id]
         if cur_user.id != mod_user.id:
             flash(_("Missing rights."))
             return redirect(request.referrer)
+    else:
+        log_data = [mod_user.username, mod_user.id, cur_user.username]
 
     mod_user.delete()
     flash(_("User successfully deleted."))
+    logging.log(log_data, logging.LogEntry.DELETE_ACCOUNT)
     if cur_user.id == mod_user.id:
         return redirect("/")
     return redirect("/admin")
@@ -56,6 +62,7 @@ def delete_account():
 @bp.route("/change-password", methods=["POST"])
 @login_required
 def change_password():
+    log_data = None
     if "user_id" not in request.form:
         flash(_("Missing user id."))
         return redirect(request.referrer)
@@ -65,6 +72,7 @@ def change_password():
     mod_user = User(user_id=user_id)
 
     if cur_user.access_level != 1:
+        log_data = [mod_user.username, mod_user.id]
         if cur_user.id != mod_user.id:
             flash(_("Missing rights."))
             return redirect(request.referrer)
@@ -76,6 +84,8 @@ def change_password():
         if not check_password_hash(mod_user.password, request.form["old_password"]):
             flash(_("Incorrect password."))
             return redirect(request.referrer)
+    else:
+        log_data = [mod_user.username, mod_user.id, cur_user.username]
 
     if "new_password" not in request.form or "confirm_new_password" not in request.form:
         flash(_("Missing password."))
@@ -87,4 +97,5 @@ def change_password():
 
     mod_user.update_password(request.form["new_password"])
     flash(_("Successfully updated password."))
+    logging.log(log_data, logging.LogEntry.PASSWORD_CHANGE)
     return redirect(request.referrer)

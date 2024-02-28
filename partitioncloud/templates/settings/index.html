@@ -24,7 +24,7 @@
 
 
 {% block content %}
-{{ _("User %(username)s has %(album_count)s albums"), username=inspected_user.username, album_count=len(inspected_user.get_albums()) }}
+{{ _("User %(username)s has %(album_count)s albums", username=inspected_user.username, album_count=(inspected_user.get_albums() | length)) }}
 <form action="/settings/change-password" method="post">
     <h3>{{ _("Change password") }}</h3>
     {% if not skip_old_password %}

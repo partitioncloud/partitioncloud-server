@@ -12,8 +12,10 @@ class LogEntry(Enum):
     NEW_ALBUM = 3
     NEW_PARTITION = 4
     NEW_USER = 5
-    SERVER_RESTART = 6
-    FAILED_LOGIN = 7
+    PASSWORD_CHANGE = 6
+    DELETE_ACCOUNT = 7
+    SERVER_RESTART = 8
+    FAILED_LOGIN = 9
 
     def from_string(entry: str):
         mapping = {
@@ -22,6 +24,8 @@ class LogEntry(Enum):
             "NEW_ALBUM": LogEntry.NEW_ALBUM,
             "NEW_PARTITION": LogEntry.NEW_PARTITION,
             "NEW_USER": LogEntry.NEW_USER,
+            "PASSWORD_CHANGE": LogEntry.PASSWORD_CHANGE,
+            "DELETE_ACCOUNT": LogEntry.DELETE_ACCOUNT,
             "SERVER_RESTART": LogEntry.SERVER_RESTART,
             "FAILED_LOGIN": LogEntry.FAILED_LOGIN
         }
@@ -60,6 +64,18 @@ def log(content: list[Union[str, bool, int]], log_type: LogEntry) -> None:
                 description = f"New user {content[0]}[{content[1]}]"
             else:
                 description = f"New user {content[0]}[{content[1]}] added by {content[3]}"
+
+        case LogEntry.PASSWORD_CHANGE: # content = (user.name, user.id, admin.name if relevant)
+            if len(content) == 2:
+                description = f"New password for {content[0]}[{content[1]}]"
+            else:
+                description = f"New password for {content[0]}[{content[1]}], changed by {content[2]}"
+
+        case LogEntry.DELETE_ACCOUNT: # content = (user.name, user.id, admin.name if relevant)
+            if len(content) == 2:
+                description = f"Account deleted {content[0]}[{content[1]}]"
+            else:
+                description = f"Account deleted {content[0]}[{content[1]}], by {content[2]}"
 
         case LogEntry.SERVER_RESTART: # content = ()
             description = "Server just restarted"
