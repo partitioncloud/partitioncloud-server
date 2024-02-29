@@ -33,6 +33,7 @@ class User():
         self.albums = None
         self.groupes = None
         self.partitions = None
+        self.accessible_partitions = None
         self.max_queries = 0
 
         db = get_db()
@@ -168,6 +169,44 @@ class User():
                     (self.id,),
                 ).fetchall()
         return self.partitions
+
+    def get_accessible_partitions(self, force_reload=False):
+        if self.accessible_partitions is None or force_reload:
+            db = get_db()
+            if self.access_level == 1:
+                self.accessible_partitions = db.execute(
+                    """
+                    SELECT * FROM partition
+                    """
+                ).fetchall()
+            else:
+                self.accessible_partitions = db.execute(
+                    """
+                    SELECT partition.uuid, partition.name,
+                        partition.author, partition.body,
+                        partition.user_id, partition.source
+                    FROM partition
+                        JOIN album
+                        JOIN contient_partition
+                        ON album.id=album_id
+                        AND partition.uuid=partition_uuid
+                    WHERE album.id IN (
+                        SELECT album.id FROM album
+                        JOIN contient_user
+                        ON contient_user.user_id=?
+                        AND album_id=album.id
+                    UNION
+                        SELECT album.id FROM album
+                        JOIN groupe_contient_user
+                        JOIN groupe_contient_album
+                        ON groupe_contient_user.user_id=?
+                        AND groupe_contient_album.album_id=album.id
+                        AND groupe_contient_user.groupe_id=groupe_contient_album.groupe_id
+                    )
+                    """,
+                    (self.id, self.id,),
+                ).fetchall()
+        return self.accessible_partitions
 
     def join_album(self, album_uuid):
         db = get_db()

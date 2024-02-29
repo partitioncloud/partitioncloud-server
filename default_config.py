@@ -17,6 +17,9 @@ DISABLE_REGISTER=False
 # Disable account deletion for users (still possible for admins)
 DISABLE_ACCOUNT_DELETION=False
 
+# Set this to True if you want local search to be across all albums (not just those the user belong to)
+PRIVATE_SEARCH=False
+
 # Front URL of the application (for QRCodes generation)
 BASE_URL="http://localhost:5000"
 

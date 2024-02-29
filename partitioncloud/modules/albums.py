@@ -43,12 +43,18 @@ def search_page():
         flash(_("Missing search query"))
         return redirect("/albums")
 
+    user = User(user_id=session.get("user_id"))
+
     query = request.form["query"]
     nb_queries = abs(int(request.form["nb-queries"]))
     search.flush_cache(current_app.instance_path)
-    partitions_local = search.local_search(query, utils.get_all_partitions())
-
-    user = User(user_id=session.get("user_id"))
+    
+    partitions_list = None
+    if current_app.config["PRIVATE_SEARCH"]:
+        partitions_list = utils.get_all_partitions()
+    else:
+        partitions_list = user.get_accessible_partitions()
+    partitions_local = search.local_search(query, partitions_list)
 
     if nb_queries > 0:
         if user.access_level != 1:
