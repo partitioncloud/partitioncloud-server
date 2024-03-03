@@ -20,6 +20,26 @@ Serveur web (basé sur Flask) pour gérer sa collection de partitions musicales
 
 ## Installation
 
+### Installation via Docker (recommandé)
+
+```bash
+# Clone this repo
+git clone https://github.com/partitioncloud/partitioncloud-server.git
+cd partitioncloud-server
+# Create an image named "partitioncloud"
+docker build -t partitioncloud .
+# You can then run the container, replace $PORT with the port you want to be exposed
+PORT=5000
+docker run -d \
+    -p $PORT:5000 \
+    --restart=unless-stopped \
+    --name partitioncloud \
+    partitioncloud:latest
+```
+L'utilisateur par défaut est `root` avec le mot de passe `root`
+
+### Installation manuelle
+
 Installer le serveur
 ```bash
 # Clone this repo
