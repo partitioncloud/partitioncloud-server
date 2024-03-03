@@ -234,7 +234,7 @@ msgstr "Vous n'êtes pas autorisé à supprimer votre compte."
 
 #: partitioncloud/modules/settings.py:60
 msgid "User successfully deleted."
-msgstr "Utilisateur supprimée."
+msgstr "Utilisateur supprimé."
 
 #: partitioncloud/modules/settings.py:86
 msgid "Missing old password."
