@@ -39,3 +39,6 @@ LANGUAGES=['en', 'fr']
 
 # Show Launch page
 LAUNCH_PAGE=True
+
+# Check if account is logged in before serving zipped album/groupe
+ZIP_REQUIRE_LOGIN=True
