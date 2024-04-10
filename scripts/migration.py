@@ -201,11 +201,18 @@ if __name__ == "__main__":
         "--restore",
         help="restore from specific version backup, will not apply any hook (vx.y.z)",
     )
+    parser.add_argument(
+        "-b",
+        "--backup",
+        help="backup current version, without running any hooks",
+    )
 
     args = parser.parse_args()
     config.instance = os.path.abspath(args.instance)
 
-    if args.restore is None:
-        migrate(args.current, args.target, skip_backup=args.skip_backup)
-    else:
+    if args.restore is not None:
         restore(args.restore)
+    elif args.backup is not None:
+        backup_instance(args.backup, verbose=True)
+    else:
+        migrate(args.current, args.target, skip_backup=args.skip_backup)
