@@ -1,3 +1,12 @@
+"""
+Classe Groupe
+"""
+import io
+import os
+import zipfile
+
+from werkzeug.utils import secure_filename
+
 from ..db import get_db
 from .album import Album
 
@@ -116,3 +125,21 @@ class Groupe():
             (self.id,)
         ).fetchall()
         return [i["id"] for i in data]
+
+    def to_zip(self, instance_path):
+        data = io.BytesIO()
+        with zipfile.ZipFile(data, mode="w") as z:
+            for album in self.get_albums():
+                for partition in album.get_partitions():
+                    z.write(os.path.join(
+                        instance_path,
+                        "partitions",
+                        f"{partition['uuid']}.pdf"
+                    ), arcname=secure_filename(album.name)+"/"
+                        +secure_filename(partition['name']+".pdf")
+                    )
+
+        # Spooling back to the beginning of the buffer
+        data.seek(0)
+
+        return data

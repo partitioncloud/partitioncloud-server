@@ -5,12 +5,12 @@ Albums module
 import os
 import pypdf
 import shutil
-
 from uuid import uuid4
 from typing import TypeVar
 
 from flask import (Blueprint, abort, flash, redirect, render_template,
-                   request, session, current_app)
+                   request, session, current_app, send_file, g, url_for)
+from werkzeug.utils import secure_filename
 from flask_babel import _
 
 from .auth import login_required
@@ -113,6 +113,30 @@ def qr_code(uuid):
     Renvoie le QR Code d'un album
     """
     return utils.get_qrcode(f"/albums/{uuid}")
+
+
+@bp.route("/<uuid>/zip")
+def zip_download(uuid):
+    """
+    Télécharger un album comme fichier zip
+    """
+    if g.user is None and current_app.config["ZIP_REQUIRE_LOGIN"]:
+        flash(_("You need to login to access this resource."))
+        return redirect(url_for("auth.login"))
+
+    try:
+        album = Album(uuid=uuid)
+    except LookupError:
+        try:
+            album = Album(uuid=utils.format_uuid(uuid))
+            return redirect(f"/albums/{utils.format_uuid(uuid)}")
+        except LookupError:
+            return abort(404)
+
+    return send_file(
+        album.to_zip(current_app.instance_path),
+        download_name=secure_filename(f"{album.name}.zip")
+    )
 
 
 @bp.route("/create-album", methods=["POST"])

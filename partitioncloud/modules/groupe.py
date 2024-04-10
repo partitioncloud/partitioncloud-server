@@ -3,7 +3,8 @@
 Groupe module
 """
 from flask import (Blueprint, abort, flash, redirect, render_template,
-                   request, session, current_app)
+                   request, session, current_app, send_file, g, url_for)
+from werkzeug.utils import secure_filename
 from flask_babel import _
 
 from .auth import login_required
@@ -258,6 +259,31 @@ def get_album(groupe_uuid, album_uuid):
         partitions=partitions,
         not_participant=not_participant,
         user=user
+    )
+
+
+@bp.route("/<groupe_uuid>/zip")
+def zip_download(groupe_uuid):
+    """
+    Télécharger un groupe comme fichier zip
+    """
+    if g.user is None and current_app.config["ZIP_REQUIRE_LOGIN"]:
+        flash(_("You need to login to access this resource."))
+        return redirect(url_for("auth.login"))
+
+    try:
+        groupe = Groupe(uuid=groupe_uuid)
+    except LookupError:
+        try:
+            groupe = Groupe(uuid=utils.format_uuid(groupe_uuid))
+            return redirect(f"/groupe/{utils.format_uuid(groupe_uuid)}/zip")
+        except LookupError:
+            return abort(404)
+
+
+    return send_file(
+        groupe.to_zip(current_app.instance_path),
+        download_name=secure_filename(f"{groupe.name}.zip")
     )
 
 

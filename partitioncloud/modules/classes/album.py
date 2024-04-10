@@ -2,6 +2,10 @@
 Classe Album
 """
 import os
+import io
+import zipfile
+
+from werkzeug.utils import secure_filename
 
 from ..db import get_db
 from ..utils import new_uuid
@@ -164,6 +168,23 @@ class Album():
             (partition_uuid, self.id),
         )
         db.commit()
+
+    
+    def to_zip(self, instance_path):
+        data = io.BytesIO()
+        with zipfile.ZipFile(data, mode="w") as z:
+            for partition in self.get_partitions():
+                z.write(os.path.join(
+                    instance_path,
+                    "partitions",
+                    f"{partition['uuid']}.pdf"
+                ), arcname=secure_filename(partition['name']+".pdf")
+                )
+
+        # Spooling back to the beginning of the buffer
+        data.seek(0)
+
+        return data
 
 
 def create(name: str) -> str:
