@@ -45,7 +45,7 @@
       <div class="dropdown-content dp1">
       {% if not_participant %}
         <a href="/groupe/{{ groupe.uuid }}/join">{{ _("Join") }}</a>
-      {% elif groupe.users | length > 1 and g.user %}
+      {% elif g.user and not not_participant %}
         <a href="/groupe/{{ groupe.uuid }}/quit">{{ _("Quit") }}</a>
       {% endif %}
       <a href="#share">{{ _("Share") }}</a>
