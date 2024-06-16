@@ -182,7 +182,7 @@ class User():
             else:
                 self.accessible_partitions = db.execute(
                     """
-                    SELECT partition.uuid, partition.name,
+                    SELECT DISTINCT partition.uuid, partition.name,
                         partition.author, partition.body,
                         partition.user_id, partition.source
                     FROM partition
@@ -196,7 +196,7 @@ class User():
                         ON contient_user.user_id=?
                         AND album_id=album.id
                     UNION
-                        SELECT album.id FROM album
+                        SELECT DISTINCT album.id FROM album
                         JOIN groupe_contient_user
                         JOIN groupe_contient_album
                         ON groupe_contient_user.user_id=?
