@@ -10,6 +10,7 @@ import os
 
 import pypdf
 import googlesearch
+from unidecode import unidecode
 
 from .db import get_db
 
@@ -20,20 +21,20 @@ def local_search(query, partitions):
     """
     Renvoie les 5 résultats les plus pertinents parmi une liste donnée
     """
-    query_words = [word.lower() for word in query.split(" ")]
+    query_words = [word.lower() for word in unidecode(query).split()]
     def score_attribution(partition):
         score = 0
         for word in query_words:
             if word != "":
-                if word in partition["name"].lower():
+                if word in unidecode(partition["name"]).lower():
                     score += 6
-                elif word in partition["author"].lower():
+                elif word in unidecode(partition["author"]).lower():
                     score += 4
-                elif word in partition["body"].lower():
+                elif word in unidecode(partition["body"]).lower():
                     score += 2
                 else:
-                    score -= 1
-        for word in partition["name"].split(" "):
+                    score -= 6
+        for word in unidecode(partition["name"]).split():
             if word != "" and word.lower() not in query_words:
                 score -= 1
         return score

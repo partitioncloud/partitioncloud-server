@@ -188,3 +188,10 @@ def install_babel():
 
 def install_pypdf():
     utils.install_package("pypdf")
+
+"""
+ v1.10.*
+"""
+
+def install_unidecode():
+    utils.install_package("unidecode")

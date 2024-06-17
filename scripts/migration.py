@@ -37,6 +37,7 @@ hooks = [
     ("v1.5.1", [("Move thumbnails", v1_hooks.move_thumbnails)]),
     ("v1.7.0", [("Install babel", v1_hooks.install_babel)]),
     ("v1.8.2", [("Install pypdf", v1_hooks.install_pypdf)])
+    ("v1.10.3", [("Install unidecode", v1_hooks.install_unidecode)])
 ]
 
 

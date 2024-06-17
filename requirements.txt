@@ -4,3 +4,4 @@ google
 colorama
 pypdf
 qrcode
+unidecode
