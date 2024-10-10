@@ -532,6 +532,14 @@ msgstr "lyrics"
 msgid "Add"
 msgstr "Add"
 
+#: partitioncloud/templates/components/input_file.html:4
+msgid "Your file is selected."
+msgstr "Your file is selected."
+
+#: partitioncloud/templates/components/input_file.html:5
+msgid "Select or drag & drop your file (pdf)."
+msgstr "Select or drag & drop your file (pdf)."
+
 #: partitioncloud/templates/groupe/index.html:8
 #, python-format
 msgid "Add an album to group %(name)s"
