@@ -734,7 +734,7 @@ midi-player {
     cursor: pointer;
 }
   
-.file-area .file-dummy {
+.file-area .inner-file-area {
     padding: 30px;
     background: var(--color-mantle);
     border: 2px dashed var(--color-red);
@@ -742,20 +742,32 @@ midi-player {
     transition: background 0.3s ease-in-out;
 }
   
-.file-area .file-dummy .success {
+.file-area .inner-file-area .success {
     display: none;
 }
   
-.file-area:hover > .file-dummy {
+.file-area:hover > .inner-file-area {
     background: var(--color-surface0);
 }
   
-.file-area input[type=file]:valid + .file-dummy {
+.file-area input[type=file]:valid + .inner-file-area {
     border-color: var(--color-green);
 }
-.file-area input[type=file]:valid + .file-dummy .success {
+.file-area input[type=file]:not(:required) + .inner-file-area {
+    border-color: var(--color-blue);
+}
+
+.file-area input[type=file]:valid + .inner-file-area .success {
     display: inline-block;
 }
-.file-area input[type=file]:valid + .file-dummy .default {
+.file-area input[type=file]:valid + .inner-file-area .default {
     display: none;
+}
+
+.file-area input[type=file]:not(:required) + .inner-file-area .success {
+    display: none;
+}
+
+.file-area input[type=file]:not(:required) + .inner-file-area .default {
+    display: inline-block;
 }

@@ -52,7 +52,13 @@
         <td>{{ _("File") }}</td>
         <td><a href="/partition/{{ partition.uuid }}">
             <img class="partition-thumbnail" src="/thumbnails/{{ partition.uuid }}.jpg" loading="lazy">
-        </a></td>
+        </a><br/>
+        {% block input_file %}
+          {% set required=false %}
+          {% set filetype=".pdf" %}
+          {% include 'components/input_file.html' %}
+        {% endblock %}
+      </td>
       </tr>
       <tr>
         <td>{{ _("Title") }}</td>

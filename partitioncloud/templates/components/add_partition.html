@@ -7,7 +7,11 @@
   {% if partition_uuid %}
     <input name="partition-uuid" value="{{ partition_uuid }}" type="hidden">
   {% else %}
-    {% include 'components/input_file.html' %}
+    {% block input_file %}
+      {% set required=true %}
+      {% set filetype=".pdf" %}
+      {% include 'components/input_file.html' %}
+    {% endblock %}
   {% endif %}
   <input type="submit" value="{{ _('Add') }}" />
 </form>

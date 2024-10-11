@@ -3,6 +3,7 @@
 Partition module
 """
 import os
+import pypdf
 from uuid import uuid4
 from flask import (Blueprint, abort, send_file, render_template,
                     request, redirect, flash, session, current_app)
@@ -159,6 +160,17 @@ def edit(uuid):
     if error is not None:
         flash(error)
         return redirect(f"/partition/{ uuid }/edit")
+
+    if request.files.get('file', None):
+        new_file = request.files["file"]
+        try:
+            pypdf.PdfReader(new_file)
+            new_file.seek(0)
+        except (pypdf.errors.PdfReadError, pypdf.errors.PdfStreamError):
+            flash(_("Invalid PDF file"))
+            return redirect(request.referrer)
+
+        partition.update_file(new_file, current_app.instance_path)
 
     partition.update(
         name=request.form["name"],

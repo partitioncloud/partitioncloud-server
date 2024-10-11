@@ -1,7 +1,7 @@
 <div class="file-area">
-  <input name="file" type="file" accept=".pdf" required="">
-  <div class="file-dummy">
+  <input name="file" type="file" accept="{{ filetype }}" {% if required %}required=""{% endif %}>
+  <div class="inner-file-area">
     <div class="success">{{ _("Your file is selected.") }}</div>
-    <div class="default">{{ _("Select or drag & drop your file (pdf).") }}</div>
+    <div class="default">{{ _("Select or drag & drop your file") }} ({{ filetype }}).</div>
   </div>
 </div>

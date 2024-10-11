@@ -9,7 +9,11 @@
     <h2>{{ _("Add an attachment to %(name)s", name=partition.name) }}</h2>
     <form action="/partition/{{ partition.uuid }}/add-attachment" method="post" enctype="multipart/form-data">
         <input type="text" name="name" id="name" placeholder="{{ _('Name') }}"><br/>
-        <input name="file" type="file" accept=".mp3,.mid" required=""><br/>
+        {% block input_file %}
+          {% set required=true %}
+          {% set filetype=".mp3,.mid" %}
+          {% include 'components/input_file.html' %}
+        {% endblock %}
         <input type="submit" value="{{ _('Add') }}">
     </form>
     <a href="#!" class="close-dialog">Close</a>
@@ -55,7 +59,7 @@
 {% endif %}
 
 <br/>
-{% if user %}
+{% if g.user %}
 <div class="centered">
     <a href="#create-attachment"><button>{{ _("Add an attachment") }}</button></a>
 </div>

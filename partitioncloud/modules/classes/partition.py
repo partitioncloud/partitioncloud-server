@@ -75,6 +75,16 @@ class Partition():
         )
         db.commit()
 
+    def update_file(self, file, instance_path):
+        partition_path = os.path.join(
+            instance_path,
+            "partitions",
+            f"{self.uuid}.pdf"
+        )
+        file.save(partition_path)
+        if os.path.exists(f"{instance_path}/cache/thumbnails/{self.uuid}.jpg"):
+            os.remove(f"{instance_path}/cache/thumbnails/{self.uuid}.jpg")
+
     def get_user(self):
         db = get_db()
         user = db.execute(
