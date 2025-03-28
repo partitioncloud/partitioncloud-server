@@ -35,7 +35,7 @@ def get_groupe(uuid):
         except LookupError:
             return abort(404)
 
-    groupe.users = [User(user_id=i["id"]) for i in groupe.get_users()]
+    groupe.users = [User(user_id=u_id) for u_id in groupe.get_users()]
     groupe.get_albums()
     user = User(user_id=session.get("user_id"))
 
@@ -131,7 +131,7 @@ def quit_groupe(uuid):
     user = User(user_id=session.get("user_id"))
     groupe = Groupe(uuid=uuid)
     users = groupe.get_users()
-    if user.id not in [u["id"] for u in users]:
+    if user.id not in users:
         flash(_("You are not a member of this group."))
         return redirect(f"/groupe/{uuid}")
 
@@ -140,6 +140,11 @@ def quit_groupe(uuid):
         return redirect(f"/groupe/{uuid}#delete")
 
     user.quit_groupe(groupe.uuid)
+
+    if len(groupe.get_admins()) == 0: # On s'assure que le groupe contient toujours des administrateurs
+        for user_id in groupe.get_users(force_reload=True):
+            groupe.set_admin(user_id, True)
+
     flash(_("Group quitted."))
     return redirect("/albums")
 
@@ -151,8 +156,7 @@ def delete_groupe(uuid):
     user = User(user_id=session.get("user_id"))
 
     error = None
-    users = groupe.get_users()
-    if len(users) > 1:
+    if len(groupe.get_users()) > 1:
         error = _("You are not alone in this group.")
 
     if user.access_level == 1 or user.id not in groupe.get_admins():
@@ -185,7 +189,7 @@ def create_album_req(groupe_uuid):
     if not name or name.strip() == "":
         error = _("Missing name.")
 
-    if user.id not in groupe.get_admins():
+    if user.id not in groupe.get_admins() and user.access_level != 1:
         error = _("You are not admin of this group.")
 
     if error is None:
@@ -241,7 +245,7 @@ def get_album(groupe_uuid, album_uuid):
     user = User(user_id=session.get("user_id"))
 
     # List of users without duplicate
-    users_id = list({i["id"] for i in album.get_users()+groupe.get_users()})
+    users_id = list(set(album.get_users()+groupe.get_users()))
     album.users = [User(user_id=id) for id in users_id]
 
     partitions = album.get_partitions()

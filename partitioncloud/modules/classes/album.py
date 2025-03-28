@@ -51,11 +51,11 @@ class Album():
 
     def get_users(self, force_reload=False):
         """
-        Renvoie les utilisateurs liés à l'album
+        Renvoie les data["id"] des utilisateurs liés à l'album
         """
         if self.users is None or force_reload:
             db = get_db()
-            self.users = db.execute(
+            data = db.execute(
                 """
                 SELECT * FROM user
                 JOIN contient_user ON user_id = user.id
@@ -64,6 +64,7 @@ class Album():
                 """,
                 (self.uuid,)
             ).fetchall()
+            self.users = [i["id"] for i in data]
         return self.users
 
     def get_partitions(self):

@@ -89,7 +89,7 @@ def get_album(uuid):
         except LookupError:
             return abort(404)
 
-    album.users = [User(user_id=i["id"]) for i in album.get_users()]
+    album.users = [User(user_id=u_id) for u_id in album.get_users()]
     user = User(user_id=session.get("user_id"))
     partitions = album.get_partitions()
     if user.id is None:
@@ -204,8 +204,9 @@ def quit_album(uuid):
     """
     user = User(user_id=session.get("user_id"))
     album = Album(uuid=uuid)
+
     users = album.get_users()
-    if user.id not in [u["id"] for u in users]:
+    if user.id not in users:
         flash(_("You are not a member of this album"))
         return redirect(request.referrer)
 
@@ -234,7 +235,7 @@ def delete_album(uuid):
     users = album.get_users()
     if len(users) > 1:
         error = _("You are not alone in this album.")
-    elif len(users) == 1 and users[0]["id"] != user.id:
+    elif len(users) == 1 and users[0] != user.id:
         error = _("You don't own this album.")
 
     if user.access_level == 1:

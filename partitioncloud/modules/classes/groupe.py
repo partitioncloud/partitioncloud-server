@@ -75,21 +75,23 @@ class Groupe():
             album.delete(instance_path)
 
 
-    def get_users(self):
+    def get_users(self, force_reload=False):
         """
         Renvoie les data["id"] des utilisateurs liés au groupe
-        TODO: uniformiser le tout
         """
-        db = get_db()
-        return db.execute(
-            """
-            SELECT * FROM user
-            JOIN groupe_contient_user ON user_id = user.id
-            JOIN groupe ON groupe.id = groupe_id
-            WHERE groupe.id = ?
-            """,
-            (self.id,)
-        ).fetchall()
+        if self.users is None or force_reload:
+            db = get_db()
+            data = db.execute(
+                """
+                SELECT * FROM user
+                JOIN groupe_contient_user ON user_id = user.id
+                JOIN groupe ON groupe.id = groupe_id
+                WHERE groupe.id = ?
+                """,
+                (self.id,)
+            ).fetchall()
+            self.users = [i["id"] for i in data]
+        return self.users
 
     def get_albums(self, force_reload=False):
         """
@@ -125,6 +127,21 @@ class Groupe():
             (self.id,)
         ).fetchall()
         return [i["id"] for i in data]
+
+    def set_admin(self, user_id, value):
+        """
+        Rend un utilisateur administrateur du groupe
+        """
+        db = get_db()
+        data = db.execute(
+            """
+            UPDATE groupe_contient_user
+            SET is_admin=?
+            WHERE user_id=? AND groupe_id=?
+            """,
+            (value, user_id, self.id)
+        )
+        db.commit()
 
     def to_zip(self, instance_path):
         data = io.BytesIO()
