@@ -32,11 +32,11 @@
 <midi-visualizer type="staff" id="midi-visualizer"></midi-visualizer>
 
 
-{% if partition.attachments | length > 0 %}
+{% if partition.get_attachments() | length > 0 %}
 <div id="attachments">
     <table>
         <tbody>
-        {% for attachment in partition.attachments %}
+        {% for attachment in partition.get_attachments() %}
         <tr>
             {% if attachment.filetype == "mp3" %}
             <td><audio controls src="/partition/attachment/{{ attachment.uuid }}.mp3"></td>

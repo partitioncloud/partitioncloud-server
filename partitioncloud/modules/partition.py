@@ -38,7 +38,6 @@ def attachments(uuid):
     except LookupError:
         abort(404)
 
-    partition.load_attachments()
     return render_template(
         "partition/attachments.html",
         partition=partition,
@@ -131,10 +130,9 @@ def get_attachment(uuid, filetype):
     )
 
 
-
-@bp.route("/<uuid>/edit", methods=["GET", "POST"])
+@bp.route("/<uuid>/details", methods=["GET", "POST"])
 @login_required
-def edit(uuid):
+def details(uuid):
     try:
         partition = Partition(uuid=uuid)
     except LookupError:
@@ -145,52 +143,6 @@ def edit(uuid):
         flash(_("You are not allowed to edit this file."))
         return redirect("/albums")
 
-    if request.method == "GET":
-        return render_template("partition/edit.html", partition=partition, user=user)
-
-    error = None
-
-    if "name" not in request.form or request.form["name"].strip() == "":
-        error = _("Missing title")
-    elif "author" not in request.form:
-        error = _("Missing author in request body (can be null).")
-    elif "body" not in request.form:
-        error = _("Missing lyrics (can be null).")
-
-    if error is not None:
-        flash(error)
-        return redirect(f"/partition/{ uuid }/edit")
-
-    if request.files.get('file', None):
-        new_file = request.files["file"]
-        try:
-            pypdf.PdfReader(new_file)
-            new_file.seek(0)
-        except (pypdf.errors.PdfReadError, pypdf.errors.PdfStreamError):
-            flash(_("Invalid PDF file"))
-            return redirect(request.referrer)
-
-        partition.update_file(new_file, current_app.instance_path)
-
-    partition.update(
-        name=request.form["name"],
-        author=request.form["author"],
-        body=request.form["body"]
-    )
-
-    flash(_("Successfully modified %(name)s", name=request.form['name']))
-    return redirect("/albums")
-
-
-@bp.route("/<uuid>/details", methods=["GET", "POST"])
-@admin_required
-def details(uuid):
-    try:
-        partition = Partition(uuid=uuid)
-    except LookupError:
-        abort(404)
-
-    user = User(user_id=session.get("user_id"))
     try:
         partition_user = partition.get_user()
     except LookupError:
@@ -201,7 +153,6 @@ def details(uuid):
             "partition/details.html",
             partition=partition,
             partition_user=partition_user,
-            albums=partition.get_albums(),
             user=user
         )
 
@@ -217,6 +168,17 @@ def details(uuid):
     if error is not None:
         flash(error)
         return redirect(f"/partition/{ uuid }/details")
+
+    if request.files.get('file', None):
+        new_file = request.files["file"]
+        try:
+            pypdf.PdfReader(new_file)
+            new_file.seek(0)
+        except (pypdf.errors.PdfReadError, pypdf.errors.PdfStreamError):
+            flash(_("Invalid PDF file"))
+            return redirect(request.referrer)
+
+        partition.update_file(new_file, current_app.instance_path)
 
     partition.update(
         name=request.form["name"],

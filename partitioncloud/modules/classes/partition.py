@@ -30,8 +30,6 @@ class Partition():
             raise LookupError
 
     def delete(self, instance_path):
-        self.load_attachments()
-
         db = get_db()
         db.execute(
             """
@@ -55,7 +53,7 @@ class Partition():
         )
         db.commit()
 
-        for attachment in self.attachments:
+        for attachment in self.get_attachments():
             attachment.delete(instance_path)
 
     def update(self, name=None, author="", body=""):
@@ -85,6 +83,17 @@ class Partition():
         if os.path.exists(f"{instance_path}/cache/thumbnails/{self.uuid}.jpg"):
             os.remove(f"{instance_path}/cache/thumbnails/{self.uuid}.jpg")
 
+        db = get_db()
+        db.execute(
+            """
+            UPDATE partition
+            SET source = 'upload'
+            WHERE uuid = ?
+            """,
+            (self.uuid,)
+        )
+        db.commit()
+
     def get_user(self):
         db = get_db()
         user = db.execute(
@@ -112,7 +121,7 @@ class Partition():
             (self.uuid,),
         ).fetchall()
 
-    def load_attachments(self):
+    def get_attachments(self):
         db = get_db()
         if self.attachments is None:
             data = db.execute(
@@ -123,3 +132,5 @@ class Partition():
                 (self.uuid,)
             )
             self.attachments = [Attachment(data=i) for i in data]
+
+        return self.attachments

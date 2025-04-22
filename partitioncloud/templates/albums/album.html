@@ -86,7 +86,7 @@
         <a href="/partition/{{ partition['uuid'] }}/attachments"><div class="partition-action">📎</div></a>
         {% endif %}
         {% if partition["user_id"] == g.user.id or g.user.access_level == 1 %}
-        <a href="/partition/{{ partition['uuid'] }}/edit"><div class="partition-action">✏️</div></a>
+        <a href="/partition/{{ partition['uuid'] }}/details"><div class="partition-action">✏️</div></a>
         {% endif %}
       </div>
     </div>

@@ -4,62 +4,64 @@
 <h2>{% block title %}{{ _('Details of "%(name)s"', name=partition.name)}}{% endblock %}</h2>
 <br/>
 
-<form action="/partition/{{ partition.uuid }}/edit" method="post" enctype="multipart/form-data">
+<form action="/partition/{{ partition.uuid }}/details" method="post" enctype="multipart/form-data">
   <table>
     <tbody>
-      <tr>
-        <td>
-          {{ _("Added by") }}
-        </td>
-        <td>
-          {% if user is not none %}
-          <div class="user-profile"><!-- Completely messy html for this -->
-            <div class="table-username">{{ partition_user.username }}</div>
-            <div class="user-profile-picture" style="background-color:{{ partition_user.color }};" title="{{ partition_user.username }}">
-              {{ partition_user.username[0] | upper }}
+      {% if g.user.access_level == 1 %}
+        <tr>
+          <td>
+            {{ _("Added by") }}
+          </td>
+          <td>
+            {% if partition_user %}
+            <div class="user-profile"><!-- Completely messy html for this -->
+              <div class="user-profile-picture"
+                    style="background-color:{{ partition_user.color }}; position: static;"
+                    title="{{ partition_user.username }}">
+                {{ partition_user.username[0] | upper }}
+              </div>
+              <div class="table-username">{{ partition_user.username }}</div>
             </div>
-          </div>
-          {% else %}
-            {{ _("Unknown") }}
-          {% endif %}
-        </td>
-      </tr>
-      <tr>
-        <td>
-          {{ _("Type") }}
-        </td>
-        <td>
-          {% if partition.source == "unknown" or partition.source == "upload" %}
-            {{ partition.source }}
-          {% else %}
-            <a href="{{ partition.source }}">search</a>
-          {% endif %}
-        </td>
-      </tr>
-      <tr>
-        <td>
-          {{ _("Albums") }}
-        </td>
-        <td class="liste">
-          <ul>
-            {% for album in albums %}
-            <li><a href="/albums/{{ album.uuid }}">{{ album.name }}</a></li>
-            {% endfor %}
-          </ul>
-        </td>
-      </tr>
+            {% else %}
+              {{ _("Unknown") }}
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{ _("Albums") }}
+          </td>
+          <td class="liste">
+            <ul>
+              {% for album in partition.get_albums() %}
+              <li><a href="/albums/{{ album.uuid }}">{{ album.name }}</a></li>
+              {% endfor %}
+            </ul>
+          </td>
+        </tr>
+      {% endif %}
       <tr>
         <td>{{ _("File") }}</td>
         <td><a href="/partition/{{ partition.uuid }}">
-            <img class="partition-thumbnail" src="/thumbnails/{{ partition.uuid }}.jpg" loading="lazy">
+          <img class="partition-thumbnail" src="/thumbnails/{{ partition.uuid }}.jpg" loading="lazy">
         </a><br/>
         {% block input_file %}
           {% set required=false %}
           {% set filetype=".pdf" %}
           {% include 'components/input_file.html' %}
         {% endblock %}
-      </td>
+        </td>
       </tr>
+      {% if partition.source != "unknown" and partition.source != "upload" %}
+        <tr>
+          <td>
+            {{ _("Source") }}
+          </td>
+          <td class="partition-source">
+            <a href="{{ partition.source }}">{{ partition.source.split("/")[2] }}</a>
+          </td>
+        </tr>
+      {% endif %}
       <tr>
         <td>{{ _("Title") }}</td>
         <td><input name="name" type="text" value="{{ partition.name }}" placeholder="{{ _('Title') }}" required /><br/></td>
@@ -74,9 +76,8 @@
       </tr>
       <tr>
         <td>{{ _("Attachments") }}</td>
-        {{ partition.load_attachments() }}
         <td><a href="/partition/{{ partition.uuid }}/attachments">
-          {% if partition.attachments %}
+          {% if partition.get_attachments() %}
             {% set number=partition.attachments | length %}
             {{ _("Yes, %(number)s", number=number) }}
           {% else %}
