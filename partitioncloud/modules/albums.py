@@ -17,6 +17,7 @@ from .auth import login_required
 from .db import get_db
 from .utils import User, Album
 from . import search, utils, logging
+from .classes import permissions
 
 
 bp = Blueprint("albums", __name__, url_prefix="/albums")
@@ -40,15 +41,14 @@ def search_page():
     Résultats de recherche
     """
     if "query" not in request.form or request.form["query"] == "":
-        flash(_("Missing search query"))
-        return redirect("/albums")
+        raise utils.InvalidRequest(_("Missing search query"))
 
     user = User(user_id=session.get("user_id"))
 
     query = request.form["query"]
     nb_queries = abs(int(request.form["nb-queries"]))
     search.flush_cache(current_app.instance_path)
-    
+
     partitions_list = None
     if current_app.config["PRIVATE_SEARCH"]:
         partitions_list = utils.get_all_partitions()
@@ -57,10 +57,7 @@ def search_page():
     partitions_local = search.local_search(query, partitions_list)
 
     if nb_queries > 0:
-        if not user.is_admin:
-            nb_queries = min(current_app.config["MAX_ONLINE_QUERIES"], nb_queries)
-        else:
-            nb_queries = min(10, nb_queries) # Query limit is 10 for an admin
+        nb_queries = min(user.max_queries, nb_queries)
         google_results = search.online_search(query, nb_queries, current_app.instance_path)
     else:
         google_results = []
@@ -121,17 +118,17 @@ def zip_download(uuid):
     Télécharger un album comme fichier zip
     """
     if g.user is None and current_app.config["ZIP_REQUIRE_LOGIN"]:
-        flash(_("You need to login to access this resource."))
-        return redirect(url_for("auth.login"))
+        raise utils.InvalidRequest(
+            _("You need to login to access this resource."),
+            redirect=url_for("auth.login"),
+            code=401,
+        )
 
     try:
         album = Album(uuid=uuid)
     except LookupError:
-        try:
-            album = Album(uuid=utils.format_uuid(uuid))
-            return redirect(f"/albums/{utils.format_uuid(uuid)}")
-        except LookupError:
-            return abort(404)
+        album = Album(uuid=utils.format_uuid(uuid))
+        return redirect(f"/albums/{utils.format_uuid(uuid)}")
 
     return send_file(
         album.to_zip(current_app.instance_path),
@@ -186,11 +183,7 @@ def join_album(uuid):
     Rejoindre un album
     """
     user = User(user_id=session.get("user_id"))
-    try:
-        user.join_album(uuid)
-    except LookupError:
-        flash(_("This album does not exist."))
-        return redirect(request.referrer)
+    user.join_album(uuid)
 
     flash(_("Album added to collection."))
     return redirect(request.referrer)
@@ -207,8 +200,7 @@ def quit_album(uuid):
 
     users = album.get_users()
     if user.id not in users:
-        flash(_("You are not a member of this album"))
-        return redirect(request.referrer)
+        raise utils.InvalidRequest(_("You are not a member of this album"))
 
     if len(users) == 1:
         flash(_("You are alone here, quitting means deleting this album."))
@@ -231,20 +223,7 @@ def delete_album(uuid):
     if request.method == "GET":
         return render_template("albums/delete-album.html", album=album, user=user)
 
-    error = None
-    users = album.get_users()
-    if len(users) > 1:
-        error = _("You are not alone in this album.")
-    elif len(users) == 1 and users[0] != user.id:
-        error = _("You don't own this album.")
-
-    if user.is_admin:
-        error = None
-
-    if error is not None:
-        flash(error)
-        return redirect(request.referrer)
-
+    permissions.can_delete_album(user, album)
     album.delete(current_app.instance_path)
 
     flash(_("Album deleted."))
@@ -269,16 +248,12 @@ def add_partition(album_uuid):
     album = Album(uuid=album_uuid)
     source = "upload" # source type: upload, unknown or url
 
-    if (not user.is_participant(album.uuid)) and (not user.is_admin):
-        flash(_("You are not a member of this album"))
-        return redirect(request.referrer)
-
-    error = None
+    permissions.has_write_access_album(user, album)
 
     if "name" not in request.form:
-        error = _("Missing title")
+        raise utils.InvalidRequest(_("Missing title"))
     elif "file" not in request.files and "partition-uuid" not in request.form:
-        error = _("Missing file")
+        raise utils.InvalidRequest(_("Missing file"))
     elif "file" not in request.files:
         partition_type = "uuid"
         search_uuid = request.form["partition-uuid"]
@@ -290,9 +265,8 @@ def add_partition(album_uuid):
             (search_uuid,)
         ).fetchone()
         if data is None:
-            error = _("Search results expired")
-        else:
-            source = data["url"]
+            raise utils.InvalidRequest(_("Search results expired"))
+        source = data["url"]
     else:
         partition_type = "file"
 
@@ -300,11 +274,7 @@ def add_partition(album_uuid):
             pypdf.PdfReader(request.files["file"])
             request.files["file"].seek(0)
         except (pypdf.errors.PdfReadError, pypdf.errors.PdfStreamError):
-            error = _("Invalid PDF file")
-
-    if error is not None:
-        flash(error)
-        return redirect(request.referrer)
+            raise utils.InvalidRequest(_("Invalid PDF file"), code=415)
 
     author = get_opt_string(request.form, "author")
     body = get_opt_string(request.form, "body")
@@ -373,22 +343,17 @@ def add_partition_from_search():
     Ajout d'une partition (depuis la recherche locale)
     """
     user = User(user_id=session.get("user_id"))
-    error = None
+    album = Album(uuid=request.form["album-uuid"])
 
     if "album-uuid" not in request.form:
-        error = _("Selecting an album is mandatory.")
+        raise utils.InvalidRequest(_("Selecting an album is mandatory."))
     elif "partition-uuid" not in request.form:
-        error = _("Selecting a score is mandatory.")
+        raise utils.InvalidRequest(_("Selecting a score is mandatory."))
     elif "partition-type" not in request.form:
-        error = _("Please specify a score type.")
-    elif (not user.is_participant(request.form["album-uuid"])) and (not user.is_admin):
-        error = _("You are not a member of this album")
+        raise utils.InvalidRequest(_("Please specify a score type."))
 
-    if error is not None:
-        flash(error)
-        return redirect("/albums")
+    permissions.has_write_access_album(user, album)
 
-    album = Album(request.form["album-uuid"])
     if request.form["partition-type"] == "local_file":
         db = get_db()
         data = db.execute(
@@ -400,12 +365,14 @@ def add_partition_from_search():
             (album.id, request.form["partition-uuid"])
         ).fetchone()
 
-        if data is None:
-            album.add_partition(request.form["partition-uuid"])
-            flash(_("Score added"))
-        else:
-            flash(_("Score is already in the album."))
+        if data is not None:
+            raise utils.InvalidRequest(
+                _("Score is already in the album."),
+                redirect=f"/albums/{album.uuid}"
+            )
 
+        album.add_partition(request.form["partition-uuid"])
+        flash(_("Score added"))
         return redirect(f"/albums/{album.uuid}")
 
     if request.form["partition-type"] == "online_search":
@@ -416,5 +383,7 @@ def add_partition_from_search():
             user=user
         )
 
-    flash(_("Unknown score type."))
-    return redirect("/albums")
+    raise utils.InvalidRequest(
+        _("Unknown score type."),
+        redirect="/albums"
+    )

@@ -12,7 +12,7 @@ from flask import Flask, g, redirect, render_template, request, send_file, flash
 from werkzeug.security import generate_password_hash
 from flask_babel import Babel, _
 
-from .modules.utils import User, Album, get_all_albums, user_count, partition_count
+from .modules.utils import User, Album, get_all_albums, user_count, partition_count, InvalidRequest
 from .modules import albums, auth, partition, admin, groupe, thumbnails, logging, settings
 from .modules.auth import admin_required, login_required
 from .modules.classes import permissions
@@ -161,7 +161,7 @@ def before_request():
     """Set cookie max age to 31 days"""
     session.permanent = True
     app.permanent_session_lifetime = datetime.timedelta(days=int(app.config["MAX_AGE"]))
-    
+
     if g.user is not None:
         g.user = User(user_id=g.user["id"])
 
@@ -190,6 +190,26 @@ def after_request(response):
 @app.errorhandler(LookupError)
 def page_not_found(e):
     abort(404)
+
+@app.errorhandler(InvalidRequest)
+def invalid_request(e):
+    flash(e.reason)
+    #TODO: We would want to respond with e.code HTTP status code
+    #TODO but we need to let 301 redirect
+    if e.redirect is not None:
+        return redirect(e.redirect)
+    if request.referrer:
+        return redirect(request.referrer)
+    return redirect("/albums")
+
+@app.errorhandler(permissions.PermError)
+def perm_error(e):
+    flash(e.reason)
+    #TODO: We would want to respond with 401 HTTP status code
+    #TODO but we need to let 301 redirect
+    if request.referrer:
+        return redirect(request.referrer)
+    return redirect("/albums")
 
 
 if __name__ == "__main__":

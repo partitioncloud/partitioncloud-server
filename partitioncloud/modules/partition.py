@@ -12,6 +12,7 @@ from flask_babel import _
 from .db import get_db
 from .auth import login_required, admin_required
 from .utils import get_all_partitions, User, Partition, Attachment
+from .classes import permissions
 
 
 bp = Blueprint("partition", __name__, url_prefix="/partition")
@@ -44,30 +45,23 @@ def add_attachment(uuid):
     partition = Partition(uuid=uuid)
     user = User(user_id=session.get("user_id"))
 
-    if user.id != partition.user_id and not user.is_admin:
-        flash(_("You don't own this score."))
-        return redirect(request.referrer)
+    permissions.has_write_access_partition(user, partition)
 
-    error = None # À mettre au propre
     if "file" not in request.files:
-        error = _("Missing file")
+        raise utils.InvalidRequest(_("Missing file"))
+
+    if "name" not in request.form or request.form["name"] == "":
+        name = ".".join(request.files["file"].filename.split(".")[:-1])
     else:
-        if "name" not in request.form or request.form["name"] == "":
-            name = ".".join(request.files["file"].filename.split(".")[:-1])
-        else:
-            name = request.form["name"]
+        name = request.form["name"]
 
-        if name == "":
-            error = _("Missing filename.")
-        else:
-            filename = request.files["file"].filename
-            ext = filename.split(".")[-1]
-            if ext not in ["mid", "mp3"]:
-                error = _("Unsupported file type.")
+    if name == "":
+        raise utils.InvalidRequest(_("Missing filename."))
 
-    if error is not None:
-        flash(error)
-        return redirect(request.referrer)
+    filename = request.files["file"].filename
+    ext = filename.split(".")[-1]
+    if ext not in ["mid", "mp3"]:
+        raise utils.InvalidRequest(_("Unsupported file type."))
 
     while True:
         try:
@@ -124,9 +118,7 @@ def details(uuid):
     partition = Partition(uuid=uuid)
     user = User(user_id=session.get("user_id"))
 
-    if not user.is_admin and partition.user_id != user.id:
-        flash(_("You are not allowed to edit this file."))
-        return redirect("/albums")
+    permissions.has_write_access_partition(user, partition)
 
     try:
         partition_user = partition.get_user()
@@ -141,18 +133,12 @@ def details(uuid):
             user=user
         )
 
-    error = None
-
     if "name" not in request.form or request.form["name"].strip() == "":
-        error = _("Missing title")
+        raise utils.InvalidRequest(_("Missing title"))
     elif "author" not in request.form:
-        error = _("Missing author in request body (can be null).")
+        raise utils.InvalidRequest(_("Missing author in request body (can be null)."))
     elif "body" not in request.form:
-        error = _("Missing lyrics (can be null).")
-
-    if error is not None:
-        flash(error)
-        return redirect(f"/partition/{ uuid }/details")
+        raise utils.InvalidRequest(_("Missing lyrics (can be null)."))
 
     if request.files.get('file', None):
         new_file = request.files["file"]
@@ -160,8 +146,7 @@ def details(uuid):
             pypdf.PdfReader(new_file)
             new_file.seek(0)
         except (pypdf.errors.PdfReadError, pypdf.errors.PdfStreamError):
-            flash(_("Invalid PDF file"))
-            return redirect(request.referrer)
+            raise utils.InvalidRequest(_("Invalid PDF file"), code=415)
 
         partition.update_file(new_file, current_app.instance_path)
 
@@ -181,9 +166,7 @@ def delete(uuid):
     partition = Partition(uuid=uuid)
     user = User(user_id=session.get("user_id"))
 
-    if not user.is_admin and partition.user_id != user.id:
-        flash(_("You are not allowed to delete this score."))
-        return redirect("/albums")
+    permissions.can_delete_partition(user, partition)
 
     if request.method == "GET":
         return render_template("partition/delete.html", partition=partition, user=user)
@@ -207,7 +190,7 @@ def partition_search(uuid):
     ).fetchone()
 
     if partition is None:
-        abort(404)
+        raise LookupError
     if request.args.get("redirect") == "true" and partition["url"] is not None:
         return redirect(partition["url"])
 

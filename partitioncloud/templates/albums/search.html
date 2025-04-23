@@ -56,6 +56,7 @@
     </a>
     <form action="/albums/add-partition" class="add-partition-form" method="post">
       <select name="album-uuid">
+        <!--TODO We want to only display write-able albums -->
         {% for album in user.albums %}
         <option value="{{ album['uuid'] }}">{{ album["name"] }}</option>
         {% endfor %}

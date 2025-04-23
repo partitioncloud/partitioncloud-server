@@ -115,11 +115,7 @@ def create_groupe():
 @login_required
 def join_groupe(uuid):
     user = User(user_id=session.get("user_id"))
-    try:
-        user.join_groupe(uuid)
-    except LookupError:
-        flash(_("Unknown group."))
-        return redirect(f"/groupe/{uuid}")
+    user.join_groupe(uuid)
 
     flash(_("Group added to collection."))
     return redirect(f"/groupe/{uuid}")
@@ -132,8 +128,7 @@ def quit_groupe(uuid):
     groupe = Groupe(uuid=uuid)
     users = groupe.get_users()
     if user.id not in users:
-        flash(_("You are not a member of this group."))
-        return redirect(f"/groupe/{uuid}")
+        raise utils.InvalidRequest(_("You are not a member of this group."))
 
     if len(users) == 1:
         flash(_("You are alone here, quitting means deleting this group."))
@@ -155,15 +150,11 @@ def delete_groupe(uuid):
     groupe = Groupe(uuid=uuid)
     user = User(user_id=session.get("user_id"))
 
-    try:
-        permissions.can_delete_groupe(user, groupe)
-        groupe.delete(current_app.instance_path)
+    permissions.can_delete_groupe(user, groupe)
+    groupe.delete(current_app.instance_path)
 
-        flash(_("Group deleted."))
-        return redirect("/albums")
-    except permissions.PermError as e:
-        flash(e.reason)
-        return redirect(request.referrer)
+    flash(_("Group deleted."))
+    return redirect("/albums")
 
 
 @bp.route("/<groupe_uuid>/create-album", methods=["POST"])
@@ -172,39 +163,33 @@ def create_album_req(groupe_uuid):
     groupe = Groupe(uuid=groupe_uuid)
     user = User(user_id=session.get("user_id"))
 
-    try:
-        permissions.has_write_access_groupe(user, groupe)
+    permissions.has_write_access_groupe(user, groupe)
 
-        name = request.form["name"]
-        if not name or name.strip() == "":
-            flash(_("Missing name."))
-            return redirect(request.referrer)
+    name = request.form["name"]
+    if not name or name.strip() == "":
+        raise utils.InvalidRequest(_("Missing name."))
 
-        uuid = utils.create_album(name)
-        album = Album(uuid=uuid)
+    uuid = utils.create_album(name)
+    album = Album(uuid=uuid)
 
-        db = get_db()
-        db.execute(
-            """
-            INSERT INTO groupe_contient_album (groupe_id, album_id)
-            VALUES (?, ?)
-            """,
-            (groupe.id, album.id)
-        )
-        db.commit()
+    db = get_db()
+    db.execute(
+        """
+        INSERT INTO groupe_contient_album (groupe_id, album_id)
+        VALUES (?, ?)
+        """,
+        (groupe.id, album.id)
+    )
+    db.commit()
 
-        logging.log([album.name, album.uuid, user.username], logging.LogEntry.NEW_ALBUM)
+    logging.log([album.name, album.uuid, user.username], logging.LogEntry.NEW_ALBUM)
 
-        if "response" in request.args and request.args["response"] == "json":
-            return {
-                "status": "ok",
-                "uuid": uuid
-            }
-        return redirect(f"/groupe/{groupe.uuid}/{uuid}")
-
-    except permissions.PermError as e:
-        flash(e.reason)
-        return redirect(request.referrer)
+    if "response" in request.args and request.args["response"] == "json":
+        return {
+            "status": "ok",
+            "uuid": uuid
+        }
+    return redirect(f"/groupe/{groupe.uuid}/{uuid}")
 
 
 
@@ -261,17 +246,14 @@ def zip_download(groupe_uuid):
     Télécharger un groupe comme fichier zip
     """
     if g.user is None and current_app.config["ZIP_REQUIRE_LOGIN"]:
-        flash(_("You need to login to access this resource."))
+        raise utils.InvalidRequest(_("You need to login to access this resource."))
         return redirect(url_for("auth.login"))
 
     try:
         groupe = Groupe(uuid=groupe_uuid)
     except LookupError:
-        try:
-            groupe = Groupe(uuid=utils.format_uuid(groupe_uuid))
-            return redirect(f"/groupe/{utils.format_uuid(groupe_uuid)}/zip")
-        except LookupError:
-            return abort(404)
+        groupe = Groupe(uuid=utils.format_uuid(groupe_uuid))
+        return redirect(f"/groupe/{utils.format_uuid(groupe_uuid)}/zip")
 
 
     return send_file(

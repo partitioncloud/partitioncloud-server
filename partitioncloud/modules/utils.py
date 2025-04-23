@@ -8,6 +8,14 @@ from flask import current_app, send_file
 from .db import get_db
 
 
+class InvalidRequest(Exception):
+    def __init__(self, reason: str, code :int=400, redirect: str=None):
+        self.redirect = redirect
+        self.reason = reason
+        self.code = code
+        super().__init__(reason)
+
+
 def new_uuid():
     return ''.join([random.choice(string.ascii_uppercase + string.digits) for _ in range(6)])
 

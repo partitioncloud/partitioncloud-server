@@ -170,7 +170,7 @@ class Album():
         )
         db.commit()
 
-    
+
     def to_zip(self, instance_path):
         data = io.BytesIO()
         with zipfile.ZipFile(data, mode="w") as z:
