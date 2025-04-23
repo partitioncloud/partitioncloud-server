@@ -43,27 +43,27 @@ def can_delete_groupe(user: User, groupe: Groupe) -> None:
         raise PermError(_("You are not alone in this group."))
 
 @admin_bypass
-def has_write_access_groupe(u: User, g: Groupe) -> None:
+def has_write_access_groupe(user: User, groupe: Groupe) -> None:
     if user.id in groupe.get_admins():
         return
     raise PermError(_("You are not admin of this group."))
 
 @admin_bypass
-def can_delete_album(u: User, a: Album) -> None:
-    return False
+def can_delete_album(user: User, album: Album) -> None:
+    raise NotImplementedError
 
 @admin_bypass
-def has_write_access_album(u: User, a: Album) -> None:
-    return False
+def has_write_access_album(user: User, album: Album) -> None:
+    raise NotImplementedError
 
 @admin_bypass
-def can_delete_partition(u: User, p: Partition) -> None:
-    return False
+def can_delete_partition(user: User, partition: Partition) -> None:
+    raise NotImplementedError
 
 @admin_bypass
-def has_write_access_partition(u: User, p: Partition) -> None:
-    return False
+def has_write_access_partition(user: User, partition: Partition) -> None:
+    raise NotImplementedError
 
 @admin_bypass
-def can_delete_attachment(u: User, a: Attachment) -> None:
-    return False
+def can_delete_attachment(user: User, attachment: Attachment) -> None:
+    raise NotImplementedError
