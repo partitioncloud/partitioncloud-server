@@ -60,7 +60,7 @@
           {% if g.user or not config["ZIP_REQUIRE_LOGIN"] %}
           <a href="/albums/{{ album.uuid }}/zip">{{ _("Download as zip") }}</a>
           {% endif %}
-          {% if g.user.access_level == 1 or (g.user and not not_participant and album.users | length == 1) %}
+          {% if g.user.is_admin or (g.user and not not_participant and album.users | length == 1) %}
           <a id="delete-album" href="#delete">{{ _("Delete") }}</a>
           {% endif %}
       </div>
@@ -85,7 +85,7 @@
         {% if partition["has_attachment"] %}
         <a href="/partition/{{ partition['uuid'] }}/attachments"><div class="partition-action">📎</div></a>
         {% endif %}
-        {% if partition["user_id"] == g.user.id or g.user.access_level == 1 %}
+        {% if partition["user_id"] == g.user.id or g.user.is_admin %}
         <a href="/partition/{{ partition['uuid'] }}/details"><div class="partition-action">✏️</div></a>
         {% endif %}
       </div>

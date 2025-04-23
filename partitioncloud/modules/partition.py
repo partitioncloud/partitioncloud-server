@@ -18,11 +18,7 @@ bp = Blueprint("partition", __name__, url_prefix="/partition")
 
 @bp.route("/<uuid>")
 def get_partition(uuid):
-    try:
-        partition = Partition(uuid=uuid)
-    except LookupError:
-        abort(404)
-
+    partition = Partition(uuid=uuid)
 
     return send_file(os.path.join(
             current_app.instance_path,
@@ -33,10 +29,7 @@ def get_partition(uuid):
 
 @bp.route("/<uuid>/attachments")
 def attachments(uuid):
-    try:
-        partition = Partition(uuid=uuid)
-    except LookupError:
-        abort(404)
+    partition = Partition(uuid=uuid)
 
     return render_template(
         "partition/attachments.html",
@@ -48,13 +41,10 @@ def attachments(uuid):
 @bp.route("/<uuid>/add-attachment", methods=["POST"])
 @login_required
 def add_attachment(uuid):
-    try:
-        partition = Partition(uuid=uuid)
-    except LookupError:
-        abort(404)
+    partition = Partition(uuid=uuid)
     user = User(user_id=session.get("user_id"))
 
-    if user.id != partition.user_id and user.access_level != 1:
+    if user.id != partition.user_id and not user.is_admin:
         flash(_("You don't own this score."))
         return redirect(request.referrer)
 
@@ -115,12 +105,10 @@ def add_attachment(uuid):
 
 @bp.route("/attachment/<uuid>.<filetype>")
 def get_attachment(uuid, filetype):
-    try:
-        attachment = Attachment(uuid=uuid)
-    except LookupError:
-        abort(404)
+    attachment = Attachment(uuid=uuid)
 
-    assert filetype == attachment.filetype
+    if filetype != attachment.filetype:
+        abort(404)
 
     return send_file(os.path.join(
             current_app.instance_path,
@@ -133,13 +121,10 @@ def get_attachment(uuid, filetype):
 @bp.route("/<uuid>/details", methods=["GET", "POST"])
 @login_required
 def details(uuid):
-    try:
-        partition = Partition(uuid=uuid)
-    except LookupError:
-        abort(404)
-
+    partition = Partition(uuid=uuid)
     user = User(user_id=session.get("user_id"))
-    if user.access_level != 1 and partition.user_id != user.id:
+
+    if not user.is_admin and partition.user_id != user.id:
         flash(_("You are not allowed to edit this file."))
         return redirect("/albums")
 
@@ -193,14 +178,10 @@ def details(uuid):
 @bp.route("/<uuid>/delete", methods=["GET", "POST"])
 @login_required
 def delete(uuid):
-    try:
-        partition = Partition(uuid=uuid)
-    except LookupError:
-        abort(404)
-
+    partition = Partition(uuid=uuid)
     user = User(user_id=session.get("user_id"))
 
-    if user.access_level != 1 and partition.user_id != user.id:
+    if not user.is_admin and partition.user_id != user.id:
         flash(_("You are not allowed to delete this score."))
         return redirect("/albums")
 

@@ -7,7 +7,7 @@
 <form action="/partition/{{ partition.uuid }}/details" method="post" enctype="multipart/form-data">
   <table>
     <tbody>
-      {% if g.user.access_level == 1 %}
+      {% if g.user.is_admin %}
         <tr>
           <td>
             {{ _("Added by") }}

@@ -57,7 +57,7 @@ def search_page():
     partitions_local = search.local_search(query, partitions_list)
 
     if nb_queries > 0:
-        if user.access_level != 1:
+        if not user.is_admin:
             nb_queries = min(current_app.config["MAX_ONLINE_QUERIES"], nb_queries)
         else:
             nb_queries = min(10, nb_queries) # Query limit is 10 for an admin
@@ -238,7 +238,7 @@ def delete_album(uuid):
     elif len(users) == 1 and users[0] != user.id:
         error = _("You don't own this album.")
 
-    if user.access_level == 1:
+    if user.is_admin:
         error = None
 
     if error is not None:
@@ -269,7 +269,7 @@ def add_partition(album_uuid):
     album = Album(uuid=album_uuid)
     source = "upload" # source type: upload, unknown or url
 
-    if (not user.is_participant(album.uuid)) and (user.access_level != 1):
+    if (not user.is_participant(album.uuid)) and (not user.is_admin):
         flash(_("You are not a member of this album"))
         return redirect(request.referrer)
 
@@ -381,7 +381,7 @@ def add_partition_from_search():
         error = _("Selecting a score is mandatory.")
     elif "partition-type" not in request.form:
         error = _("Please specify a score type.")
-    elif (not user.is_participant(request.form["album-uuid"])) and (user.access_level != 1):
+    elif (not user.is_participant(request.form["album-uuid"])) and (not user.is_admin):
         error = _("You are not a member of this album")
 
     if error is not None:

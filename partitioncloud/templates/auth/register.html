@@ -5,7 +5,7 @@
 <h2>{% block title %}{{ _("Create account") }}{% endblock %}</h2>
 
 <form method="post" id="add-user-form">
-  {% if g.user.access_level == 1 %}
+  {% if g.user.is_admin %}
     <!-- Uniquement pour /add-user -->
     <label for="album_uuid">{{ _("Add to album:") }}</label><br/>
     <select name="album_uuid" id="album_uuid" form="add-user-form" style="margin-bottom:15px;">

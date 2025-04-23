@@ -41,7 +41,7 @@
                 </td>
                 <td>{{ user.albums | length }}</td>
                 <td>{{ user.partitions | length }}</td>
-                <td>{% if user.access_level != 1 %}❌{% else %}✅{% endif %}</td>
+                <td>{% if not user.is_admin %}❌{% else %}✅{% endif %}</td>
             </tr>
             {% endfor %}
         </tbody>

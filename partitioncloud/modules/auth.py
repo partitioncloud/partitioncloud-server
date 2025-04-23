@@ -55,7 +55,7 @@ def admin_required(view):
             return redirect(url_for("auth.login"))
 
         user = User(user_id=session.get("user_id"))
-        if user.access_level != 1:
+        if not user.is_admin:
             flash(_("Missing rights."))
             return redirect("/albums")
 

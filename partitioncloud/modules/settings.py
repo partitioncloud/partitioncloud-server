@@ -44,7 +44,7 @@ def delete_account():
     user_id = request.form["user_id"]
     mod_user = User(user_id=user_id)
 
-    if cur_user.access_level != 1:
+    if not cur_user.is_admin:
         log_data = [mod_user.username, mod_user.id]
         if cur_user.id != mod_user.id:
             flash(_("Missing rights."))

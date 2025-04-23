@@ -52,8 +52,10 @@
       {% if g.user or not config["ZIP_REQUIRE_LOGIN"] %}
         <a href="/groupe/{{ groupe.uuid }}/zip">{{ _("Download as zip") }}</a>
       {% endif %}
-      {% if g.user.access_level == 1 or (g.user and user.id in groupe.get_admins()) %}
+      {% if permissions.check(permissions.has_write_access_groupe, g.user, groupe) %}
         <a href="#create-groupe-album">{{ _("Add an album") }}</a>
+      {% endif %}
+      {% if permissions.check(permissions.can_delete_groupe, g.user, groupe) %}
         <a id="delete-album" href="#delete">{{ _("Delete") }}</a>
       {% endif %}
       </div>

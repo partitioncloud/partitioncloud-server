@@ -64,11 +64,14 @@ class User():
             self.password = data["password"]
             self.access_level = data["access_level"]
             self.color = self.get_color()
-            if self.access_level == 1:
+            if self.is_admin:
                 self.max_queries = 10
             else:
                 self.max_queries = current_app.config["MAX_ONLINE_QUERIES"]
 
+    @property
+    def is_admin(self):
+        return (self.access_level == 1)
 
     def is_participant(self, album_uuid, exclude_groupe=False):
         db = get_db()
@@ -102,7 +105,7 @@ class User():
     def get_albums(self, force_reload=False):
         if self.albums is None or force_reload:
             db = get_db()
-            if self.access_level == 1:
+            if self.is_admin:
                 # On récupère tous les albums qui ne sont pas dans un groupe
                 self.albums = db.execute(
                     """
@@ -128,7 +131,7 @@ class User():
     def get_groupes(self, force_reload=False):
         if self.groupes is None or force_reload:
             db = get_db()
-            if self.access_level == 1:
+            if self.is_admin:
                 data = db.execute(
                     """
                     SELECT uuid FROM groupe
@@ -153,7 +156,7 @@ class User():
     def get_partitions(self, force_reload=False):
         if self.partitions is None or force_reload:
             db = get_db()
-            if self.access_level == 1:
+            if self.is_admin:
                 self.partitions = db.execute(
                     """
                     SELECT * FROM partition
@@ -173,7 +176,7 @@ class User():
     def get_accessible_partitions(self, force_reload=False):
         if self.accessible_partitions is None or force_reload:
             db = get_db()
-            if self.access_level == 1:
+            if self.is_admin:
                 self.accessible_partitions = db.execute(
                     """
                     SELECT * FROM partition

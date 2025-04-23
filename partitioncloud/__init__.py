@@ -15,6 +15,7 @@ from flask_babel import Babel, _
 from .modules.utils import User, Album, get_all_albums, user_count, partition_count
 from .modules import albums, auth, partition, admin, groupe, thumbnails, logging, settings
 from .modules.auth import admin_required, login_required
+from .modules.classes import permissions
 from .modules.db import get_db
 
 app = Flask(__name__)
@@ -160,13 +161,22 @@ def before_request():
     """Set cookie max age to 31 days"""
     session.permanent = True
     app.permanent_session_lifetime = datetime.timedelta(days=int(app.config["MAX_AGE"]))
+    
+    if g.user is not None:
+        g.user = User(user_id=g.user["id"])
 
 @app.context_processor
 def inject_default_variables():
-    """Inject the version number in the template variables"""
+    """Inject variables in the template"""
+    variables = {
+        "lang": get_locale(),
+        "version": __version__,
+        "permissions": permissions
+    }
     if __version__ == "unknown":
-        return {"version": ''}
-    return {"version": __version__, "lang": get_locale()}
+        variables["version"] = ""
+
+    return variables
 
 
 @app.after_request
@@ -175,6 +185,11 @@ def after_request(response):
     if ('db' in g) and (g.db is not None):
         g.db.close()
     return response
+
+
+@app.errorhandler(LookupError)
+def page_not_found(e):
+    abort(404)
 
 
 if __name__ == "__main__":

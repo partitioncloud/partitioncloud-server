@@ -7,11 +7,13 @@ from flask import (Blueprint, abort, flash, redirect, render_template,
 from werkzeug.utils import secure_filename
 from flask_babel import _
 
+from .utils import User, Album, Groupe
 from .auth import login_required
 from .db import get_db
-from .utils import User, Album, Groupe
-from . import utils
+
+from .classes import permissions
 from . import logging
+from . import utils
 
 bp = Blueprint("groupe", __name__, url_prefix="/groupe")
 
@@ -29,11 +31,10 @@ def get_groupe(uuid):
     try:
         groupe = Groupe(uuid=uuid)
     except LookupError:
-        try:
-            groupe = Groupe(uuid=utils.format_uuid(uuid))
-            return redirect(f"/groupe/{utils.format_uuid(uuid)}")
-        except LookupError:
-            return abort(404)
+        #* Try to load from legacy group uuid,
+        #TODO remove on v2
+        groupe = Groupe(uuid=utils.format_uuid(uuid))
+        return redirect(f"/groupe/{utils.format_uuid(uuid)}")
 
     groupe.users = [User(user_id=u_id) for u_id in groupe.get_users()]
     groupe.get_albums()
@@ -56,7 +57,6 @@ def get_groupe(uuid):
 @bp.route("/<uuid>/qr")
 def album_qr_code(uuid):
     return utils.get_qrcode(f"/groupe/{uuid}")
-
 
 
 @bp.route("/create-groupe", methods=["POST"])
@@ -155,47 +155,35 @@ def delete_groupe(uuid):
     groupe = Groupe(uuid=uuid)
     user = User(user_id=session.get("user_id"))
 
-    error = None
-    if len(groupe.get_users()) > 1:
-        error = _("You are not alone in this group.")
+    try:
+        permissions.can_delete_groupe(user, groupe)
+        groupe.delete(current_app.instance_path)
 
-    if user.access_level == 1 or user.id not in groupe.get_admins():
-        error = None
-
-    if error is not None:
-        flash(error)
+        flash(_("Group deleted."))
+        return redirect("/albums")
+    except permissions.PermError as e:
+        flash(e.reason)
         return redirect(request.referrer)
-
-    groupe.delete(current_app.instance_path)
-
-    flash(_("Group deleted."))
-    return redirect("/albums")
 
 
 @bp.route("/<groupe_uuid>/create-album", methods=["POST"])
 @login_required
 def create_album_req(groupe_uuid):
-    try:
-        groupe = Groupe(uuid=groupe_uuid)
-    except LookupError:
-        abort(404)
-
+    groupe = Groupe(uuid=groupe_uuid)
     user = User(user_id=session.get("user_id"))
 
-    name = request.form["name"]
-    db = get_db()
-    error = None
+    try:
+        permissions.has_write_access_groupe(user, groupe)
 
-    if not name or name.strip() == "":
-        error = _("Missing name.")
+        name = request.form["name"]
+        if not name or name.strip() == "":
+            flash(_("Missing name."))
+            return redirect(request.referrer)
 
-    if user.id not in groupe.get_admins() and user.access_level != 1:
-        error = _("You are not admin of this group.")
-
-    if error is None:
         uuid = utils.create_album(name)
         album = Album(uuid=uuid)
 
+        db = get_db()
         db.execute(
             """
             INSERT INTO groupe_contient_album (groupe_id, album_id)
@@ -214,8 +202,9 @@ def create_album_req(groupe_uuid):
             }
         return redirect(f"/groupe/{groupe.uuid}/{uuid}")
 
-    flash(error)
-    return redirect(request.referrer)
+    except permissions.PermError as e:
+        flash(e.reason)
+        return redirect(request.referrer)
 
 
 
