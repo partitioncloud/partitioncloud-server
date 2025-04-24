@@ -144,37 +144,32 @@ def create_album_req():
     Création d'un album
     """
     name = request.form["name"]
-    db = get_db()
-    error = None
-
     user = User(user_id=session["user_id"])
 
     if not name or name.strip() == "":
-        error = _("Missing name.")
+        raise utils.InvalidRequest(_("Missing name."))
 
-    if error is None:
-        uuid = utils.create_album(name)
-        album = Album(uuid=uuid)
-        db.execute(
-            """
-            INSERT INTO contient_user (user_id, album_id)
-            VALUES (?, ?)
-            """,
-            (session.get("user_id"), album.id),
-        )
-        db.commit()
+    uuid = utils.create_album(name)
 
-        logging.log([album.name, album.uuid, user.username], logging.LogEntry.NEW_ALBUM)
+    db = get_db()
+    album = Album(uuid=uuid)
+    db.execute(
+        """
+        INSERT INTO contient_user (user_id, album_id)
+        VALUES (?, ?)
+        """,
+        (session.get("user_id"), album.id),
+    )
+    db.commit()
 
-        if "response" in request.args and request.args["response"] == "json":
-            return {
-                "status": "ok",
-                "uuid": uuid
-            }
-        return redirect(f"/albums/{uuid}")
+    logging.log([album.name, album.uuid, user.username], logging.LogEntry.NEW_ALBUM)
 
-    flash(error)
-    return redirect(request.referrer)
+    if "response" in request.args and request.args["response"] == "json":
+        return {
+            "status": "ok",
+            "uuid": uuid
+        }
+    return redirect(f"/albums/{uuid}")
 
 
 @bp.route("/<uuid>/join")

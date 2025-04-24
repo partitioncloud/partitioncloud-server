@@ -45,7 +45,7 @@ def delete_account():
     user_id = request.form["user_id"]
     mod_user = User(user_id=user_id)
 
-    permissions.can_delete_user(cur_user)
+    permissions.can_delete_user(cur_user, mod_user)
 
     log_data = [mod_user.username, mod_user.id, cur_user.username]
     if cur_user.is_admin:

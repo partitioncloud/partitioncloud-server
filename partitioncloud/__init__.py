@@ -137,27 +137,25 @@ def add_user():
         password = request.form["password"]
         album_uuid = request.form["album_uuid"]
 
-        error = auth.create_user(username, password)
+        auth.create_user(username, password)
 
-        if error is None:
-            # Success, go to the login page.
-            user = User(name=username)
+        # Success, go to the login page.
+        user = User(name=username)
 
-            logging.log(
-                [user.username, user.id, True, current_user.username],
-                logging.LogEntry.NEW_USER
-            )
+        logging.log(
+            [user.username, user.id, True, current_user.username],
+            logging.LogEntry.NEW_USER
+        )
 
-            try:
-                if album_uuid != "":
-                    user.join_album(album_uuid)
-                flash(_("Created user %(username)s", username=username))
-                return redirect(url_for("albums.index"))
-            except LookupError:
-                flash(_("This album does not exists, but user %(username)s has been created", username=username))
-                return redirect(url_for("albums.index"))
+        try:
+            if album_uuid != "":
+                user.join_album(album_uuid)
+            flash(_("Created user %(username)s", username=username))
+            return redirect(url_for("albums.index"))
+        except LookupError:
+            flash(_("This album does not exists, but user %(username)s has been created", username=username))
+            return redirect(url_for("albums.index"))
 
-        flash(error)
     return render_template(
         "auth/register.html",
         albums=utils.get_all_albums(),

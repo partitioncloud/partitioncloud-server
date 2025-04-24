@@ -63,52 +63,46 @@ def album_qr_code(uuid):
 @login_required
 def create_groupe():
     name = request.form["name"]
-    db = get_db()
-    error = None
-
     user = User(user_id=session["user_id"])
 
     if not name or name.strip() == "":
-        error = _("Missing name.")
+        raise utils.InvalidRequest(_("Missing name."))
 
-    if error is None:
-        while True:
-            try:
-                uuid = utils.new_uuid()
+    db = get_db()
+    while True:
+        try:
+            uuid = utils.new_uuid()
 
-                db.execute(
-                    """
-                    INSERT INTO groupe (uuid, name)
-                    VALUES (?, ?)
-                    """,
-                    (uuid, name),
-                )
-                db.commit()
-                groupe = Groupe(uuid=uuid)
-                db.execute(
-                    """
-                    INSERT INTO groupe_contient_user (user_id, groupe_id, is_admin)
-                    VALUES (?, ?, 1)
-                    """,
-                    (session.get("user_id"), groupe.id),
-                )
-                db.commit()
+            db.execute(
+                """
+                INSERT INTO groupe (uuid, name)
+                VALUES (?, ?)
+                """,
+                (uuid, name),
+            )
+            db.commit()
+            groupe = Groupe(uuid=uuid)
+            db.execute(
+                """
+                INSERT INTO groupe_contient_user (user_id, groupe_id, is_admin)
+                VALUES (?, ?, 1)
+                """,
+                (session.get("user_id"), groupe.id),
+            )
+            db.commit()
 
-                break
-            except db.IntegrityError:
-                pass
+            break
+        except db.IntegrityError:
+            pass
 
-        logging.log([name, uuid, user.username], logging.LogEntry.NEW_GROUPE)
+    logging.log([name, uuid, user.username], logging.LogEntry.NEW_GROUPE)
 
-        if "response" in request.args and request.args["response"] == "json":
-            return {
-                "status": "ok",
-                "uuid": uuid
-            }
-        return redirect(f"/groupe/{uuid}")
-
-    flash(error)
-    return redirect(request.referrer)
+    if "response" in request.args and request.args["response"] == "json":
+        return {
+            "status": "ok",
+            "uuid": uuid
+        }
+    return redirect(f"/groupe/{uuid}")
 
 
 @bp.route("/<uuid>/join")
@@ -130,7 +124,7 @@ def quit_groupe(uuid):
     if user.id not in users:
         raise utils.InvalidRequest(_("You are not a member of this group."))
 
-    if len(users) == 1 and album.get_groupe() is None:
+    if len(users) == 1:
         flash(_("You are alone here, quitting means deleting this group."))
         return redirect(f"/groupe/{uuid}#delete")
 

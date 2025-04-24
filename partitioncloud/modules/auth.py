@@ -14,6 +14,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from .db import get_db
 from .utils import User
 from . import logging
+from . import utils
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -80,11 +81,11 @@ def load_logged_in_user():
 
 def create_user(username: str, password: str) -> Optional[str]:
     """Adds a new user to the database"""
-    error = None
+
     if not username:
-        error = _("Missing username.")
+        raise utils.InvalidRequest(_("Missing username."))
     elif not password:
-        error = _("Missing password.")
+        raise utils.InvalidRequest(_("Missing password."))
 
     db = get_db()
     try:
@@ -96,9 +97,7 @@ def create_user(username: str, password: str) -> Optional[str]:
     except db.IntegrityError:
         # The username was already taken, which caused the
         # commit to fail. Show a validation error.
-        error = _("Username %(username)s is not available.", username=username)
-
-    return error # may be None
+        raise utils.InvalidRequest(_("Username %(username)s is not available.", username=username))
 
 
 @bp.route("/register", methods=("GET", "POST"))
@@ -112,57 +111,51 @@ def register():
         flash(_("New users registration is disabled by owner."))
         return redirect(url_for("auth.login"))
 
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+    if request.method == "GET":
+        return render_template("auth/register.html")
 
-        error = create_user(username, password)
+    username = request.form["username"]
+    password = request.form["password"]
 
-        if error is not None:
-            flash(error)
-        else:
-            user = User(name=username)
+    create_user(username, password)
 
-            flash(_("Successfully created new user. You can log in."))
+    user = User(name=username)
+    flash(_("Successfully created new user. You can log in."))
 
-            logging.log(
-                [user.username, user.id, False],
-                logging.LogEntry.NEW_USER
-            )
-        return redirect(url_for("auth.login"))
-
-    return render_template("auth/register.html")
+    logging.log(
+        [user.username, user.id, False],
+        logging.LogEntry.NEW_USER
+    )
+    return redirect(url_for("auth.login"))
 
 
 @bp.route("/login", methods=("GET", "POST"))
 @anon_required
 def login():
     """Log in a registered user by adding the user id to the session."""
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        db = get_db()
-        error = None
-        user = db.execute(
-            "SELECT * FROM user WHERE username = ?", (username,)
-        ).fetchone()
+    if request.method == "GET":
+        return render_template("auth/login.html")
 
-        if (user is None) or not check_password_hash(user["password"], password):
-            logging.log([username], logging.LogEntry.FAILED_LOGIN)
-            error = _("Incorrect username or password")
+    username = request.form["username"]
+    password = request.form["password"]
 
-        if error is None:
-            # store the user id in a new session and return to the index
-            session.clear()
-            session["user_id"] = user["id"]
+    db = get_db()
+    user = db.execute(
+        "SELECT * FROM user WHERE username = ?", (username,)
+    ).fetchone()
 
-            logging.log([username], logging.LogEntry.LOGIN)
+    if (user is None) or not check_password_hash(user["password"], password):
+        logging.log([username], logging.LogEntry.FAILED_LOGIN)
+        raise utils.InvalidRequest(_("Incorrect username or password"))
 
-            return redirect(url_for("albums.index"))
+    # store the user id in a new session and return to the index
+    session.clear()
+    session["user_id"] = user["id"]
 
-        flash(error)
+    logging.log([username], logging.LogEntry.LOGIN)
 
-    return render_template("auth/login.html")
+    return redirect(url_for("albums.index"))
+
 
 
 @bp.route("/logout")

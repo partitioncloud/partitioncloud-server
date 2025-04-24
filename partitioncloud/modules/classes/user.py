@@ -40,6 +40,7 @@ class User():
 
         db = get_db()
         if self.id is None and self.username is None:
+            # TODO : Is this used somewhere ? That should raise an error 20 lines after
             self.username = ""
             self.access_level = -1
 
