@@ -1,13 +1,27 @@
 #!/usr/bin/python3
 from typing import Optional
-import io
+import sqlite3
 import random
 import string
 import qrcode
+import io
 
 from flask import current_app, send_file
 from .db import get_db
 
+class FakeObject:
+    """
+    Some times, you don't need access to the methods of a class,
+    but just its data. We don't want to do unnecessary sql requests for that.
+
+    Obviously, we trade a small performance gain for a future headache,
+    but that's assumed
+    """
+    def __init__(self, data: sqlite3.Row):
+        self._data = dict(data)
+
+    def __getattr__(self, key):
+        return self._data[key]
 
 class InvalidRequest(Exception):
     def __init__(self, reason: str, code :int=400, redirect: Optional[str]=None):

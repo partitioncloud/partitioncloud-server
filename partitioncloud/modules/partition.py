@@ -12,7 +12,7 @@ from flask_babel import _
 from .db import get_db
 from .auth import login_required, admin_required
 from .utils import User, Partition, Attachment
-from .classes import permissions
+from . import permissions
 from . import utils
 
 

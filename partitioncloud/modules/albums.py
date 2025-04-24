@@ -15,9 +15,9 @@ from flask_babel import _
 
 from .auth import login_required
 from .db import get_db
-from .utils import User, Album
+from .utils import User, Album, Partition
 from . import search, utils, logging
-from .classes import permissions
+from . import permissions
 
 
 bp = Blueprint("albums", __name__, url_prefix="/albums")
@@ -87,8 +87,9 @@ def get_album(uuid):
             return abort(404)
 
     album.users = [User(user_id=u_id) for u_id in album.get_users()]
-    user = User(user_id=session.get("user_id"))
     partitions = album.get_partitions()
+    user = User(user_id=session.get("user_id"))
+
     if user.id is None:
         # On ne propose pas aux gens non connectés de rejoindre l'album
         not_participant = False

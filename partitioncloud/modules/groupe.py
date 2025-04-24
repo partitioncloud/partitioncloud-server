@@ -11,7 +11,7 @@ from .utils import User, Album, Groupe
 from .auth import login_required
 from .db import get_db
 
-from .classes import permissions
+from . import permissions
 from . import logging
 from . import utils
 

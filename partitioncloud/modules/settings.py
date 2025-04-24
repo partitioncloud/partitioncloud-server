@@ -8,7 +8,7 @@ from werkzeug.security import check_password_hash
 
 from flask_babel import _
 
-from .classes import permissions
+from . import permissions
 from .auth import login_required
 from .utils import User
 from .db import get_db

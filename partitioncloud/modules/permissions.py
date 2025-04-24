@@ -1,13 +1,15 @@
 import functools
-from flask import current_app
+from typing import Union
 from flask_babel import _
+from flask import current_app
 
-from ..db import get_db
-from .user import User
-from .album import Album
-from .groupe import Groupe
-from .partition import Partition
-from .attachment import Attachment
+from .db import get_db
+from .utils import FakeObject
+from .classes.user import User
+from .classes.album import Album
+from .classes.groupe import Groupe
+from .classes.partition import Partition
+from .classes.attachment import Attachment
 
 class PermError(Exception):
     def __init__(self, reason: str):
@@ -77,13 +79,13 @@ def has_write_access_album(user: User, album: Album) -> None:
     raise PermError(_("You are not a member of this album"))
 
 @admin_bypass
-def can_delete_partition(user: User, partition: Partition) -> None:
+def can_delete_partition(user: User, partition: Union[Partition, FakeObject]) -> None:
     if user.id == partition.user_id:
         return
     raise PermError(_("You are not allowed to delete this score."))
 
 @admin_bypass
-def has_write_access_partition(user: User, partition: Partition) -> None:
+def has_write_access_partition(user: User, partition: Union[Partition, FakeObject]) -> None:
     if user.id == partition.user_id:
         return
     raise PermError(_("You don't own this score."))
@@ -93,7 +95,7 @@ def can_delete_attachment(user: User, attachment: Attachment) -> None:
     raise NotImplementedError
 
 @admin_bypass
-def can_delete_user(user: User, to_delete_user: User) -> None:
+def can_delete_user(user: User, to_delete_user: Union[User, FakeObject]) -> None:
     if user.id != to_delete_user.id:
         raise PermError(_("Missing rights."))
     if current_app.config["DISABLE_ACCOUNT_DELETION"]:

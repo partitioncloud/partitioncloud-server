@@ -72,11 +72,12 @@
 <hr/>
 {% if partitions|length != 0 %}
 <section id="partitions-grid">
-  {% for partition in partitions | reverse %}
+  {% for p in partitions | reverse %}
+  {% set partition = FakeObject(p) %}
   <div>
-    <a href="/partition/{{ partition['uuid'] }}">
-      <div class="partition" id="partition-{{ partition['uuid'] }}">
-        <img class="partition-thumbnail" src="/thumbnails/{{ partition['uuid'] }}.jpg" loading="lazy">
+    <a href="/partition/{{ partition.uuid }}">
+      <div class="partition" id="partition-{{ partition.uuid }}">
+        <img class="partition-thumbnail" src="/thumbnails/{{ partition.uuid }}.jpg" loading="lazy">
         <div class="partition-description">
           <div class="partition-name">{{ partition["name"] }}</div>
           <div class="partition-author">{{ partition["author"] }}</div>
@@ -84,11 +85,11 @@
       </div>
       </a>
       <div class="partition-buttons">
-        {% if partition["has_attachment"] %}
-        <a href="/partition/{{ partition['uuid'] }}/attachments"><div class="partition-action">📎</div></a>
+        {% if partition.has_attachment %}
+        <a href="/partition/{{ partition.uuid }}/attachments"><div class="partition-action">📎</div></a>
         {% endif %}
         {% if permissions.check(permissions.has_write_access_partition, g.user, partition) %}<!--! There will be an error here-->
-        <a href="/partition/{{ partition['uuid'] }}/details"><div class="partition-action">✏️</div></a>
+        <a href="/partition/{{ partition.uuid }}/details"><div class="partition-action">✏️</div></a>
         {% endif %}
       </div>
     </div>

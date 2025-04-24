@@ -12,11 +12,12 @@ from flask import Flask, g, redirect, render_template, request, send_file, flash
 from werkzeug.security import generate_password_hash
 from flask_babel import Babel, _
 
-from .modules.utils import User, Album, get_all_albums, user_count, partition_count, InvalidRequest
+from .modules.utils import User, Album
 from .modules import albums, auth, partition, admin, groupe, thumbnails, logging, settings
 from .modules.auth import admin_required, login_required
-from .modules.classes import permissions
 from .modules.db import get_db
+from .modules import permissions
+from .modules import utils
 
 app = Flask(__name__)
 
@@ -116,7 +117,11 @@ def launch_page():
     """Show launch page if enabled"""
     if not app.config["LAUNCH_PAGE"]:
         return home()
-    return render_template("launch.html", user_count=user_count(), partition_count=partition_count())
+    return render_template(
+        "launch.html",
+        user_count=utils.user_count(),
+        partition_count=utils.partition_count()
+    )
 
 
 @app.route("/add-user", methods=["GET", "POST"])
@@ -153,7 +158,11 @@ def add_user():
                 return redirect(url_for("albums.index"))
 
         flash(error)
-    return render_template("auth/register.html", albums=get_all_albums(), user=current_user)
+    return render_template(
+        "auth/register.html",
+        albums=utils.get_all_albums(),
+        user=current_user
+    )
 
 
 @app.before_request
@@ -171,7 +180,8 @@ def inject_default_variables():
     variables = {
         "lang": get_locale(),
         "version": __version__,
-        "permissions": permissions
+        "permissions": permissions,
+        "FakeObject": utils.FakeObject,
     }
     if __version__ == "unknown":
         variables["version"] = ""
@@ -185,7 +195,7 @@ def after_request(response):
     if ('db' in g) and (g.db is not None):
         g.db.close()
     
-    #* see @app.errorhandler(InvalidRequest)
+    #* see @app.errorhandler(utils.InvalidRequest)
     if response.status_code == 200 and "next_status" in session:
         status = session["next_status"]
         del session["next_status"]
@@ -198,7 +208,7 @@ def after_request(response):
 def page_not_found(e):
     abort(404)
 
-@app.errorhandler(InvalidRequest)
+@app.errorhandler(utils.InvalidRequest)
 def invalid_request(e):
     flash(e.reason)
     # We would want to respond with e.code HTTP status code
