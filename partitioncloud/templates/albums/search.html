@@ -3,6 +3,18 @@
 
 {% block content %}
 <h2>{% block title %}{{ _('Search results for "%(query)s"', query=query)}}{% endblock %}</h2>
+{% set select_album %}
+<select name="album-uuid">
+  {% for album in user.get_accessible_albums() %}
+  <option value="{{ album['uuid'] }}">{{ album["name"] }}</option>
+  {% endfor %}
+  {% for groupe in user.get_accessible_groupes() %}
+    {% for album in groupe.get_albums() %}
+    <option value="{{ album['uuid'] }}">{{ groupe.name }}/{{ album["name"] }}</option>
+    {% endfor %}
+  {% endfor %}
+</select>
+{% endset %}
 {% if partitions|length != 0 %}
 <h3>{{ _("Results in current database") }}</h3>
 <div id="partitions-grid">
@@ -23,16 +35,7 @@
       {% endif %}
     </div>
     <form action="/albums/add-partition" class="add-partition-form" method="post">
-      <select name="album-uuid">
-        {% for album in user.albums %}
-        <option value="{{ album['uuid'] }}">{{ album["name"] }}</option>
-        {% endfor %}
-        {% for groupe in user.get_groupes() %}
-          {% for album in groupe.get_albums() %}
-          <option value="{{ album['uuid'] }}">{{ groupe.name }}/{{ album["name"] }}</option>
-          {% endfor %}
-        {% endfor %}
-      </select>
+      {{ select_album }}
       <input type="hidden" value="{{ partition['uuid'] }}" name="partition-uuid">
       <input type="hidden" value="local_file" name="partition-type">
       <input type="submit" value="{{ _('Add to album') }}" class="add-to-album">
@@ -55,17 +58,7 @@
       </div>
     </a>
     <form action="/albums/add-partition" class="add-partition-form" method="post">
-      <select name="album-uuid">
-        <!--TODO We want to only display write-able albums -->
-        {% for album in user.albums %}
-        <option value="{{ album['uuid'] }}">{{ album["name"] }}</option>
-        {% endfor %}
-        {% for groupe in user.get_groupes() %}
-          {% for album in groupe.get_albums() %}
-          <option value="{{ album['uuid'] }}">{{ groupe.name }}/{{ album["name"] }}</option>
-          {% endfor %}
-        {% endfor %}
-      </select>
+      {{ select_album }}
       <input type="hidden" value="{{ partition['uuid'] }}" name="partition-uuid">
       <input type="hidden" value="online_search" name="partition-type">
       <input type="submit" value="{{ _('Add to album') }}">

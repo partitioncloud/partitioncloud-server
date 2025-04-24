@@ -31,7 +31,9 @@ class User():
         self.username = name
         self.password = None
         self.albums = None
+        self.accessible_albums = None
         self.groupes = None
+        self.accessible_groupes = None
         self.partitions = None
         self.accessible_partitions = None
         self.max_queries = 0
@@ -127,6 +129,33 @@ class User():
                 ).fetchall()
         return self.albums
 
+    
+    def get_accessible_albums(self, force_reload=False):
+        if self.accessible_albums is None or force_reload:
+            db = get_db()
+            if self.is_admin:
+                # On récupère tous les albums qui ne sont pas dans un groupe
+                self.accessible_albums = db.execute(
+                    """
+                    SELECT * FROM album
+                    LEFT JOIN groupe_contient_album
+                    ON album_id=album.id
+                    WHERE album_id IS NULL
+                    """
+                ).fetchall()
+            else:
+                self.accessible_albums = db.execute(
+                    """
+                    SELECT album.* FROM album
+                    LEFT JOIN groupe_contient_album AS gca ON gca.album_id=album.id
+                    JOIN contient_user AS cu ON cu.album_id = album.id
+                    JOIN user ON user_id = user.id
+                    WHERE gca.album_id IS NULL
+                    AND user.id = ?
+                    """,
+                    (self.id,),
+                ).fetchall()
+        return self.accessible_albums
 
     def get_groupes(self, force_reload=False):
         if self.groupes is None or force_reload:
@@ -151,6 +180,33 @@ class User():
             self.groupes = [Groupe(i["uuid"]) for i in data]
 
         return self.groupes
+
+    
+    def get_accessible_groupes(self, force_reload=False):
+        """Returns groupes where user can add partitions"""
+        if self.accessible_groupes is None or force_reload:
+            db = get_db()
+            if self.is_admin:
+                data = db.execute(
+                    """
+                    SELECT groupe.* FROM groupe
+                    """
+                ).fetchall()
+            else:
+                data = db.execute(
+                    """
+                    SELECT groupe.* FROM groupe
+                    JOIN groupe_contient_user ON groupe.id = groupe_id
+                    JOIN user ON user_id = user.id
+                    WHERE groupe_contient_user.is_admin = 1
+                    AND user.id = ?
+                    """,
+                    (self.id,),
+                ).fetchall()
+
+            self.accessible_groupes = [Groupe(i["uuid"]) for i in data]
+
+        return self.accessible_groupes
 
 
     def get_partitions(self, force_reload=False):
