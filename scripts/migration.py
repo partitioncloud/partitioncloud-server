@@ -4,12 +4,13 @@ import sys
 import shutil
 import argparse
 from functools import cmp_to_key
+from typing import Tuple
 
 from colorama import Fore, Style
 from hooks import v1 as v1_hooks, config
 
 
-def get_version(v: str) -> (int, int, int):
+def get_version(v: str) -> Tuple[int, ...]:
     """Returns a tuple (major, minor, patch from the string v{major}.{minor}.{patch})"""
     assert v[0] == "v"  # Check if the version is correctly formatted
     return tuple(map(int, v[1:].split(".")))
@@ -38,6 +39,7 @@ hooks = [
     ("v1.7.0", [("Install babel", v1_hooks.install_babel)]),
     ("v1.8.2", [("Install pypdf", v1_hooks.install_pypdf)]),
     ("v1.10.3", [("Install unidecode", v1_hooks.install_unidecode)]),
+    ("v1.11.0", [("Delete orphans `groupe_contient_album`", v1_hooks.clean_groupe_contient_album)])
 ]
 
 
@@ -193,7 +195,7 @@ if __name__ == "__main__":
         description="Helps you migrate from one version to another",
     )
 
-    parser.add_argument("-c", "--current", help="current version (vx.y.z)")
+    parser.add_argument("-c", "--current", help="current version (vx.y.z)", required=True)
     parser.add_argument("-t", "--target", help="target version (vx.y.z)")
     parser.add_argument("-i", "--instance", help="instance folder", default="instance")
     parser.add_argument("-s", "--skip-backup", action="store_true")
@@ -216,4 +218,7 @@ if __name__ == "__main__":
     elif args.backup is not None:
         backup_instance(args.backup, verbose=True)
     else:
+        if args.target is None:
+            print("You need to specify a target version", file=sys.stderr)
+            sys.exit(1)
         migrate(args.current, args.target, skip_backup=args.skip_backup)

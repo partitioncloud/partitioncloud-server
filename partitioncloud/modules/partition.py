@@ -11,8 +11,9 @@ from flask_babel import _
 
 from .db import get_db
 from .auth import login_required, admin_required
-from .utils import get_all_partitions, User, Partition, Attachment
+from .utils import User, Partition, Attachment
 from .classes import permissions
+from . import utils
 
 
 bp = Blueprint("partition", __name__, url_prefix="/partition")
@@ -63,11 +64,10 @@ def add_attachment(uuid):
     if ext not in ["mid", "mp3"]:
         raise utils.InvalidRequest(_("Unsupported file type."))
 
+    db = get_db()
     while True:
+        attachment_uuid = str(uuid4())
         try:
-            attachment_uuid = str(uuid4())
-
-            db = get_db()
             db.execute(
                 """
                 INSERT INTO attachments (uuid, name, filetype, partition_uuid, user_id)
@@ -205,6 +205,6 @@ def partition_search(uuid):
 @bp.route("/")
 @admin_required
 def index():
-    partitions = get_all_partitions()
+    partitions = utils.get_all_partitions()
     user = User(user_id=session.get("user_id"))
     return render_template("admin/partitions.html", partitions=partitions, user=user)

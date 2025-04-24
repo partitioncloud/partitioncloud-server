@@ -4,6 +4,7 @@ Classe Album
 import os
 import io
 import zipfile
+from typing import Optional
 
 from werkzeug.utils import secure_filename
 
@@ -87,6 +88,26 @@ class Album():
         ).fetchall()
 
 
+    def get_groupe(self) -> Optional[str]:
+        """
+        Récupérer le groupe auquel appartient l'album si il existe (juste son uuid de fait)
+        ! Cela suppose que l'album n'a pas été ajouté manuellement à un second groupe
+        """
+        db = get_db()
+        data = db.execute(
+            """
+            SELECT uuid FROM groupe
+            JOIN groupe_contient_album ON groupe.id = groupe_id
+            WHERE album_id = ?
+            """,
+            (self.id,)
+        ).fetchone()
+
+        if data is None:
+            return None
+        return data["uuid"]
+
+
     def delete(self, instance_path):
         """
         Supprimer l'album
@@ -109,6 +130,13 @@ class Album():
         db.execute(
             """
             DELETE FROM contient_partition
+            WHERE album_id = ?
+            """,
+            (self.id,)
+        )
+        db.execute(
+            """
+            DELETE FROM groupe_contient_album
             WHERE album_id = ?
             """,
             (self.id,)

@@ -86,9 +86,8 @@ def create_user(username: str, password: str) -> Optional[str]:
     elif not password:
         error = _("Missing password.")
 
+    db = get_db()
     try:
-        db = get_db()
-
         db.execute(
             "INSERT INTO user (username, password) VALUES (?, ?)",
             (username, generate_password_hash(password)),

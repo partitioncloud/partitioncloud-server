@@ -13,6 +13,7 @@ from .auth import login_required
 from .utils import User
 from .db import get_db
 from . import logging
+from . import utils
 
 
 bp = Blueprint("settings", __name__, url_prefix="/settings")

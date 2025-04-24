@@ -195,3 +195,16 @@ def install_pypdf():
 
 def install_unidecode():
     utils.install_package("unidecode")
+
+"""
+ v1.11.*
+"""
+
+def clean_groupe_contient_album():
+    utils.run_sqlite_command(
+        """
+        DELETE FROM groupe_contient_album
+        WHERE album_id NOT IN (SELECT id FROM album)
+        OR groupe_id NOT IN (SELECT id FROM groupe)
+        """
+    )

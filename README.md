@@ -110,11 +110,3 @@ pybabel extract -F babel.cfg -k _l -o partitioncloud/translations/messages.pot .
 # Les ajouter aux traductions
 pybabel update -i partitioncloud/translations/messages.pot -d partitioncloud/translations/
 ```
-
-## TODO
-- [x] Modifier son mot de passe
-- [x] Supprimer un utilisateur
-- [ ] Ajouter config:DISABLE_DARK_MODE
-- [x] Ajouter config:DISABLE_REGISTER
-- [ ] Ajouter config:ONLINE_SEARCH_BASE_QUERY pour la recherche google, actuellement 'filetype:pdf partition'
-- [x] Ajouter un Dockerfile

@@ -184,6 +184,13 @@ def after_request(response):
     """Automatically close db after each request"""
     if ('db' in g) and (g.db is not None):
         g.db.close()
+    
+    #* see @app.errorhandler(InvalidRequest)
+    if response.status_code == 200 and "next_status" in session:
+        status = session["next_status"]
+        del session["next_status"]
+        response.status_code = status
+
     return response
 
 
@@ -194,8 +201,11 @@ def page_not_found(e):
 @app.errorhandler(InvalidRequest)
 def invalid_request(e):
     flash(e.reason)
-    #TODO: We would want to respond with e.code HTTP status code
-    #TODO but we need to let 301 redirect
+    # We would want to respond with e.code HTTP status code
+    # but we need to let 301 redirect. The workaround is to store the next_status
+    # and apply it in after_request the next time
+    session["next_status"] = e.code
+
     if e.redirect is not None:
         return redirect(e.redirect)
     if request.referrer:
@@ -205,8 +215,11 @@ def invalid_request(e):
 @app.errorhandler(permissions.PermError)
 def perm_error(e):
     flash(e.reason)
-    #TODO: We would want to respond with 401 HTTP status code
-    #TODO but we need to let 301 redirect
+    # We would want to respond with 401 HTTP status code
+    # but we need to let 301 redirect. The workaround is to store the next_status
+    # and apply it in after_request the next time
+    session["next_status"] = 401
+
     if request.referrer:
         return redirect(request.referrer)
     return redirect("/albums")

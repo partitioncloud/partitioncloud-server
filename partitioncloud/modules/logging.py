@@ -17,7 +17,7 @@ class LogEntry(Enum):
     SERVER_RESTART = 8
     FAILED_LOGIN = 9
 
-    def from_string(entry: str):
+    def from_string(entry: str) -> str:
         mapping = {
             "LOGIN": LogEntry.LOGIN,
             "NEW_GROUPE": LogEntry.NEW_GROUPE,

@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from typing import Optional
 import io
 import random
 import string
@@ -9,7 +10,7 @@ from .db import get_db
 
 
 class InvalidRequest(Exception):
-    def __init__(self, reason: str, code :int=400, redirect: str=None):
+    def __init__(self, reason: str, code :int=400, redirect: Optional[str]=None):
         self.redirect = redirect
         self.reason = reason
         self.code = code

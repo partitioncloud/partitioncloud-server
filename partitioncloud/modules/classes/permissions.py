@@ -40,6 +40,9 @@ def can_delete_groupe(user: User, groupe: Groupe) -> None:
     if user.id in groupe.get_admins():
         return
 
+    if user.id not in groupe.get_users():
+        raise PermError(_("You are not a member of this groupe"))
+
     if len(groupe.get_users()) > 1:
         raise PermError(_("You are not alone in this group."))
 
@@ -51,8 +54,11 @@ def has_write_access_groupe(user: User, groupe: Groupe) -> None:
 
 @admin_bypass
 def can_delete_album(user: User, album: Album) -> None:
-    #TODO  We also need to check that this album is not in a groupe,
-    #TODO  or if it is, if user has rights
+    # We check that this album is not in a groupe, or if it is, if user has rights
+    groupe_uuid = album.get_groupe()
+    if groupe_uuid is not None:
+        return has_write_access_groupe(user, Groupe(uuid=groupe_uuid))
+
     users = album.get_users()
     if len(users) > 1:
         raise PermError(_("You are not alone in this album."))
@@ -61,8 +67,11 @@ def can_delete_album(user: User, album: Album) -> None:
 
 @admin_bypass
 def has_write_access_album(user: User, album: Album) -> None:
-    #TODO  We also need to check that this album is not in a groupe,
-    #TODO  or if it is, if user has rights
+    # We check that this album is not in a groupe, or if it is, if user has rights
+    groupe_uuid = album.get_groupe()
+    if groupe_uuid is not None:
+        return has_write_access_groupe(user, Groupe(uuid=groupe_uuid))
+
     if user.is_participant(album.uuid):
         return
     raise PermError(_("You are not a member of this album"))

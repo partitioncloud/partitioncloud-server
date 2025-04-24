@@ -130,7 +130,7 @@ def quit_groupe(uuid):
     if user.id not in users:
         raise utils.InvalidRequest(_("You are not a member of this group."))
 
-    if len(users) == 1:
+    if len(users) == 1 and album.get_groupe() is None:
         flash(_("You are alone here, quitting means deleting this group."))
         return redirect(f"/groupe/{uuid}#delete")
 
