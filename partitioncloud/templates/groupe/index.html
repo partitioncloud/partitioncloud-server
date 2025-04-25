@@ -49,8 +49,8 @@
         <a href="/groupe/{{ groupe.uuid }}/quit">{{ _("Quit") }}</a>
       {% endif %}
       <a href="#share">{{ _("Share") }}</a>
-      {% if g_user or not config["ZIP_REQUIRE_LOGIN"] %}
-        <a href="/groupe/{{ groupe.uuid }}/zip">{{ _("Download as zip") }}</a>
+      {% if permissions.check(permissions.can_download_zip, g_user, groupe) %}
+      <a href="/groupe/{{ groupe.uuid }}/zip">{{ _("Download as zip") }}</a>
       {% endif %}
       {% if permissions.check(permissions.has_write_access_groupe, g_user, groupe) %}
         <a href="#create-groupe-album">{{ _("Add an album") }}</a>

@@ -50,16 +50,16 @@
     <div class="dropdown dp1">
       +
       <div class="dropdown-content dp1">
-          {% if g_user %}
+          {% if permissions.check(permissions.has_write_access_album, g_user, album) %}
           <a href="#add-partition">{{ _("Add a score") }}</a>
           {% endif %}
-          {% if not_participant %}
+          {% if g_user and not g_user.is_participant(album.uuid) %}
           <a href="/albums/{{ album.uuid }}/join">{{ _("Join") }}</a>
-          {% elif g_user and not not_participant %}
+          {% elif g_user and g_user.is_participant(album.uuid) %}
           <a href="/albums/{{ album.uuid }}/quit">{{ _("Quit") }}</a>
           {% endif %}
           <a href="#share">{{ _("Share") }}</a>
-          {% if g_user or not config["ZIP_REQUIRE_LOGIN"] %}<!--TODO check with permissions-->
+          {% if permissions.check(permissions.can_download_zip, g_user, album) %}
           <a href="/albums/{{ album.uuid }}/zip">{{ _("Download as zip") }}</a>
           {% endif %}
           {% if permissions.check(permissions.can_delete_album, g_user, album) %}

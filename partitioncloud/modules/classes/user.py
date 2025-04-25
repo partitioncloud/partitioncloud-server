@@ -39,38 +39,34 @@ class User():
         self.max_queries = 0
 
         db = get_db()
-        if self.id is None and self.username is None:
-            # TODO : Is this used somewhere ? That should raise an error 20 lines after
-            self.username = ""
-            self.access_level = -1
 
+        if self.id is not None:
+            data = db.execute(
+                """
+                SELECT * FROM user
+                WHERE id = ?
+                """,
+                (self.id,)
+            ).fetchone()
+        elif self.username is not None:
+            data = db.execute(
+                """
+                SELECT * FROM user
+                WHERE username = ?
+                """,
+                (self.username,)
+            ).fetchone()
+
+        self.id = data["id"]
+        self.username = data["username"]
+        self.password = data["password"]
+        self.access_level = data["access_level"]
+        self.color = self.get_color()
+
+        if self.is_admin:
+            self.max_queries = 10
         else:
-            if self.id is not None:
-                data = db.execute(
-                    """
-                    SELECT * FROM user
-                    WHERE id = ?
-                    """,
-                    (self.id,)
-                ).fetchone()
-            elif self.username is not None:
-                data = db.execute(
-                    """
-                    SELECT * FROM user
-                    WHERE username = ?
-                    """,
-                    (self.username,)
-                ).fetchone()
-
-            self.id = data["id"]
-            self.username = data["username"]
-            self.password = data["password"]
-            self.access_level = data["access_level"]
-            self.color = self.get_color()
-            if self.is_admin:
-                self.max_queries = 10
-            else:
-                self.max_queries = current_app.config["MAX_ONLINE_QUERIES"]
+            self.max_queries = current_app.config["MAX_ONLINE_QUERIES"]
 
     @property
     def is_admin(self):

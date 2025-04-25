@@ -59,7 +59,7 @@
 {% endif %}
 
 <br/>
-{% if g_user %}<!-- TODO isn't there something else to check ? -->
+{% if permissions.check(permissions.has_write_access_partition, g_user, partition) %}
 <div class="centered">
     <a href="#create-attachment"><button>{{ _("Add an attachment") }}</button></a>
 </div>

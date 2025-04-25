@@ -81,19 +81,11 @@ def get_album(uuid):
 
     partitions = album.get_partitions()
     album.users = [User(user_id=u_id) for u_id in album.get_users()]
-    user = User(user_id=session.get("user_id")) # TODO some empty user here, might investigate
-
-    if user.id is None:
-        # On ne propose pas aux gens non connectés de rejoindre l'album
-        not_participant = False
-    else:
-        not_participant = not user.is_participant(album.uuid)
 
     return render_template(
         "albums/album.html",
         album=album,
         partitions=partitions,
-        not_participant=not_participant
     )
 
 
@@ -110,14 +102,9 @@ def zip_download(uuid):
     """
     Télécharger un album comme fichier zip
     """
-    if g.user is None and current_app.config["ZIP_REQUIRE_LOGIN"]:
-        raise utils.InvalidRequest(
-            _("You need to login to access this resource."),
-            redirect=url_for("auth.login"),
-            code=401,
-        )
-
     album = Album(uuid=uuid)
+    permissions.can_download_zip(g.user, album)
+
     return send_file(
         album.to_zip(current_app.instance_path),
         download_name=secure_filename(f"{album.name}.zip")

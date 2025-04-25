@@ -228,18 +228,8 @@ def zip_download(groupe_uuid):
     """
     Télécharger un groupe comme fichier zip
     """
-    if g.user is None and current_app.config["ZIP_REQUIRE_LOGIN"]:
-        raise utils.InvalidRequest(
-            _("You need to login to access this resource."),
-            redirect=url_for("auth.login")
-        )
-
-    try:
-        groupe = Groupe(uuid=groupe_uuid)
-    except LookupError:
-        groupe = Groupe(uuid=utils.format_uuid(groupe_uuid))
-        return redirect(f"/groupe/{utils.format_uuid(groupe_uuid)}/zip")
-
+    groupe = Groupe(uuid=groupe_uuid)
+    permissions.can_download_zip(g.user, groupe)
 
     return send_file(
         groupe.to_zip(current_app.instance_path),

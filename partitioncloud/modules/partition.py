@@ -36,7 +36,6 @@ def attachments(uuid):
     return render_template(
         "partition/attachments.html",
         partition=partition,
-        user=User(user_id=session.get("user_id"))
     )
 
 
