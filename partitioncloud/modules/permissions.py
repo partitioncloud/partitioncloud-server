@@ -4,18 +4,19 @@ from flask_babel import _
 from flask import current_app
 
 from .db import get_db
-from .utils import FakeObject
+from .utils import FakeObject, InvalidRequest
 from .classes.user import User
 from .classes.album import Album
 from .classes.groupe import Groupe
 from .classes.partition import Partition
 from .classes.attachment import Attachment
 
-class PermError(Exception):
+class PermError(InvalidRequest):
     def __init__(self, reason: str, redirect: Optional[str]=None):
+        super().__init__(reason, redirect=redirect, code=401)
         self.redirect = redirect
         self.reason = reason
-        super().__init__(reason)
+        self.code = 401
 
 def admin_bypass(view):
     """Returns if user is admin"""

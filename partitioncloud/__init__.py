@@ -217,20 +217,6 @@ def invalid_request(e):
         return redirect(request.referrer)
     return redirect("/albums")
 
-@app.errorhandler(permissions.PermError)
-def perm_error(e):
-    flash(e.reason)
-    # We would want to respond with 401 HTTP status code
-    # but we need to let 301 redirect. The workaround is to store the next_status
-    # and apply it in after_request the next time
-    session["next_status"] = 401
-
-    if e.redirect is not None:
-        return redirect(e.redirect)
-    if request.referrer:
-        return redirect(request.referrer)
-    return redirect("/albums")
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
