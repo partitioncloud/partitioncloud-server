@@ -152,7 +152,7 @@ def details(uuid):
         body=request.form["body"]
     )
 
-    flash(_("Successfully modified %(name)s", name=request.form['name']))
+    flash(_("Successfully modified %(name)s", name=request.form["name"]))
     return redirect("/albums")
 
 

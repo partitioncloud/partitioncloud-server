@@ -4,7 +4,7 @@ from flask_babel import _
 from flask import current_app
 
 from .db import get_db
-from .utils import FakeObject, InvalidRequest
+from .utils import FakeObject, InvalidRequest, Robj
 from .classes.user import User
 from .classes.album import Album
 from .classes.groupe import Groupe

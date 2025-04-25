@@ -37,7 +37,7 @@
   <div id="header-actions">
     {% if g_user %}
       <section id="users">
-      {% for groupe_user in groupe.users %}
+      {% for groupe_user in groupe.get_users() %}
         <div class="user-profile-picture" style="background-color:{{ groupe_user.color }};" title="{{ groupe_user.username }}">
         {{ groupe_user.username[0] | upper }}
         </div>
@@ -54,9 +54,9 @@
         {% if permissions.check(permissions.can_download_zip, g_user, groupe) %}
           <a href="/groupe/{{ groupe.uuid }}/zip">{{ _("Download as zip") }}</a>
         {% endif %}
-        {% if g_user and not g_user in groupe.users %}
+        {% if g_user and not g_user in groupe.get_users() %}
           <a href="/groupe/{{ groupe.uuid }}/join">{{ _("Join") }}</a>
-        {% elif g_user and g_user in groupe.users %}
+        {% elif g_user and g_user in groupe.get_users() %}
           <a href="/groupe/{{ groupe.uuid }}/quit">{{ _("Quit") }}</a>
         {% endif %}
         {% if permissions.check(permissions.can_delete_groupe, g_user, groupe) %}

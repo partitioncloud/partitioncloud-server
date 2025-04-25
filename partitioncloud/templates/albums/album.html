@@ -42,7 +42,10 @@
   <div id="header-actions">
     {% if g_user %}
       <section id="users">
-        {% for album_user in album.users %}
+        {% if not users %}
+        {% set users = album.get_users() %}
+        {% endif %}
+        {% for album_user in users %}
         <div class="user-profile-picture" style="background-color:{{ album_user.color }};" title="{{ album_user.username }}">
           {{ album_user.username[0] | upper }}
         </div>
@@ -74,8 +77,7 @@
 <hr/>
 {% if partitions|length != 0 %}
 <section id="partitions-grid">
-  {% for p in partitions | reverse %}
-  {% set partition = FakeObject(p) %}
+  {% for partition in partitions | reverse %}
   <div>
     <a href="/partition/{{ partition.uuid }}">
       <div class="partition" id="partition-{{ partition.uuid }}">

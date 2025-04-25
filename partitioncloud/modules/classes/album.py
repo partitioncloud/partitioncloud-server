@@ -11,6 +11,7 @@ from werkzeug.utils import secure_filename
 
 from ..db import get_db
 from ..utils import new_uuid
+from .class_utils import FakeObject, RealObject as Robj
 
 from .attachment import Attachment
 
@@ -51,33 +52,32 @@ class Album():
         self.users = None
 
 
-    def get_users(self, force_reload=False): #-> Union[List[User], List[sqlite3.Row]]:
+    def get_users(self, force_reload=False) -> List[FakeObject]: #-> Union[List[User], List[FakeObject]]:
         """
-        Renvoie les data["id"] des utilisateurs liés à l'album
-        ! Mais self.users est modifié après coup, et ne donne donc pas d'interface unifiée
+        Renvoie les utilisateurs liés à l'album
         """
         if self.users is None or force_reload:
             db = get_db()
             data = db.execute(
                 """
-                SELECT * FROM user
+                SELECT user.* FROM user
                 JOIN contient_user ON user_id = user.id
                 JOIN album ON album.id = album_id
                 WHERE album.uuid = ?
                 """,
                 (self.uuid,)
             ).fetchall()
-            self.users = [i["id"] for i in data]
+            self.users = [FakeObject(i, Robj.USER) for i in data]
         return self.users
 
-    def get_partitions(self) -> List[sqlite3.Row]:
+    def get_partitions(self) -> List[FakeObject]:
         """
         Renvoie les partitions liées à l'album
         """
         db = get_db()
-        return db.execute(
+        data = db.execute(
             """
-            SELECT p.uuid, p.name, p.author, p.user_id,
+            SELECT p.*,
                 CASE WHEN MAX(a.uuid) IS NOT NULL THEN 1 ELSE 0 END AS has_attachment
             FROM partition AS p
                 JOIN contient_partition ON contient_partition.partition_uuid = p.uuid
@@ -88,9 +88,10 @@ class Album():
             """,
             (self.uuid,),
         ).fetchall()
+        return [FakeObject(p, Robj.PARTITION) for p in data]
 
 
-    def get_groupe(self) -> Optional[str]:
+    def get_groupe(self) -> Optional[FakeObject]:
         """
         Récupérer le groupe auquel appartient l'album si il existe (juste son uuid de fait)
         ! Cela suppose que l'album n'a pas été ajouté manuellement à un second groupe
@@ -98,7 +99,7 @@ class Album():
         db = get_db()
         data = db.execute(
             """
-            SELECT uuid FROM groupe
+            SELECT groupe.* FROM groupe
             JOIN groupe_contient_album ON groupe.id = groupe_id
             WHERE album_id = ?
             """,
@@ -107,7 +108,7 @@ class Album():
 
         if data is None:
             return None
-        return data["uuid"]
+        return FakeObject(data, Robj.GROUPE)
 
 
     def delete(self, instance_path):
@@ -208,8 +209,8 @@ class Album():
                 z.write(os.path.join(
                     instance_path,
                     "partitions",
-                    f"{partition['uuid']}.pdf"
-                ), arcname=secure_filename(partition['name']+".pdf")
+                    f"{partition.uuid}.pdf"
+                ), arcname=secure_filename(partition.name+".pdf")
                 )
 
         # Spooling back to the beginning of the buffer

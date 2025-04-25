@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 
 from ..db import get_db
 from .album import Album
+from .class_utils import FakeObject, RealObject as Robj
 
 class Groupe():
     def __init__(self, uuid):
@@ -76,22 +77,22 @@ class Groupe():
             album.delete(instance_path)
 
 
-    def get_users(self, force_reload=False) -> List[int]:
+    def get_users(self, force_reload=False) -> List[FakeObject]:
         """
-        Renvoie les data["id"] des utilisateurs liés au groupe
+        Renvoie les utilisateurs liés au groupe
         """
         if self.users is None or force_reload:
             db = get_db()
             data = db.execute(
                 """
-                SELECT * FROM user
+                SELECT user.* FROM user
                 JOIN groupe_contient_user ON user_id = user.id
                 JOIN groupe ON groupe.id = groupe_id
                 WHERE groupe.id = ?
                 """,
                 (self.id,)
             ).fetchall()
-            self.users = [i["id"] for i in data]
+            self.users = [FakeObject(i, Robj.USER) for i in data]
         return self.users
 
     def get_albums(self, force_reload=False) -> List[Album]:
@@ -102,32 +103,32 @@ class Groupe():
             db = get_db()
             data = db.execute(
                 """
-                SELECT * FROM album
+                SELECT album.* FROM album
                 JOIN groupe_contient_album ON album_id = album.id
                 JOIN groupe ON groupe.id = groupe_id
                 WHERE groupe.id = ?
                 """,
                 (self.id,)
             ).fetchall()
-            self.albums = [Album(uuid=i["uuid"]) for i in data]
+            self.albums = [FakeObject(i, Robj.ALBUM) for i in data]
 
         return self.albums
 
-    def get_admins(self) -> List[int]:
+    def get_admins(self) -> List[FakeObject]:
         """
-        Renvoie les ids utilisateurs administrateurs liés au groupe
+        Renvoie les utilisateurs administrateurs liés au groupe
         """
         db = get_db()
         data = db.execute(
             """
-            SELECT user.id FROM user
+            SELECT user.* FROM user
             JOIN groupe_contient_user ON user_id = user.id
             JOIN groupe ON groupe.id = groupe_id
             WHERE is_admin=1 AND groupe.id = ?
             """,
             (self.id,)
         ).fetchall()
-        return [i["id"] for i in data]
+        return [FakeObject(i, Robj.USER) for i in data]
 
     def set_admin(self, user_id, value) -> None:
         """
@@ -152,9 +153,9 @@ class Groupe():
                     z.write(os.path.join(
                         instance_path,
                         "partitions",
-                        f"{partition['uuid']}.pdf"
+                        f"{partition.uuid}.pdf"
                     ), arcname=secure_filename(album.name)+"/"
-                        +secure_filename(partition['name']+".pdf")
+                        +secure_filename(partition.name+".pdf")
                     )
 
         # Spooling back to the beginning of the buffer

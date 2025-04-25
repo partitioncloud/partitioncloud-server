@@ -7,7 +7,7 @@ import io
 
 from flask import current_app, send_file
 
-from .classes.class_utils import FakeObject
+from .classes.class_utils import FakeObject, RealObject as Robj
 from .db import get_db
 
 class InvalidRequest(Exception):
@@ -55,7 +55,7 @@ def get_all_partitions() -> List[FakeObject]:
         GROUP BY p.uuid, p.name, p.author, p.user_id
         """
     )
-    return [FakeObject(p) for p in partitions]
+    return [FakeObject(p, Robj.PARTITION) for p in partitions]
 
 def get_all_albums() -> List[FakeObject]:
     db = get_db()
@@ -64,7 +64,7 @@ def get_all_albums() -> List[FakeObject]:
         SELECT * FROM album
         """
     )
-    return [FakeObject(a) for a in albums]
+    return [FakeObject(a, Robj.ALBUM) for a in albums]
 
 def get_all_users() -> List[User]:
     db = get_db()
@@ -73,7 +73,7 @@ def get_all_users() -> List[User]:
         SELECT id FROM user
         """
     )
-    return [User(user_id=user["id"]) for user in users_id]
+    return [FakeObject(user, Robj.USER) for user in users_id]
 
 def user_count() -> int:
     db = get_db()

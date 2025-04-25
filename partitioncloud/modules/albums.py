@@ -80,8 +80,6 @@ def get_album(uuid):
             return abort(404)
 
     partitions = album.get_partitions()
-    album.users = [User(user_id=u_id) for u_id in album.get_users()]
-
     return render_template(
         "albums/album.html",
         album=album,
@@ -290,7 +288,7 @@ def add_partition(album_uuid):
             "status": "ok",
             "uuid": partition_uuid
         }
-    flash(_("Score %(partition_name)s added", partition_name=request.form['name']))
+    flash(_("Score %(partition_name)s added", partition_name=request.form["name"]))
     return redirect(f"/albums/{album.uuid}")
 
 

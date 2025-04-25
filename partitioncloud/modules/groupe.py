@@ -36,8 +36,6 @@ def get_groupe(uuid):
         groupe = Groupe(uuid=utils.format_uuid(uuid))
         return redirect(f"/groupe/{utils.format_uuid(uuid)}")
 
-    groupe.users = [User(user_id=u_id) for u_id in groupe.get_users()]
-
     return render_template(
         "groupe/index.html",
         groupe=groupe,
@@ -194,17 +192,13 @@ def get_album(groupe_uuid, album_uuid):
 
     album = album_list[0]
 
-    # List of users without duplicate
-    users_id = list(set(album.get_users()+groupe.get_users()))
-    album.users = [User(user_id=uid) for uid in users_id]
-
     partitions = album.get_partitions()
-
     return render_template(
         "albums/album.html",
         album=album,
         groupe=groupe,
         partitions=partitions,
+        users=list(set(album.get_users()+groupe.get_users())) # We added groupe users
     )
 
 

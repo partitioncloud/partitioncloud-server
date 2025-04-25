@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash
 from ..db import get_db
 from .album import Album
 from .groupe import Groupe
-from .class_utils import FakeObject
+from .class_utils import FakeObject, RealObject as Robj
 
 
 # Variables defined in the CSS
@@ -113,7 +113,7 @@ class User():
                 # On récupère tous les albums qui ne sont pas dans un groupe
                 albums = db.execute(
                     """
-                    SELECT * FROM album
+                    SELECT album.* FROM album
                     LEFT JOIN groupe_contient_album
                     ON album_id=album.id
                     WHERE album_id IS NULL
@@ -129,7 +129,7 @@ class User():
                     """,
                     (self.id,),
                 ).fetchall()
-            self.albums = [FakeObject(a) for a in albums]
+            self.albums = [FakeObject(a, Robj.ALBUM) for a in albums]
         return self.albums
 
     
@@ -141,7 +141,7 @@ class User():
                 # On récupère tous les albums qui ne sont pas dans un groupe
                 accessible_albums = db.execute(
                     """
-                    SELECT * FROM album
+                    SELECT album.* FROM album
                     LEFT JOIN groupe_contient_album
                     ON album_id=album.id
                     WHERE album_id IS NULL
@@ -159,7 +159,7 @@ class User():
                     """,
                     (self.id,),
                 ).fetchall()
-            self.accessible_albums = [FakeObject(a) for a in accessible_albums]
+            self.accessible_albums = [FakeObject(a, Robj.ALBUM) for a in accessible_albums]
         return self.accessible_albums
 
     def get_groupes(self, force_reload=False) -> List[Groupe]:
@@ -168,20 +168,20 @@ class User():
             if self.is_admin:
                 data = db.execute(
                     """
-                    SELECT uuid FROM groupe
+                    SELECT * FROM groupe
                     """
                 ).fetchall()
             else:
                 data = db.execute(
                     """
-                    SELECT uuid FROM groupe
+                    SELECT groupe.* FROM groupe
                     JOIN groupe_contient_user ON groupe.id = groupe_id
                     JOIN user ON user_id = user.id
                     WHERE user.id = ?
                     """,
                     (self.id,),
                 ).fetchall()
-            self.groupes = [Groupe(i["uuid"]) for i in data]
+            self.groupes = [FakeObject(i, Robj.GROUPE) for i in data]
         return self.groupes
 
     
@@ -206,7 +206,7 @@ class User():
                     """,
                     (self.id,),
                 ).fetchall()
-            self.accessible_groupes = [Groupe(i["uuid"]) for i in data]
+            self.accessible_groupes = [FakeObject(i, Robj.GROUPE) for i in data]
         return self.accessible_groupes
 
 
@@ -229,7 +229,7 @@ class User():
                     """,
                     (self.id,),
                 ).fetchall()
-            self.partitions = [FakeObject(p) for p in partitions]
+            self.partitions = [FakeObject(p, Robj.PARTITION) for p in partitions]
         return self.partitions
 
     def get_accessible_partitions(self, force_reload=False) -> List[FakeObject]:
@@ -245,9 +245,7 @@ class User():
             else:
                 accessible_partitions = db.execute(
                     """
-                    SELECT DISTINCT partition.uuid, partition.name,
-                        partition.author, partition.body,
-                        partition.user_id, partition.source
+                    SELECT DISTINCT partition.*
                     FROM partition
                         JOIN album
                         JOIN contient_partition
@@ -258,7 +256,7 @@ class User():
                         JOIN contient_user
                         ON contient_user.user_id=?
                         AND album_id=album.id
-                    UNION
+                      UNION
                         SELECT DISTINCT album.id FROM album
                         JOIN groupe_contient_user
                         JOIN groupe_contient_album
@@ -269,7 +267,7 @@ class User():
                     """,
                     (self.id, self.id,),
                 ).fetchall()
-            self.accessible_partitions = [FakeObject(p) for p in accessible_partitions]
+            self.accessible_partitions = [FakeObject(p, Robj.PARTITION) for p in accessible_partitions]
         return self.accessible_partitions
 
     def join_album(self, album_uuid=None, album_id=None) -> None:
@@ -392,8 +390,12 @@ class User():
         return f"var({colors[hash(self.username) %len(colors)]})"
 
     def __eq__(self, other):
-        if isinstance(other, User): #TODO: take FakeObjects into account
+        if (
+            isinstance(other, User) or
+            (isinstance(other, FakeObject) and other.__proxy_class == Robj.USER)
+            ):
             return self.id == other.id
+            
         return NotImplemented
 
     def __repr__(self):
