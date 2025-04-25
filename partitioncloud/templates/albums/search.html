@@ -6,11 +6,11 @@
 {% set select_album %}
 <select name="album-uuid">
   {% for album in g_user.get_accessible_albums() %}
-  <option value="{{ album['uuid'] }}">{{ album["name"] }}</option>
+  <option value="{{ album.uuid }}">{{ album.name }}</option>
   {% endfor %}
   {% for groupe in g_user.get_accessible_groupes() %}
     {% for album in groupe.get_albums() %}
-    <option value="{{ album['uuid'] }}">{{ groupe.name }}/{{ album["name"] }}</option>
+    <option value="{{ album.uuid }}">{{ groupe.name }}/{{ album.name }}</option>
     {% endfor %}
   {% endfor %}
 </select>
@@ -20,23 +20,23 @@
 <div id="partitions-grid">
   {% for partition in partitions %}
   <div class="partition-container">
-    <a href="/partition/{{ partition['uuid'] }}">
-      <div class="partition" id="partition-{{ partition['uuid'] }}">
-        <img class="partition-thumbnail" src="/thumbnails/{{ partition['uuid'] }}.jpg" loading="lazy">
+    <a href="/partition/{{ partition.uuid }}">
+      <div class="partition" id="partition-{{ partition.uuid }}">
+        <img class="partition-thumbnail" src="/thumbnails/{{ partition.uuid }}.jpg" loading="lazy">
         <div class="partition-description">
-          <div class="partition-name">{{ partition["name"] }}</div>
-          <div class="partition-author">{{ partition["author"] }}</div>
+          <div class="partition-name">{{ partition.name }}</div>
+          <div class="partition-author">{{ partition.author }}</div>
         </div>
       </div>
     </a>
     <div class="partition-buttons">
-      {% if partition["has_attachment"] %}
-      <a href="/partition/{{ partition['uuid'] }}/attachments"><div class="partition-action">📎</div></a>
+      {% if partition.has_attachment %}
+      <a href="/partition/{{ partition.uuid }}/attachments"><div class="partition-action">📎</div></a>
       {% endif %}
     </div>
     <form action="/albums/add-partition" class="add-partition-form" method="post">
       {{ select_album }}
-      <input type="hidden" value="{{ partition['uuid'] }}" name="partition-uuid">
+      <input type="hidden" value="{{ partition.uuid }}" name="partition-uuid">
       <input type="hidden" value="local_file" name="partition-type">
       <input type="submit" value="{{ _('Add to album') }}" class="add-to-album">
     </form>
@@ -49,17 +49,17 @@
 <div id="partitions-grid">
   {% for partition in google_results %}
   <div class="partition-container">
-    <a href="/partition/search/{{ partition['uuid'] }}">
-      <div class="partition" id="partition-{{ partition['uuid'] }}">
-        <img class="partition-thumbnail" src="/thumbnails/search/{{ partition['uuid'] }}.jpg" loading="lazy">
+    <a href="/partition/search/{{ partition.uuid }}">
+      <div class="partition" id="partition-{{ partition.uuid }}">
+        <img class="partition-thumbnail" src="/thumbnails/search/{{ partition.uuid }}.jpg" loading="lazy">
         <div class="partition-description">
-          <div class="partition-name">{{ partition["name"] }}</div>
+          <div class="partition-name">{{ partition.name }}</div>
         </div>
       </div>
     </a>
     <form action="/albums/add-partition" class="add-partition-form" method="post">
       {{ select_album }}
-      <input type="hidden" value="{{ partition['uuid'] }}" name="partition-uuid">
+      <input type="hidden" value="{{ partition.uuid }}" name="partition-uuid">
       <input type="hidden" value="online_search" name="partition-type">
       <input type="submit" value="{{ _('Add to album') }}">
     </form>

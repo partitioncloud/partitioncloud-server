@@ -9,20 +9,20 @@
 <div id="partitions-grid">
   {% for partition in partitions %}
   <div>
-    <a href="/partition/{{ partition['uuid'] }}">
-      <div class="partition" id="partition-{{ partition['uuid'] }}">
-        <img class="partition-thumbnail" src="/thumbnails/{{ partition['uuid'] }}.jpg" loading="lazy">
+    <a href="/partition/{{ partition.uuid }}">
+      <div class="partition" id="partition-{{ partition.uuid }}">
+        <img class="partition-thumbnail" src="/thumbnails/{{ partition.uuid }}.jpg" loading="lazy">
         <div class="partition-description">
-          <div class="partition-name">{{ partition["name"] }}</div>
-          <div class="partition-author">{{ partition["author"] }}</div>
+          <div class="partition-name">{{ partition.name }}</div>
+          <div class="partition-author">{{ partition.author }}</div>
         </div>
       </div>
     </a>
     <div class="partition-buttons">
-      {% if partition["has_attachment"] %}
-      <a href="/partition/{{ partition['uuid'] }}/attachments"><div class="partition-action">📎</div></a>
+      {% if partition.has_attachment %}
+      <a href="/partition/{{ partition.uuid }}/attachments"><div class="partition-action">📎</div></a>
       {% endif %}
-      <a href="/partition/{{ partition['uuid'] }}/details"><div class="edit-button partition-action">🔍</div></a>
+      <a href="/partition/{{ partition.uuid }}/details"><div class="edit-button partition-action">🔍</div></a>
     </div>
   </div>
   {% endfor %}

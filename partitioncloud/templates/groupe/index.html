@@ -4,23 +4,27 @@
 
 
 {% block dialogs %}
-<dialog id="create-groupe-album">
-  <h2>{{ _("Add an album to group %(name)s", name=groupe.name) }}</h2>
-  <form action="/groupe/{{ groupe.uuid }}/create-album" method="post">
-      <input type="text" name="name" id="name" placeholder="{{ _('Name') }}" required><br/>
-      <input type="submit" value="{{ _('Add') }}">
-  </form>
-  <a href="#!" class="close-dialog">Close</a>
-</dialog>
-<dialog id="delete">
-  <h2>{{ _("Delete group") }}</h2>
-  {{ _("Do you really want to delete this group and the albums it contains?") }}
-  <br/><br/>
-  <form method="post" action="/groupe/{{ groupe.uuid }}/delete">
-    <input type="submit" style="background-color: var(--color-red);" value="{{ _('Delete') }}">
-  </form>
-  <a href="#!" class="close-dialog">Close</a>
-</dialog>
+{% if permissions.check(permissions.has_write_access_groupe, g_user, groupe) %}
+  <dialog id="create-groupe-album">
+    <h2>{{ _("Add an album to group %(name)s", name=groupe.name) }}</h2>
+    <form action="/groupe/{{ groupe.uuid }}/create-album" method="post">
+        <input type="text" name="name" id="name" placeholder="{{ _('Name') }}" required><br/>
+        <input type="submit" value="{{ _('Add') }}">
+    </form>
+    <a href="#!" class="close-dialog">Close</a>
+  </dialog>
+{% endif %}
+{% if permissions.check(permissions.can_delete_groupe, g_user, groupe) %}
+  <dialog id="delete">
+    <h2>{{ _("Delete group") }}</h2>
+    {{ _("Do you really want to delete this group and the albums it contains?") }}
+    <br/><br/>
+    <form method="post" action="/groupe/{{ groupe.uuid }}/delete">
+      <input type="submit" style="background-color: var(--color-red);" value="{{ _('Delete') }}">
+    </form>
+    <a href="#!" class="close-dialog">Close</a>
+  </dialog>
+{% endif %}
 {% set current_url = "/groupe/" + groupe.uuid %}
 {% with share_link=config.BASE_URL+current_url, share_qrlink=current_url + "/qr" %}
   {% include 'components/share_dialog.html' %}
@@ -43,21 +47,21 @@
     <div class="dropdown dp1">
       +
       <div class="dropdown-content dp1">
-      {% if g_user and not g_user in groupe.users %}
-        <a href="/groupe/{{ groupe.uuid }}/join">{{ _("Join") }}</a>
-      {% elif g_user and g_user in groupe.users %}
-        <a href="/groupe/{{ groupe.uuid }}/quit">{{ _("Quit") }}</a>
-      {% endif %}
-      <a href="#share">{{ _("Share") }}</a>
-      {% if permissions.check(permissions.can_download_zip, g_user, groupe) %}
-      <a href="/groupe/{{ groupe.uuid }}/zip">{{ _("Download as zip") }}</a>
-      {% endif %}
-      {% if permissions.check(permissions.has_write_access_groupe, g_user, groupe) %}
-        <a href="#create-groupe-album">{{ _("Add an album") }}</a>
-      {% endif %}
-      {% if permissions.check(permissions.can_delete_groupe, g_user, groupe) %}
-        <a id="delete-album" href="#delete">{{ _("Delete") }}</a>
-      {% endif %}
+        {% if permissions.check(permissions.has_write_access_groupe, g_user, groupe) %}
+          <a href="#create-groupe-album">{{ _("Add an album") }}</a>
+        {% endif %}
+        <a href="#share">{{ _("Share") }}</a>
+        {% if permissions.check(permissions.can_download_zip, g_user, groupe) %}
+          <a href="/groupe/{{ groupe.uuid }}/zip">{{ _("Download as zip") }}</a>
+        {% endif %}
+        {% if g_user and not g_user in groupe.users %}
+          <a href="/groupe/{{ groupe.uuid }}/join">{{ _("Join") }}</a>
+        {% elif g_user and g_user in groupe.users %}
+          <a href="/groupe/{{ groupe.uuid }}/quit">{{ _("Quit") }}</a>
+        {% endif %}
+        {% if permissions.check(permissions.can_delete_groupe, g_user, groupe) %}
+          <a id="delete-album" href="#delete">{{ _("Delete") }}</a>
+        {% endif %}
       </div>
     </div>
   </div>

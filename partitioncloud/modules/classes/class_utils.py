@@ -1,4 +1,5 @@
 import sqlite3
+import sys
 
 class FakeObject:
     """
@@ -13,3 +14,6 @@ class FakeObject:
 
     def __getattr__(self, key):
         return self._data[key]
+
+    def __getitem__(self, key):
+        raise NotImplementedError(f"Hey, someone is accessing ['{key}'] via __getitem__", file=sys.stderr)

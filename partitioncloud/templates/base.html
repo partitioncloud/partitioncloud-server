@@ -95,9 +95,9 @@
                   {{ _("No albums") }}
                 {% else %}
                   {% for album in groupe.get_albums() %}
-                  <a href="/groupe/{{ groupe.uuid }}/{{ album['uuid'] }}">
+                  <a href="/groupe/{{ groupe.uuid }}/{{ album.uuid }}">
                     <div class="groupe-album-cover">
-                      {{ album["name"] }}
+                      {{ album.name }}
                     </div>
                   </a>
                   {% endfor %}
@@ -114,9 +114,9 @@
           <div style="text-align: center;"><i>{{ _("No album available") }}</i></div>
           {% else %}
           {% for album in g_user.albums %}
-          <a href="/albums/{{ album['uuid'] }}">
+          <a href="/albums/{{ album.uuid }}">
             <div class="album-cover">
-              {{ album["name"] }}
+              {{ album.name }}
             </div>
           </a>
           {% endfor %}

@@ -11,7 +11,7 @@
     <select name="album_uuid" id="album_uuid" form="add-user-form" style="margin-bottom:15px;">
     <option value="">{{ _("None") }}</option>
     {% for album in albums %}
-      <option value="{{ album['uuid'] }}">{{ album["name"] }}</option>
+      <option value="{{ album.uuid }}">{{ album.name }}</option>
     {% endfor %}
     </select><br/>
   {% endif %}

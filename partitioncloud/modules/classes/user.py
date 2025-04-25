@@ -58,6 +58,8 @@ class User():
                 """,
                 (self.username,)
             ).fetchone()
+        else:
+            raise ValueError("You need to provide one of the arguments")
 
         self.id = data["id"]
         self.username = data["username"]
@@ -103,12 +105,13 @@ class User():
             )
 
 
-    def get_albums(self, force_reload=False):
+    def get_albums(self, force_reload=False) -> List[FakeObject]:
         if self.albums is None or force_reload:
             db = get_db()
+            albums = []
             if self.is_admin:
                 # On récupère tous les albums qui ne sont pas dans un groupe
-                self.albums = db.execute(
+                albums = db.execute(
                     """
                     SELECT * FROM album
                     LEFT JOIN groupe_contient_album
@@ -117,24 +120,26 @@ class User():
                     """
                 ).fetchall()
             else:
-                self.albums = db.execute(
+                albums = db.execute(
                     """
-                    SELECT album.id, name, uuid FROM album
+                    SELECT album.* FROM album
                     JOIN contient_user ON album_id = album.id
                     JOIN user ON user_id = user.id
                     WHERE user.id = ?
                     """,
                     (self.id,),
                 ).fetchall()
+            self.albums = [FakeObject(a) for a in albums]
         return self.albums
 
     
-    def get_accessible_albums(self, force_reload=False):
+    def get_accessible_albums(self, force_reload=False) -> List[FakeObject]:
         if self.accessible_albums is None or force_reload:
             db = get_db()
+            accessible_albums = []
             if self.is_admin:
                 # On récupère tous les albums qui ne sont pas dans un groupe
-                self.accessible_albums = db.execute(
+                accessible_albums = db.execute(
                     """
                     SELECT * FROM album
                     LEFT JOIN groupe_contient_album
@@ -143,7 +148,7 @@ class User():
                     """
                 ).fetchall()
             else:
-                self.accessible_albums = db.execute(
+                accessible_albums = db.execute(
                     """
                     SELECT album.* FROM album
                     LEFT JOIN groupe_contient_album AS gca ON gca.album_id=album.id
@@ -154,9 +159,10 @@ class User():
                     """,
                     (self.id,),
                 ).fetchall()
+            self.accessible_albums = [FakeObject(a) for a in accessible_albums]
         return self.accessible_albums
 
-    def get_groupes(self, force_reload=False):
+    def get_groupes(self, force_reload=False) -> List[Groupe]:
         if self.groupes is None or force_reload:
             db = get_db()
             if self.is_admin:
@@ -175,13 +181,11 @@ class User():
                     """,
                     (self.id,),
                 ).fetchall()
-
             self.groupes = [Groupe(i["uuid"]) for i in data]
-
         return self.groupes
 
     
-    def get_accessible_groupes(self, force_reload=False):
+    def get_accessible_groupes(self, force_reload=False) -> List[Groupe]:
         """Returns groupes where user can add partitions"""
         if self.accessible_groupes is None or force_reload:
             db = get_db()
@@ -202,30 +206,30 @@ class User():
                     """,
                     (self.id,),
                 ).fetchall()
-
             self.accessible_groupes = [Groupe(i["uuid"]) for i in data]
-
         return self.accessible_groupes
 
 
-    def get_partitions(self, force_reload=False):
+    def get_partitions(self, force_reload=False) -> List[FakeObject]:
         if self.partitions is None or force_reload:
             db = get_db()
+            partitions = []
             if self.is_admin:
-                self.partitions = db.execute(
+                partitions = db.execute(
                     """
                     SELECT * FROM partition
                     """
                 ).fetchall()
             else:
-                self.partitions = db.execute(
+                partitions = db.execute(
                     """
-                    SELECT * FROM partition
+                    SELECT partition.* FROM partition
                     JOIN user ON user_id = user.id
                     WHERE user.id = ?
                     """,
                     (self.id,),
                 ).fetchall()
+            self.partitions = [FakeObject(p) for p in partitions]
         return self.partitions
 
     def get_accessible_partitions(self, force_reload=False) -> List[FakeObject]:
