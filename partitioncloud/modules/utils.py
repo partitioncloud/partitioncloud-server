@@ -1,27 +1,14 @@
 #!/usr/bin/python3
 from typing import Optional, List
-import sqlite3
 import random
 import string
 import qrcode
 import io
 
 from flask import current_app, send_file
+
+from .classes.class_utils import FakeObject
 from .db import get_db
-
-class FakeObject:
-    """
-    Some times, you don't need access to the methods of a class,
-    but just its data. We don't want to do unnecessary sql requests for that.
-
-    Obviously, we trade a small performance gain for a future headache,
-    but that's assumed
-    """
-    def __init__(self, data: sqlite3.Row):
-        self._data = dict(data)
-
-    def __getattr__(self, key):
-        return self._data[key]
 
 class InvalidRequest(Exception):
     def __init__(self, reason: str, code :int=400, redirect: Optional[str]=None):
@@ -59,8 +46,8 @@ def get_all_partitions() -> List[FakeObject]:
     db = get_db()
     partitions = db.execute(
         """
-        SELECT p.*
-            CASE WHEN MAX(a.uuid) IS NOT NULL THEN 1 ELSE 0 END AS has_attachment
+        SELECT p.*,
+            (CASE WHEN MAX(a.uuid) IS NOT NULL THEN 1 ELSE 0 END) AS has_attachment
         FROM partition AS p
             JOIN contient_partition ON contient_partition.partition_uuid = p.uuid
             JOIN album ON album.id = album_id

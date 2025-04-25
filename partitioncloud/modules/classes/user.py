@@ -1,9 +1,11 @@
+from typing import List
 from flask import current_app
 from werkzeug.security import generate_password_hash
 
 from ..db import get_db
 from .album import Album
 from .groupe import Groupe
+from .class_utils import FakeObject
 
 
 # Variables defined in the CSS
@@ -226,17 +228,18 @@ class User():
                 ).fetchall()
         return self.partitions
 
-    def get_accessible_partitions(self, force_reload=False):
+    def get_accessible_partitions(self, force_reload=False) -> List[FakeObject]:
         if self.accessible_partitions is None or force_reload:
             db = get_db()
+            accessible_partitions = []
             if self.is_admin:
-                self.accessible_partitions = db.execute(
+                accessible_partitions = db.execute(
                     """
                     SELECT * FROM partition
                     """
                 ).fetchall()
             else:
-                self.accessible_partitions = db.execute(
+                accessible_partitions = db.execute(
                     """
                     SELECT DISTINCT partition.uuid, partition.name,
                         partition.author, partition.body,
@@ -262,6 +265,7 @@ class User():
                     """,
                     (self.id, self.id,),
                 ).fetchall()
+            self.accessible_partitions = [FakeObject(p) for p in accessible_partitions]
         return self.accessible_partitions
 
     def join_album(self, album_uuid=None, album_id=None) -> None:

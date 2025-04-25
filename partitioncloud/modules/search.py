@@ -2,6 +2,7 @@
 """
 Module implémentant la recherche de partitions par mots-clés
 """
+from typing import Union, List
 from uuid import uuid4
 import urllib.request
 import threading
@@ -13,28 +14,29 @@ import googlesearch
 from unidecode import unidecode
 
 from .db import get_db
+from .utils import FakeObject
 
 socket.setdefaulttimeout(5) # Maximum time before we give up on downloading a file (dead url)
 
 
-def local_search(query, partitions):
+def local_search(query, partitions: List[FakeObject]) -> List[FakeObject]:
     """
     Renvoie les 5 résultats les plus pertinents parmi une liste donnée
     """
     query_words = [word.lower() for word in unidecode(query).split()]
-    def score_attribution(partition):
+    def score_attribution(partition: FakeObject) -> int:
         score = 0
         for word in query_words:
             if word != "":
-                if word in unidecode(partition["name"]).lower():
+                if word in unidecode(partition.name).lower():
                     score += 6
-                elif word in unidecode(partition["author"]).lower():
+                elif word in unidecode(partition.author).lower():
                     score += 4
-                elif word in unidecode(partition["body"]).lower():
+                elif word in unidecode(partition.body).lower():
                     score += 2
                 else:
                     score -= 6
-        for word in unidecode(partition["name"]).split():
+        for word in unidecode(partition.name).split():
             if word != "" and word.lower() not in query_words:
                 score -= 1
         return score

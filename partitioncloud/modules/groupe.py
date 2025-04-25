@@ -37,18 +37,10 @@ def get_groupe(uuid):
         return redirect(f"/groupe/{utils.format_uuid(uuid)}")
 
     groupe.users = [User(user_id=u_id) for u_id in groupe.get_users()]
-    groupe.get_albums()
-
-    if g.user.id is None:
-        # On ne propose pas aux gens non connectés de rejoindre l'album
-        not_participant = False
-    else:
-        not_participant = not g.user in groupe.users
 
     return render_template(
         "groupe/index.html",
         groupe=groupe,
-        not_participant=not_participant,
     )
 
 
@@ -208,18 +200,11 @@ def get_album(groupe_uuid, album_uuid):
 
     partitions = album.get_partitions()
 
-    if g.user.id is None:
-        # On ne propose pas aux gens non connectés de rejoindre l'album
-        not_participant = False
-    else:
-        not_participant = not g.user.is_participant(album.uuid, exclude_groupe=True)
-
     return render_template(
         "albums/album.html",
         album=album,
         groupe=groupe,
         partitions=partitions,
-        not_participant=not_participant,
     )
 
 
