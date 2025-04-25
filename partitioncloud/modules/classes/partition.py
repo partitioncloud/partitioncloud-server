@@ -1,3 +1,5 @@
+from typing import List
+import sqlite3
 import os
 
 from ..db import get_db
@@ -29,7 +31,7 @@ class Partition():
         else:
             raise LookupError
 
-    def delete(self, instance_path):
+    def delete(self, instance_path) -> None:
         db = get_db()
         db.execute(
             """
@@ -56,7 +58,7 @@ class Partition():
         for attachment in self.get_attachments():
             attachment.delete(instance_path)
 
-    def update(self, name=None, author="", body=""):
+    def update(self, name=None, author="", body="") -> None:
         if name is None:
             raise ValueError("name cannot be None")
 
@@ -73,7 +75,7 @@ class Partition():
         )
         db.commit()
 
-    def update_file(self, file, instance_path):
+    def update_file(self, file, instance_path) -> None:
         partition_path = os.path.join(
             instance_path,
             "partitions",
@@ -94,7 +96,7 @@ class Partition():
         )
         db.commit()
 
-    def get_user(self):
+    def get_user(self) -> User:
         db = get_db()
         user = db.execute(
             """
@@ -110,7 +112,7 @@ class Partition():
 
         return User(user_id=user["id"])
 
-    def get_albums(self):
+    def get_albums(self) -> List[sqlite3.Row]:
         db = get_db()
         return db.execute(
             """
@@ -121,7 +123,7 @@ class Partition():
             (self.uuid,),
         ).fetchall()
 
-    def get_attachments(self):
+    def get_attachments(self) -> List[Attachment]:
         db = get_db()
         if self.attachments is None:
             data = db.execute(
@@ -134,3 +136,6 @@ class Partition():
             self.attachments = [Attachment(data=i) for i in data]
 
         return self.attachments
+
+    def __repr__(self):
+        return f"<Partition '{self.name}'>"

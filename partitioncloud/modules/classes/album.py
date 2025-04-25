@@ -4,7 +4,8 @@ Classe Album
 import os
 import io
 import zipfile
-from typing import Optional
+import sqlite3
+from typing import Optional, List, Union
 
 from werkzeug.utils import secure_filename
 
@@ -50,9 +51,10 @@ class Album():
         self.users = None
 
 
-    def get_users(self, force_reload=False):
+    def get_users(self, force_reload=False): #-> Union[List[User], List[sqlite3.Row]]:
         """
         Renvoie les data["id"] des utilisateurs liés à l'album
+        ! Mais self.users est modifié après coup, et ne donne donc pas d'interface unifiée
         """
         if self.users is None or force_reload:
             db = get_db()
@@ -68,7 +70,7 @@ class Album():
             self.users = [i["id"] for i in data]
         return self.users
 
-    def get_partitions(self):
+    def get_partitions(self) -> List[sqlite3.Row]:
         """
         Renvoie les partitions liées à l'album
         """
@@ -214,6 +216,9 @@ class Album():
         data.seek(0)
 
         return data
+
+    def __repr__(self):
+        return f"<Album '{self.name}'>"
 
 
 def create(name: str) -> str:

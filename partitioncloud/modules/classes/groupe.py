@@ -4,6 +4,7 @@ Classe Groupe
 import io
 import os
 import zipfile
+from typing import List
 
 from werkzeug.utils import secure_filename
 
@@ -30,7 +31,7 @@ class Groupe():
         self.albums = None
         self.admins = None
 
-    def delete(self, instance_path):
+    def delete(self, instance_path) -> None:
         """
         Supprime le groupe, et les albums laissés orphelins (sans utilisateur)
         """
@@ -75,7 +76,7 @@ class Groupe():
             album.delete(instance_path)
 
 
-    def get_users(self, force_reload=False):
+    def get_users(self, force_reload=False) -> List[int]:
         """
         Renvoie les data["id"] des utilisateurs liés au groupe
         """
@@ -93,7 +94,7 @@ class Groupe():
             self.users = [i["id"] for i in data]
         return self.users
 
-    def get_albums(self, force_reload=False):
+    def get_albums(self, force_reload=False) -> List[Album]:
         """
         Renvoie les uuids des albums liés au groupe
         """
@@ -112,7 +113,7 @@ class Groupe():
 
         return self.albums
 
-    def get_admins(self):
+    def get_admins(self) -> List[int]:
         """
         Renvoie les ids utilisateurs administrateurs liés au groupe
         """
@@ -128,7 +129,7 @@ class Groupe():
         ).fetchall()
         return [i["id"] for i in data]
 
-    def set_admin(self, user_id, value):
+    def set_admin(self, user_id, value) -> None:
         """
         Rend un utilisateur administrateur du groupe
         """
@@ -143,7 +144,7 @@ class Groupe():
         )
         db.commit()
 
-    def to_zip(self, instance_path):
+    def to_zip(self, instance_path) -> io.BytesIO:
         data = io.BytesIO()
         with zipfile.ZipFile(data, mode="w") as z:
             for album in self.get_albums():
@@ -160,3 +161,6 @@ class Groupe():
         data.seek(0)
 
         return data
+
+    def __repr__(self):
+        return f"<Groupe '{self.name}'>"

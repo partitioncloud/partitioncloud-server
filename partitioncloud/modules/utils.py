@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from typing import Optional
+from typing import Optional, List
 import sqlite3
 import random
 import string
@@ -55,11 +55,11 @@ from .classes.attachment import Attachment
 from .classes.album import create as create_album
 
 
-def get_all_partitions():
+def get_all_partitions() -> List[FakeObject]:
     db = get_db()
     partitions = db.execute(
         """
-        SELECT p.uuid, p.name, p.author, p.body, p.user_id,
+        SELECT p.*
             CASE WHEN MAX(a.uuid) IS NOT NULL THEN 1 ELSE 0 END AS has_attachment
         FROM partition AS p
             JOIN contient_partition ON contient_partition.partition_uuid = p.uuid
@@ -68,36 +68,27 @@ def get_all_partitions():
         GROUP BY p.uuid, p.name, p.author, p.user_id
         """
     )
-    # Transform sql object to dictionary usable in any thread
-    return [
-        {
-            "uuid": p["uuid"],
-            "name": p["name"],
-            "author": p["author"],
-            "body": p["body"],
-            "user_id": p["user_id"],
-            "has_attachment": p["has_attachment"]
-        } for p in partitions
-    ]
+    return [FakeObject(p) for p in partitions]
 
-def get_all_albums():
+def get_all_albums() -> List[FakeObject]:
     db = get_db()
     albums = db.execute(
         """
         SELECT * FROM album
         """
     )
-    # Transform sql object to dictionary usable in any thread
-    return [
-        {
-            "id": a["id"],
-            "name": a["name"],
-            "uuid": a["uuid"]
-        } for a in albums
-    ]
+    return [FakeObject(a) for a in albums]
 
+def get_all_users() -> List[User]:
+    db = get_db()
+    users_id = db.execute(
+        """
+        SELECT id FROM user
+        """
+    )
+    return [User(user_id=user["id"]) for user in users_id]
 
-def user_count():
+def user_count() -> int:
     db = get_db()
     count = db.execute(
         """
@@ -108,7 +99,7 @@ def user_count():
     return count[0]
 
 
-def partition_count():
+def partition_count() -> int:
     db = get_db()
     count = db.execute(
         """

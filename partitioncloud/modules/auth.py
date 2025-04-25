@@ -12,6 +12,7 @@ from flask_babel import _
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db import get_db
+from .permissions import PermError
 from .utils import User
 from . import logging
 from . import utils
@@ -25,8 +26,10 @@ def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
-            flash(_("You need to login to access this resource."))
-            return redirect(url_for("auth.login"))
+            raise PermError(
+                _("You need to login to access this resource."),
+                redirect=url_for("auth.login")
+            )
 
         return view(**kwargs)
 
@@ -52,13 +55,17 @@ def admin_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
-            flash(_("You need to login to access this resource."))
-            return redirect(url_for("auth.login"))
+            raise PermError(
+                _("You need to login to access this resource."),
+                redirect=url_for("auth.login")
+            )
 
         user = User(user_id=session.get("user_id"))
         if not user.is_admin:
-            flash(_("Missing rights."))
-            return redirect("/albums")
+            raise PermError(
+                _("You need to login to access this resource."),
+                redirect="/albums"
+            )
 
         return view(**kwargs)
 
@@ -71,12 +78,9 @@ def load_logged_in_user():
     the database into ``g.user``."""
     user_id = session.get("user_id")
 
-    if user_id is None:
-        g.user = None
-    else:
-        g.user = (
-            get_db().execute("SELECT * FROM user WHERE id = ?", (user_id,)).fetchone()
-        )
+    g.user = None
+    if user_id is not None:
+        g.user = User(user_id=user_id)
 
 
 def create_user(username: str, password: str) -> Optional[str]:
@@ -108,8 +112,10 @@ def register():
     password for security.
     """
     if current_app.config["DISABLE_REGISTER"]:
-        flash(_("New users registration is disabled by owner."))
-        return redirect(url_for("auth.login"))
+        raise utils.InvalidRequest(
+            _("New users registration is disabled by owner."),
+            redirect=url_for("auth.login")
+        )
 
     if request.method == "GET":
         return render_template("auth/register.html")
@@ -140,7 +146,7 @@ def login():
     password = request.form["password"]
 
     db = get_db()
-    user = db.execute(
+    user = db.execute(# TODO can't that be a function of `class User` ?
         "SELECT * FROM user WHERE username = ?", (username,)
     ).fetchone()
 

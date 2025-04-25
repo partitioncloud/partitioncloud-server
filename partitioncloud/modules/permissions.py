@@ -12,7 +12,8 @@ from .classes.partition import Partition
 from .classes.attachment import Attachment
 
 class PermError(Exception):
-    def __init__(self, reason: str):
+    def __init__(self, reason: str, redirect: Optional[str]=None):
+        self.redirect = redirect
         self.reason = reason
         super().__init__(reason)
 
@@ -64,7 +65,7 @@ def can_delete_album(user: User, album: Album) -> None:
     users = album.get_users()
     if len(users) > 1:
         raise PermError(_("You are not alone in this album."))
-    elif user.id not in users:
+    elif user not in users and user.id not in users: #! depending on the type of `album.get_users()`. This is a mess
         raise PermError(_("You don't own this album."))
 
 @admin_bypass
@@ -74,7 +75,7 @@ def has_write_access_album(user: User, album: Album) -> None:
     if groupe_uuid is not None:
         return has_write_access_groupe(user, Groupe(uuid=groupe_uuid))
 
-    if user.is_participant(album.uuid):
+    if user.is_participant(album.uuid): #! There is some duplicated behavior here
         return
     raise PermError(_("You are not a member of this album"))
 

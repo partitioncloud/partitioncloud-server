@@ -5,6 +5,7 @@ Admin Panel
 import os
 from flask import Blueprint, render_template, session, current_app, send_file
 
+import utils
 from .db import get_db
 from .auth import admin_required
 from .utils import User
@@ -19,13 +20,7 @@ def index():
     Admin panel home page
     """
     current_user = User(user_id=session.get("user_id"))
-    db = get_db()
-    users_id = db.execute(
-        """
-        SELECT id FROM user
-        """
-    )
-    users = [User(user_id=user["id"]) for user in users_id]
+    users = utils.get_all_users()
     for user in users:
         user.get_albums()
         user.get_partitions()

@@ -80,7 +80,7 @@ def get_album(uuid):
     try:
         album = Album(uuid=uuid)
     except LookupError:
-        try:
+        try: #TODO remove in v2
             album = Album(uuid=utils.format_uuid(uuid))
             return redirect(f"/albums/{utils.format_uuid(uuid)}")
         except LookupError:
@@ -88,7 +88,7 @@ def get_album(uuid):
 
     album.users = [User(user_id=u_id) for u_id in album.get_users()]
     partitions = album.get_partitions()
-    user = User(user_id=session.get("user_id"))
+    user = User(user_id=session.get("user_id")) # TODO some empty user here, might investigate
 
     if user.id is None:
         # On ne propose pas aux gens non connectés de rejoindre l'album
@@ -125,12 +125,7 @@ def zip_download(uuid):
             code=401,
         )
 
-    try:
-        album = Album(uuid=uuid)
-    except LookupError:
-        album = Album(uuid=utils.format_uuid(uuid))
-        return redirect(f"/albums/{utils.format_uuid(uuid)}")
-
+    album = Album(uuid=uuid)
     return send_file(
         album.to_zip(current_app.instance_path),
         download_name=secure_filename(f"{album.name}.zip")
@@ -153,14 +148,7 @@ def create_album_req():
 
     db = get_db()
     album = Album(uuid=uuid)
-    db.execute(
-        """
-        INSERT INTO contient_user (user_id, album_id)
-        VALUES (?, ?)
-        """,
-        (session.get("user_id"), album.id),
-    )
-    db.commit()
+    user.join_album(album_id=album_id)
 
     logging.log([album.name, album.uuid, user.username], logging.LogEntry.NEW_ALBUM)
 
@@ -179,7 +167,7 @@ def join_album(uuid):
     Rejoindre un album
     """
     user = User(user_id=session.get("user_id"))
-    user.join_album(uuid)
+    user.join_album(album_uuid=uuid)
 
     flash(_("Album added to collection."))
     return redirect(request.referrer)

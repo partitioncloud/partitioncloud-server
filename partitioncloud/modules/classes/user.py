@@ -76,7 +76,7 @@ class User():
     def is_admin(self):
         return (self.access_level == 1)
 
-    def is_participant(self, album_uuid, exclude_groupe=False):
+    def is_participant(self, album_uuid, exclude_groupe=False) -> bool:
         db = get_db()
 
         return (len(db.execute( # Is participant directly in the album
@@ -268,29 +268,45 @@ class User():
                 ).fetchall()
         return self.accessible_partitions
 
-    def join_album(self, album_uuid):
+    def join_album(self, album_uuid=None, album_id=None) -> None:
+        """
+        Makes user join album. Provide preferably album_id
+        """
+        if album_id is None and album_uuid is None:
+            raise ValueError("You should specify one of the parameters")
+
         db = get_db()
-        album = Album(uuid=album_uuid)
+        if album_id is None:
+            album = Album(uuid=album_uuid)
+            album_id = album.id
 
         db.execute(
             """
             INSERT INTO contient_user (user_id, album_id)
             VALUES (?, ?)
             """,
-            (self.id, album.id)
+            (self.id, album_id)
         )
         db.commit()
 
-    def join_groupe(self, groupe_uuid):
+    def join_groupe(self, groupe_uuid=None, groupe_id=None):
+        """
+        Makes user join groupe. Provide preferably groupe_id
+        """
+        if groupe_id is None and groupe_uuid is None:
+            raise ValueError("You should specify one of the parameters")
+
         db = get_db()
-        groupe = Groupe(uuid=groupe_uuid)
+        if groupe_id is None:
+            groupe = Groupe(uuid=groupe_uuid)
+            groupe_id = groupe.id
 
         db.execute(
             """
             INSERT INTO groupe_contient_user (groupe_id, user_id)
             VALUES (?, ?)
             """,
-            (groupe.id, self.id)
+            (groupe_id, self.id)
         )
         db.commit()
 
@@ -370,3 +386,11 @@ class User():
             integer = hash(self.username) % 16777215
             return "#" + str(hex(integer))[2:]
         return f"var({colors[hash(self.username) %len(colors)]})"
+
+    def __eq__(self, other):
+        if isinstance(other, User): #TODO: take FakeObjects into account
+            return self.id == other.id
+        return NotImplemented
+
+    def __repr__(self):
+        return f"<User '{self.username}'>"

@@ -109,7 +109,7 @@ def create_groupe():
 @login_required
 def join_groupe(uuid):
     user = User(user_id=session.get("user_id"))
-    user.join_groupe(uuid)
+    user.join_groupe(groupe_uuid=uuid)
 
     flash(_("Group added to collection."))
     return redirect(f"/groupe/{uuid}")
@@ -195,11 +195,9 @@ def get_album(groupe_uuid, album_uuid):
     try:
         groupe = Groupe(uuid=groupe_uuid)
     except LookupError:
-        try:
-            groupe = Groupe(uuid=utils.format_uuid(groupe_uuid))
-            return redirect(f"/groupe/{utils.format_uuid(groupe_uuid)}/{album_uuid}")
-        except LookupError:
-            return abort(404)
+        groupe = Groupe(uuid=utils.format_uuid(groupe_uuid))
+        return redirect(f"/groupe/{utils.format_uuid(groupe_uuid)}/{album_uuid}")
+
 
     album_list = [a for a in groupe.get_albums() if a.uuid == album_uuid]
     if len(album_list) == 0:
@@ -240,8 +238,10 @@ def zip_download(groupe_uuid):
     Télécharger un groupe comme fichier zip
     """
     if g.user is None and current_app.config["ZIP_REQUIRE_LOGIN"]:
-        raise utils.InvalidRequest(_("You need to login to access this resource."))
-        return redirect(url_for("auth.login"))
+        raise utils.InvalidRequest(
+            _("You need to login to access this resource."),
+            redirect=url_for("auth.login")
+        )
 
     try:
         groupe = Groupe(uuid=groupe_uuid)

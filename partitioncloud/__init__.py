@@ -149,7 +149,7 @@ def add_user():
 
         try:
             if album_uuid != "":
-                user.join_album(album_uuid)
+                user.join_album(album_uuid=album_uuid)
             flash(_("Created user %(username)s", username=username))
             return redirect(url_for("albums.index"))
         except LookupError:
@@ -169,8 +169,6 @@ def before_request():
     session.permanent = True
     app.permanent_session_lifetime = datetime.timedelta(days=int(app.config["MAX_AGE"]))
 
-    if g.user is not None:
-        g.user = User(user_id=g.user["id"])
 
 @app.context_processor
 def inject_default_variables():
@@ -228,6 +226,8 @@ def perm_error(e):
     # and apply it in after_request the next time
     session["next_status"] = 401
 
+    if e.redirect is not None:
+        return redirect(e.redirect)
     if request.referrer:
         return redirect(request.referrer)
     return redirect("/albums")
