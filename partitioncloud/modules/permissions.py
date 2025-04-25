@@ -1,5 +1,5 @@
 import functools
-from typing import Union
+from typing import Union, Optional
 from flask_babel import _
 from flask import current_app
 

@@ -3,7 +3,7 @@
 User Settings
 """
 import os
-from flask import Blueprint, render_template, session, current_app, send_file, request, flash, redirect
+from flask import Blueprint, render_template, session, current_app, send_file, request, flash, redirect, g
 from werkzeug.security import check_password_hash
 
 from flask_babel import _
@@ -24,12 +24,9 @@ def index():
     """
     Settings page
     """
-    user = User(user_id=session.get("user_id"))
-
     return render_template(
         "settings/index.html",
-        inspected_user=user,
-        user=user,
+        inspected_user=g.user,
         deletion_allowed=not current_app.config["DISABLE_ACCOUNT_DELETION"]
     )
 
@@ -41,20 +38,19 @@ def delete_account():
     if "user_id" not in request.form:
         raise utils.InvalidRequest(_("Missing user id."))
 
-    cur_user = User(user_id=session.get("user_id"))
     user_id = request.form["user_id"]
     mod_user = User(user_id=user_id)
 
-    permissions.can_delete_user(cur_user, mod_user)
+    permissions.can_delete_user(g.user, mod_user)
 
-    log_data = [mod_user.username, mod_user.id, cur_user.username]
-    if cur_user.is_admin:
+    log_data = [mod_user.username, mod_user.id, g.user.username]
+    if g.user.is_admin:
         log_data = [mod_user.username, mod_user.id]
 
     mod_user.delete()
     flash(_("User successfully deleted."))
     logging.log(log_data, logging.LogEntry.DELETE_ACCOUNT)
-    if cur_user.id == mod_user.id:
+    if g.user == mod_user:
         return redirect("/")
     return redirect("/admin")
 
@@ -66,20 +62,19 @@ def change_password():
     if "user_id" not in request.form:
         raise utils.InvalidRequest(_("Missing user id."))
 
-    cur_user = User(user_id=session.get("user_id"))
     user_id = request.form["user_id"]
     mod_user = User(user_id=user_id)
 
-    if cur_user.access_level != 1:
+    if not g.user.is_admin: #TODO should check with `permissions`
         log_data = [mod_user.username, mod_user.id]
-        if cur_user.id != mod_user.id:
+        if g.user != mod_user:
             raise utils.InvalidRequest(_("Missing rights."))
         if "old_password" not in request.form:
             raise utils.InvalidRequest(_("Missing old password."))
         if not check_password_hash(mod_user.password, request.form["old_password"]):
             raise utils.InvalidRequest(_("Incorrect password."))
     else:
-        log_data = [mod_user.username, mod_user.id, cur_user.username]
+        log_data = [mod_user.username, mod_user.id, g.user.username]
 
     if "new_password" not in request.form or "confirm_new_password" not in request.form:
         raise utils.InvalidRequest(_("Missing password."))

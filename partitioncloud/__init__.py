@@ -130,7 +130,6 @@ def add_user():
     """
     Ajouter un utilisateur en tant qu'administrateur
     """
-    current_user = User(user_id=session.get("user_id"))
 
     if request.method == "POST":
         username = request.form["username"]
@@ -140,16 +139,16 @@ def add_user():
         auth.create_user(username, password)
 
         # Success, go to the login page.
-        user = User(name=username)
+        new_user = User(name=username)
 
         logging.log(
-            [user.username, user.id, True, current_user.username],
+            [new_user.username, new_user.id, True, g.user.username],
             logging.LogEntry.NEW_USER
         )
 
         try:
             if album_uuid != "":
-                user.join_album(album_uuid=album_uuid)
+                new_user.join_album(album_uuid=album_uuid)
             flash(_("Created user %(username)s", username=username))
             return redirect(url_for("albums.index"))
         except LookupError:
@@ -159,7 +158,6 @@ def add_user():
     return render_template(
         "auth/register.html",
         albums=utils.get_all_albums(),
-        user=current_user
     )
 
 
@@ -178,6 +176,7 @@ def inject_default_variables():
         "version": __version__,
         "permissions": permissions,
         "FakeObject": utils.FakeObject,
+        "g_user": g.user
     }
     if __version__ == "unknown":
         variables["version"] = ""

@@ -60,8 +60,7 @@ def admin_required(view):
                 redirect=url_for("auth.login")
             )
 
-        user = User(user_id=session.get("user_id"))
-        if not user.is_admin:
+        if not g.user.is_admin:
             raise PermError(
                 _("You need to login to access this resource."),
                 redirect="/albums"
@@ -120,16 +119,16 @@ def register():
     if request.method == "GET":
         return render_template("auth/register.html")
 
-    username = request.form["username"]
+    new_username = request.form["username"]
     password = request.form["password"]
 
-    create_user(username, password)
+    create_user(new_username, password)
 
-    user = User(name=username)
+    new_user = User(name=new_username)
     flash(_("Successfully created new user. You can log in."))
 
     logging.log(
-        [user.username, user.id, False],
+        [new_user.username, new_user.id, False],
         logging.LogEntry.NEW_USER
     )
     return redirect(url_for("auth.login"))

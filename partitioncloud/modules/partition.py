@@ -5,7 +5,7 @@ Partition module
 import os
 import pypdf
 from uuid import uuid4
-from flask import (Blueprint, abort, send_file, render_template,
+from flask import (Blueprint, abort, send_file, render_template, g,
                     request, redirect, flash, session, current_app)
 from flask_babel import _
 
@@ -44,9 +44,8 @@ def attachments(uuid):
 @login_required
 def add_attachment(uuid):
     partition = Partition(uuid=uuid)
-    user = User(user_id=session.get("user_id"))
 
-    permissions.has_write_access_partition(user, partition)
+    permissions.has_write_access_partition(g.user, partition)
 
     if "file" not in request.files:
         raise utils.InvalidRequest(_("Missing file"))
@@ -73,7 +72,7 @@ def add_attachment(uuid):
                 INSERT INTO attachments (uuid, name, filetype, partition_uuid, user_id)
                 VALUES (?, ?, ?, ?, ?)
                 """,
-                (attachment_uuid, name, ext, partition.uuid, user.id),
+                (attachment_uuid, name, ext, partition.uuid, g.user.id),
             )
             db.commit()
 
@@ -116,9 +115,8 @@ def get_attachment(uuid, filetype):
 @login_required
 def details(uuid):
     partition = Partition(uuid=uuid)
-    user = User(user_id=session.get("user_id"))
 
-    permissions.has_write_access_partition(user, partition)
+    permissions.has_write_access_partition(g.user, partition)
 
     try:
         partition_user = partition.get_user()
@@ -130,7 +128,6 @@ def details(uuid):
             "partition/details.html",
             partition=partition,
             partition_user=partition_user,
-            user=user
         )
 
     if "name" not in request.form or request.form["name"].strip() == "":
@@ -164,12 +161,11 @@ def details(uuid):
 @login_required
 def delete(uuid):
     partition = Partition(uuid=uuid)
-    user = User(user_id=session.get("user_id"))
 
-    permissions.can_delete_partition(user, partition)
+    permissions.can_delete_partition(g.user, partition)
 
     if request.method == "GET":
-        return render_template("partition/delete.html", partition=partition, user=user)
+        return render_template("partition/delete.html", partition=partition)
 
     partition.delete(current_app.instance_path)
 
@@ -206,5 +202,7 @@ def partition_search(uuid):
 @admin_required
 def index():
     partitions = utils.get_all_partitions()
-    user = User(user_id=session.get("user_id"))
-    return render_template("admin/partitions.html", partitions=partitions, user=user)
+    return render_template(
+        "admin/partitions.html",
+        partitions=partitions
+    )

@@ -31,7 +31,7 @@
 <header id="album-header">
   <h2 id="groupe-title">{{ groupe.name }}</h2>
   <div id="header-actions">
-    {% if g.user %}
+    {% if g_user %}
       <section id="users">
       {% for groupe_user in groupe.users %}
         <div class="user-profile-picture" style="background-color:{{ groupe_user.color }};" title="{{ groupe_user.username }}">
@@ -45,17 +45,17 @@
       <div class="dropdown-content dp1">
       {% if not_participant %}
         <a href="/groupe/{{ groupe.uuid }}/join">{{ _("Join") }}</a>
-      {% elif g.user and not not_participant %}
+      {% elif g_user and not not_participant %}
         <a href="/groupe/{{ groupe.uuid }}/quit">{{ _("Quit") }}</a>
       {% endif %}
       <a href="#share">{{ _("Share") }}</a>
-      {% if g.user or not config["ZIP_REQUIRE_LOGIN"] %}
+      {% if g_user or not config["ZIP_REQUIRE_LOGIN"] %}
         <a href="/groupe/{{ groupe.uuid }}/zip">{{ _("Download as zip") }}</a>
       {% endif %}
-      {% if permissions.check(permissions.has_write_access_groupe, g.user, groupe) %}
+      {% if permissions.check(permissions.has_write_access_groupe, g_user, groupe) %}
         <a href="#create-groupe-album">{{ _("Add an album") }}</a>
       {% endif %}
-      {% if permissions.check(permissions.can_delete_groupe, g.user, groupe) %}
+      {% if permissions.check(permissions.can_delete_groupe, g_user, groupe) %}
         <a id="delete-album" href="#delete">{{ _("Delete") }}</a>
       {% endif %}
       </div>

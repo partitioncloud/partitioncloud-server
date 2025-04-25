@@ -21,7 +21,7 @@
     <!-- This div contains needed needed dialogs for the page
     They will only appear if the user clicks a button for one of them -->
     {% block dialogs %}{% endblock %}
-    {% if g.user %}
+    {% if g_user %}
     <dialog id="create-album">
       <h2>{{ _("New Album") }}</h2>
       <form action="/albums/create-album" method="post">
@@ -59,12 +59,12 @@
       </div>
     </label>
     <div id="sidebar">
-      {% if g.user %}
+      {% if g_user %}
       <form id="search-form" action="/albums/search" method="post">
         <input type="search" id="search-bar" required="" placeholder="{{ _('Search') }}" name="query">
         <br>
         <select id="nb-queries" name="nb-queries" title="{{ _('Number of online searches') }}">
-          {% for i in range(0, user.max_queries+1) %}
+          {% for i in range(0, g_user.max_queries+1) %}
           <option value="{{ i }}">{{ i }}</option>
           {% endfor %}
         </select>
@@ -72,7 +72,7 @@
       </form>
       {% endif %}
       <h2>{{ _("Albums") }}</h2>
-      {% if g.user %}
+      {% if g_user %}
       <a href="#create-album">
         <div class="create-button">
             {{ _("New album") }}
@@ -80,11 +80,11 @@
       </a>
       {% endif %}
 
-      {% if g.user %}
+      {% if g_user %}
       <section id="sidebar-navigation">
         <section id="groupes">
-          {% if user.get_groupes() | length > 0 %}
-          {% for groupe in user.groupes %}
+          {% if g_user.get_groupes() | length > 0 %}
+          {% for groupe in g_user.groupes %}
           <div class="groupe-cover">
             <details>
               <summary>
@@ -110,10 +110,10 @@
         </section>
 
         <section id="albums">
-          {% if user.get_albums() | length == 0 %}
+          {% if g_user.get_albums() | length == 0 %}
           <div style="text-align: center;"><i>{{ _("No album available") }}</i></div>
           {% else %}
-          {% for album in user.albums %}
+          {% for album in g_user.albums %}
           <a href="/albums/{{ album['uuid'] }}">
             <div class="album-cover">
               {{ album["name"] }}
@@ -130,7 +130,7 @@
       {% endif %}
 
       <div id="settings-container">
-        {% if g.user %}
+        {% if g_user %}
           <a href="{{ url_for('auth.logout') }}">
             <button id="logout">
               <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -142,7 +142,7 @@
               {{ _("Log out") }}
             </button>
           </a><br/>
-          {% if g.user.is_admin %}
+          {% if g_user.is_admin %}
             <a href="/admin"><button>
               <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -158,11 +158,11 @@
             </button></a><br/>
           {% endif %}
           <a href="/settings"><div class="user">
-            <div class="user-profile-picture" style="background-color:{{ user.color }};"
-              title="{{ user.username }}">
-              {{ user.username[0] | upper }}
+            <div class="user-profile-picture" style="background-color:{{ g_user.color }};"
+              title="{{ g_user.username }}">
+              {{ g_user.username[0] | upper }}
             </div>
-            <div class="username">{{ user.username }}</div>
+            <div class="username">{{ g_user.username }}</div>
           </div></a>
         {% else %}
           {% if not config.DISABLE_REGISTER %}

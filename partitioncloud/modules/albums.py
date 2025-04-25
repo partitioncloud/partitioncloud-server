@@ -29,9 +29,7 @@ def index():
     """
     Albums home page
     """
-    user = User(user_id=session.get("user_id"))
-
-    return render_template("albums/index.html", user=user)
+    return render_template("albums/index.html")
 
 
 @bp.route("/search", methods=["POST"])
@@ -43,8 +41,6 @@ def search_page():
     if "query" not in request.form or request.form["query"] == "":
         raise utils.InvalidRequest(_("Missing search query"))
 
-    user = User(user_id=session.get("user_id"))
-
     query = request.form["query"]
     nb_queries = abs(int(request.form["nb-queries"]))
     search.flush_cache(current_app.instance_path)
@@ -53,23 +49,20 @@ def search_page():
     if current_app.config["PRIVATE_SEARCH"]:
         partitions_list = utils.get_all_partitions()
     else:
-        partitions_list = user.get_accessible_partitions()
+        partitions_list = g.user.get_accessible_partitions()
     partitions_local = search.local_search(query, partitions_list)
 
     if nb_queries > 0:
-        nb_queries = min(user.max_queries, nb_queries)
+        nb_queries = min(g.user.max_queries, nb_queries)
         google_results = search.online_search(query, nb_queries, current_app.instance_path)
     else:
         google_results = []
-
-    user.get_albums()
 
     return render_template(
         "albums/search.html",
         partitions=partitions_local,
         google_results=google_results,
-        query=query,
-        user=user
+        query=query
     )
 
 @bp.route("/<uuid>")
@@ -86,8 +79,8 @@ def get_album(uuid):
         except LookupError:
             return abort(404)
 
-    album.users = [User(user_id=u_id) for u_id in album.get_users()]
     partitions = album.get_partitions()
+    album.users = [User(user_id=u_id) for u_id in album.get_users()]
     user = User(user_id=session.get("user_id")) # TODO some empty user here, might investigate
 
     if user.id is None:
@@ -100,8 +93,7 @@ def get_album(uuid):
         "albums/album.html",
         album=album,
         partitions=partitions,
-        not_participant=not_participant,
-        user=user
+        not_participant=not_participant
     )
 
 
@@ -139,7 +131,6 @@ def create_album_req():
     Création d'un album
     """
     name = request.form["name"]
-    user = User(user_id=session["user_id"])
 
     if not name or name.strip() == "":
         raise utils.InvalidRequest(_("Missing name."))
@@ -148,9 +139,9 @@ def create_album_req():
 
     db = get_db()
     album = Album(uuid=uuid)
-    user.join_album(album_id=album_id)
+    g.user.join_album(album_id=album.id)
 
-    logging.log([album.name, album.uuid, user.username], logging.LogEntry.NEW_ALBUM)
+    logging.log([album.name, album.uuid, g.user.username], logging.LogEntry.NEW_ALBUM)
 
     if "response" in request.args and request.args["response"] == "json":
         return {
@@ -166,8 +157,7 @@ def join_album(uuid):
     """
     Rejoindre un album
     """
-    user = User(user_id=session.get("user_id"))
-    user.join_album(album_uuid=uuid)
+    g.user.join_album(album_uuid=uuid)
 
     flash(_("Album added to collection."))
     return redirect(request.referrer)
@@ -179,18 +169,17 @@ def quit_album(uuid):
     """
     Quitter un album
     """
-    user = User(user_id=session.get("user_id"))
     album = Album(uuid=uuid)
 
     users = album.get_users()
-    if user.id not in users:
+    if g.user.id not in users:
         raise utils.InvalidRequest(_("You are not a member of this album"))
 
     if len(users) == 1 and album.get_groupe() is None:
         flash(_("You are alone here, quitting means deleting this album."))
         return redirect(f"/albums/{uuid}#delete")
 
-    user.quit_album(uuid)
+    g.user.quit_album(uuid)
     flash(_("Album quitted."))
     return redirect("/albums")
 
@@ -202,12 +191,11 @@ def delete_album(uuid):
     Supprimer un album
     """
     album = Album(uuid=uuid)
-    user = User(user_id=session.get("user_id"))
 
     if request.method == "GET":
-        return render_template("albums/delete-album.html", album=album, user=user)
+        return render_template("albums/delete-album.html", album=album)
 
-    permissions.can_delete_album(user, album)
+    permissions.can_delete_album(g.user, album)
     album.delete(current_app.instance_path)
 
     flash(_("Album deleted."))
@@ -228,11 +216,10 @@ def add_partition(album_uuid):
         return ""
 
     db = get_db()
-    user = User(user_id=session.get("user_id"))
     album = Album(uuid=album_uuid)
     source = "upload" # source type: upload, unknown or url
 
-    permissions.has_write_access_album(user, album)
+    permissions.has_write_access_album(g.user, album)
 
     if "name" not in request.form:
         raise utils.InvalidRequest(_("Missing title"))
@@ -273,7 +260,7 @@ def add_partition(album_uuid):
                 INSERT INTO partition (uuid, name, author, body, user_id, source)
                 VALUES (?, ?, ?, ?, ?, ?)
                 """,
-                (partition_uuid, request.form["name"], author, body, user.id, source),
+                (partition_uuid, request.form["name"], author, body, g.user.id, source),
             )
             db.commit()
 
@@ -307,7 +294,7 @@ def add_partition(album_uuid):
             pass
 
     logging.log(
-        [request.form["name"], partition_uuid, user.username],
+        [request.form["name"], partition_uuid, g.user.username],
         logging.LogEntry.NEW_PARTITION
     )
 
@@ -326,7 +313,6 @@ def add_partition_from_search():
     """
     Ajout d'une partition (depuis la recherche locale)
     """
-    user = User(user_id=session.get("user_id"))
     album = Album(uuid=request.form["album-uuid"])
 
     if "album-uuid" not in request.form:
@@ -336,7 +322,7 @@ def add_partition_from_search():
     elif "partition-type" not in request.form:
         raise utils.InvalidRequest(_("Please specify a score type."))
 
-    permissions.has_write_access_album(user, album)
+    permissions.has_write_access_album(g.user, album)
 
     if request.form["partition-type"] == "local_file":
         db = get_db()
@@ -364,7 +350,6 @@ def add_partition_from_search():
             "albums/add-partition.html",
             album=album,
             partition_uuid=request.form["partition-uuid"],
-            user=user
         )
 
     raise utils.InvalidRequest(

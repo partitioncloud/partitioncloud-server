@@ -38,19 +38,17 @@ def get_groupe(uuid):
 
     groupe.users = [User(user_id=u_id) for u_id in groupe.get_users()]
     groupe.get_albums()
-    user = User(user_id=session.get("user_id"))
 
-    if user.id is None:
+    if g.user.id is None:
         # On ne propose pas aux gens non connectés de rejoindre l'album
         not_participant = False
     else:
-        not_participant = not user.id in [i.id for i in groupe.users]
+        not_participant = not g.user in groupe.users
 
     return render_template(
         "groupe/index.html",
         groupe=groupe,
         not_participant=not_participant,
-        user=user
     )
 
 
@@ -63,7 +61,6 @@ def album_qr_code(uuid):
 @login_required
 def create_groupe():
     name = request.form["name"]
-    user = User(user_id=session["user_id"])
 
     if not name or name.strip() == "":
         raise utils.InvalidRequest(_("Missing name."))
@@ -87,7 +84,7 @@ def create_groupe():
                 INSERT INTO groupe_contient_user (user_id, groupe_id, is_admin)
                 VALUES (?, ?, 1)
                 """,
-                (session.get("user_id"), groupe.id),
+                (g.user.id, groupe.id),
             )
             db.commit()
 
@@ -95,7 +92,7 @@ def create_groupe():
         except db.IntegrityError:
             pass
 
-    logging.log([name, uuid, user.username], logging.LogEntry.NEW_GROUPE)
+    logging.log([name, uuid, g.user.username], logging.LogEntry.NEW_GROUPE)
 
     if "response" in request.args and request.args["response"] == "json":
         return {
@@ -108,8 +105,7 @@ def create_groupe():
 @bp.route("/<uuid>/join")
 @login_required
 def join_groupe(uuid):
-    user = User(user_id=session.get("user_id"))
-    user.join_groupe(groupe_uuid=uuid)
+    g.user.join_groupe(groupe_uuid=uuid)
 
     flash(_("Group added to collection."))
     return redirect(f"/groupe/{uuid}")
@@ -118,17 +114,16 @@ def join_groupe(uuid):
 @bp.route("/<uuid>/quit")
 @login_required
 def quit_groupe(uuid):
-    user = User(user_id=session.get("user_id"))
     groupe = Groupe(uuid=uuid)
     users = groupe.get_users()
-    if user.id not in users:
+    if g.user.id not in users:
         raise utils.InvalidRequest(_("You are not a member of this group."))
 
     if len(users) == 1:
         flash(_("You are alone here, quitting means deleting this group."))
         return redirect(f"/groupe/{uuid}#delete")
 
-    user.quit_groupe(groupe.uuid)
+    g.user.quit_groupe(groupe.uuid)
 
     if len(groupe.get_admins()) == 0: # On s'assure que le groupe contient toujours des administrateurs
         for user_id in groupe.get_users(force_reload=True):
@@ -142,9 +137,8 @@ def quit_groupe(uuid):
 @login_required
 def delete_groupe(uuid):
     groupe = Groupe(uuid=uuid)
-    user = User(user_id=session.get("user_id"))
 
-    permissions.can_delete_groupe(user, groupe)
+    permissions.can_delete_groupe(g.user, groupe)
     groupe.delete(current_app.instance_path)
 
     flash(_("Group deleted."))
@@ -155,9 +149,8 @@ def delete_groupe(uuid):
 @login_required
 def create_album_req(groupe_uuid):
     groupe = Groupe(uuid=groupe_uuid)
-    user = User(user_id=session.get("user_id"))
 
-    permissions.has_write_access_groupe(user, groupe)
+    permissions.has_write_access_groupe(g.user, groupe)
 
     name = request.form["name"]
     if not name or name.strip() == "":
@@ -176,7 +169,7 @@ def create_album_req(groupe_uuid):
     )
     db.commit()
 
-    logging.log([album.name, album.uuid, user.username], logging.LogEntry.NEW_ALBUM)
+    logging.log([album.name, album.uuid, g.user.username], logging.LogEntry.NEW_ALBUM)
 
     if "response" in request.args and request.args["response"] == "json":
         return {
@@ -208,19 +201,18 @@ def get_album(groupe_uuid, album_uuid):
         return abort(404)
 
     album = album_list[0]
-    user = User(user_id=session.get("user_id"))
 
     # List of users without duplicate
     users_id = list(set(album.get_users()+groupe.get_users()))
-    album.users = [User(user_id=id) for id in users_id]
+    album.users = [User(user_id=uid) for uid in users_id]
 
     partitions = album.get_partitions()
 
-    if user.id is None:
+    if g.user.id is None:
         # On ne propose pas aux gens non connectés de rejoindre l'album
         not_participant = False
     else:
-        not_participant = not user.is_participant(album.uuid, exclude_groupe=True)
+        not_participant = not g.user.is_participant(album.uuid, exclude_groupe=True)
 
     return render_template(
         "albums/album.html",
@@ -228,7 +220,6 @@ def get_album(groupe_uuid, album_uuid):
         groupe=groupe,
         partitions=partitions,
         not_participant=not_participant,
-        user=user
     )
 
 

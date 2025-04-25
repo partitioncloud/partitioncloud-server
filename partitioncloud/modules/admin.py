@@ -5,7 +5,7 @@ Admin Panel
 import os
 from flask import Blueprint, render_template, session, current_app, send_file
 
-import utils
+from . import utils
 from .db import get_db
 from .auth import admin_required
 from .utils import User
@@ -19,7 +19,6 @@ def index():
     """
     Admin panel home page
     """
-    current_user = User(user_id=session.get("user_id"))
     users = utils.get_all_users()
     for user in users:
         user.get_albums()
@@ -27,8 +26,7 @@ def index():
 
     return render_template(
         "admin/index.html",
-        users=users,
-        user=current_user
+        users=users
     )
 
 @bp.route("/user/<user_id>")
@@ -37,7 +35,6 @@ def user_inspect(user_id):
     """
     Inspect user
     """
-    current_user = User(user_id=session.get("user_id"))
     db = get_db()
     inspected_user = User(user_id=user_id)
 
@@ -45,7 +42,6 @@ def user_inspect(user_id):
         "settings/index.html",
         skip_old_password=True,
         inspected_user=inspected_user,
-        user=current_user,
         deletion_allowed=True
     )
 
@@ -56,11 +52,8 @@ def logs():
     """
     Admin panel logs page
     """
-    user = User(user_id=session.get("user_id"))
-
     return render_template(
-        "admin/logs.html",
-        user=user
+        "admin/logs.html"
     )
 
 

@@ -5,7 +5,7 @@
 {% block content %}
 <div style="text-align: center;">
 {% set user_name %}
-<i><b>{{ user.username }}</b></i>
+<i><b>{{ g_user.username }}</b></i>
 {% endset %}
 {{ _("Hi %(user_name)s !", user_name=user_name) }}<br/>
 {{ _("No album selected") }}

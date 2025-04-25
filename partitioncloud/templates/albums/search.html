@@ -5,10 +5,10 @@
 <h2>{% block title %}{{ _('Search results for "%(query)s"', query=query)}}{% endblock %}</h2>
 {% set select_album %}
 <select name="album-uuid">
-  {% for album in user.get_accessible_albums() %}
+  {% for album in g_user.get_accessible_albums() %}
   <option value="{{ album['uuid'] }}">{{ album["name"] }}</option>
   {% endfor %}
-  {% for groupe in user.get_accessible_groupes() %}
+  {% for groupe in g_user.get_accessible_groupes() %}
     {% for album in groupe.get_albums() %}
     <option value="{{ album['uuid'] }}">{{ groupe.name }}/{{ album["name"] }}</option>
     {% endfor %}
