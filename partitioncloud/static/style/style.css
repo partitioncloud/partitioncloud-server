@@ -1,6 +1,5 @@
 @import url('/static/style/colors.css');
-/** @import url('https://www.augustin64.fr/static/font/iosevka.css'); */
-
+@import url('/static/style/ReadexPro.css');
 
 /** Various settings (variables) */
 :root {
@@ -10,7 +9,7 @@
 }
 
 * {
-    font-family: var(--font-family);
+    font-family: "Readex Pro", serif;
 }
 
 body {

@@ -14,3 +14,4 @@ instance/
 
 .venv/
 backups/
+partitioncloud/static/font/

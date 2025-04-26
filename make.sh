@@ -39,8 +39,37 @@ start () {
     flask run --port=$PORT
 }
 
+fonts () {
+    # Download "Readex Pro" from google fonts, an @import would break GDPR, and not be convenient
+    mkdir -p partitioncloud/static/font
+
+    echo "Downloading fonts from google fonts"
+
+    fonts_urls=$(curl -sSf 'https://fonts.googleapis.com/css2?family=Readex+Pro:wght@160..700&display=swap' \
+        -H 'User-Agent: Mozilla/5.0 Gecko/20100101 Firefox/138.0' \
+        | grep -Eo "(http|https)://[a-zA-Z0-9./?=_%:-]*")
+
+    # Expecting 4 urls
+    latin_ext_url=$(echo $fonts_urls | cut -d " " -f 3)
+    latin_url=$(echo $fonts_urls | cut -d " " -f 4)
+
+    echo "Downloading 'ReadexPro-latin-ext.woff2' from ${latin_ext_url}"
+    curl -sSf ${latin_ext_url} > 'partitioncloud/static/font/ReadexPro-latin-ext.woff2'
+
+    echo "Downloading 'ReadexPro-latin.woff2' from ${latin_url}"
+    curl -sSf ${latin_url} > 'partitioncloud/static/font/ReadexPro-latin.woff2'
+
+    # If the two files are empty, we remove the directory to do another attempt next time
+    ([ -s 'partitioncloud/static/font/ReadexPro-latin-ext.woff2' ]&& \
+        [ -s 'partitioncloud/static/font/ReadexPro-latin.woff2' ])   \
+        || rm -r partitioncloud/static/font
+}
+
 production () {
     pybabel compile -d partitioncloud/translations/
+    if ! test -f partitioncloud/static/font; then
+        fonts
+    fi
     FLASK_APP=partitioncloud gunicorn \
     wsgi:app \
     --bind 0.0.0.0:$PORT
@@ -56,6 +85,7 @@ load_config () {
 usage () {
     echo "Usage:"
     echo -e "\t$0 init"
+    echo -e "\t$0 fonts"
     echo -e "\t$0 start"
     echo -e "\t$0 production"
     echo -e "\t$0 translations"
