@@ -157,14 +157,14 @@ def quit_album(uuid):
     album = Album(uuid=uuid)
 
     users = album.get_users()
-    if g.user.id not in users:
+    if g.user not in users:
         raise utils.InvalidRequest(_("You are not a member of this album"))
 
     if len(users) == 1 and album.get_groupe() is None:
         flash(_("You are alone here, quitting means deleting this album."))
         return redirect(f"/albums/{uuid}#delete")
 
-    g.user.quit_album(uuid)
+    g.user.quit_album(album)
     flash(_("Album quitted."))
     return redirect("/albums")
 

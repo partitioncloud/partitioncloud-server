@@ -1,6 +1,6 @@
 #!/bin/bash
 
-INSTANCE_PATH="instance"
+[[ $FLASK_CONFIG_PATH ]] || FLASK_CONFIG_PATH="default_config.py"
 
 init () {
     mkdir -p "$INSTANCE_PATH"
@@ -65,10 +65,10 @@ usage () {
 RESULT=$(type "$1")
 if [[ $1 && $RESULT = *"is a"*"function"* || $RESULT == *"est une fonction"* ]]; then
     # Import config
-    load_config "default_config.py"
+    load_config "$FLASK_CONFIG_PATH"
 
-    if test -f "instance/config.py"; then
-        load_config "instance/config.py"
+    if test -f "$INSTANCE_PATH/config.py"; then
+        load_config "$INSTANCE_PATH/config.py"
     fi
 
     $1 ${*:2} # Call the function

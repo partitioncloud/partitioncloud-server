@@ -312,23 +312,20 @@ class User():
         )
         db.commit()
 
-    def quit_album(self, album_uuid):
+    def quit_album(self, album: Album):
         db = get_db()
-
         db.execute(
             """
             DELETE FROM contient_user
             WHERE album_id IN (SELECT id FROM album WHERE uuid = ?)
             AND user_id = ?
             """,
-            (album_uuid, self.id)
+            (album.uuid, self.id)
         )
         db.commit()
 
-    def quit_groupe(self, groupe_uuid):
+    def quit_groupe(self, groupe: Groupe):
         db = get_db()
-        groupe = Groupe(uuid=groupe_uuid)
-
         db.execute(
             """
             DELETE FROM groupe_contient_user
@@ -356,18 +353,16 @@ class User():
     def delete(self):
         instance_path = current_app.config["INSTANCE_PATH"]
         for groupe in self.get_groupes():
-            self.quit_groupe(groupe.uuid)
+            self.quit_groupe(groupe)
 
             if groupe.get_users() == []:
                 groupe.delete(instance_path)
 
 
-        for album_data in self.get_albums():
-            uuid = album_data["uuid"]
-            self.quit_album(uuid)
+        for album in self.get_albums():
+            self.quit_album(album)
 
-            album = Album(uuid=uuid)
-            if album.get_users() == []:
+            if len(album.get_users()) == 0:
                 album.delete(instance_path)
 
         db = get_db()

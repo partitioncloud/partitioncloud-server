@@ -106,14 +106,14 @@ def join_groupe(uuid):
 def quit_groupe(uuid):
     groupe = Groupe(uuid=uuid)
     users = groupe.get_users()
-    if g.user.id not in users:
+    if g.user not in users:
         raise utils.InvalidRequest(_("You are not a member of this group."))
 
     if len(users) == 1:
         flash(_("You are alone here, quitting means deleting this group."))
         return redirect(f"/groupe/{uuid}#delete")
 
-    g.user.quit_groupe(groupe.uuid)
+    g.user.quit_groupe(groupe)
 
     if len(groupe.get_admins()) == 0: # On s'assure que le groupe contient toujours des administrateurs
         for user_id in groupe.get_users(force_reload=True):

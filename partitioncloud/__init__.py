@@ -28,8 +28,10 @@ babel = Babel(app, locale_selector=get_locale)
 
 
 
-def load_config():
-    app.config.from_object('default_config')
+def load_config(config_file='default_config.py'):
+    assert(config_file.endswith(".py"))
+
+    app.config.from_object(config_file[:-3])
     app.instance_path = os.path.abspath(app.config["INSTANCE_PATH"])
 
     if not os.path.exists(app.instance_path):
@@ -86,7 +88,10 @@ def get_version():
         return "unknown"
 
 
-load_config()
+if "FLASK_CONFIG_PATH" in os.environ:
+    load_config(config_file=os.environ["FLASK_CONFIG_PATH"])
+else:
+    load_config()
 setup_logging()
 
 app.register_blueprint(auth.bp)

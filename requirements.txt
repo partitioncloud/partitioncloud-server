@@ -2,6 +2,7 @@ flask
 flask-babel
 google
 colorama
+pillow
 pypdf
 qrcode
 unidecode
