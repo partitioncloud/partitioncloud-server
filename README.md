@@ -73,18 +73,17 @@ Modifier le fichier de configuration créé dans `instance/`
 ## Screenshots
 
 ### Interface principale
-![Interface principale](https://github.com/partitioncloud/partitioncloud-server/assets/67148092/5e19ea1c-ca92-4109-a973-0d0d91f69d20)
-![Mode sombre](https://github.com/partitioncloud/partitioncloud-server/assets/67148092/d1de7743-72c9-4769-9a3f-65e67bec438a)
+![Interface principale](https://github.com/user-attachments/assets/e4be140a-1e4a-448c-83db-8380966ed608)
+![Mode sombre](https://github.com/user-attachments/assets/78a72a48-bd52-4aee-bda1-9d8c8fcc9cfc)
 
 
 ### Tableau administrateur
-![Admin dashboard](https://github.com/partitioncloud/partitioncloud-server/assets/67148092/5cec2375-4e61-4d8c-bd36-8259a392779d)
-![add-user](https://github.com/partitioncloud/partitioncloud-server/assets/67148092/6cd6564f-dd4a-4bcf-bb67-18d064baa877)
+![Admin dashboard](https://github.com/user-attachments/assets/80af24c6-58e8-4c13-9226-44fe0514f1ee)
 
 
 ### Recherche en ligne et locale
 
-![Recherche](https://github.com/partitioncloud/partitioncloud-server/assets/67148092/745bf3e3-37e9-40cd-80d2-14670bce1a45)
+![Recherche](https://github.com/user-attachments/assets/dc1a0cda-47eb-49c4-b2d2-921d0e10ed52)
 
 
 ## Translations
