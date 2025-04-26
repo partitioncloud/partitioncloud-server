@@ -3,11 +3,17 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <meta name="description" content="PartitionCloud launch page" />
+  <meta property="og:title" content="PartitionCloud" />
+  <meta property="og:type" content="website" />
+  <meta property="og:description" content="PartitionCloud launch page">
+  <meta property="og:image" content="/static/images/light-preview.png" />
+
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#eff1f5">
   <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#1e1e2e">
+  
   <title>PartitionCloud</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style/launch.css') }}">
+  <link rel="preload" href="/static/font/ReadexPro-latin.woff2" as="font" type="font/woff2" />
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/512.png') }}" />
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/512.png') }}">
   <link rel="manifest" href="{{ url_for('static', filename='manifest.webmanifest') }}" />

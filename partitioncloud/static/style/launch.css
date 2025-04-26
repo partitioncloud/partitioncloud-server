@@ -1,8 +1,9 @@
 @import url('/static/style/colors.css');
+@import url('/static/style/ReadexPro.css');
 
 
 * {
-    font-family: var(--font-family);
+    font-family: "Readex Pro", serif;
 }
 
 h2 {
