@@ -83,7 +83,10 @@ def setup_logging():
 def get_version():
     try:
         result = subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE, check=True)
-        return result.stdout.decode('utf8')
+        version = result.stdout.decode('utf8')
+        if "-g" not in version:
+            return version
+        return version.split("-")[0] + "+" + version.split("-")[1]
     except (FileNotFoundError, subprocess.CalledProcessError):
         # In case git not found or any platform specific weird error
         return "unknown"
