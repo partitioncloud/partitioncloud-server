@@ -208,3 +208,9 @@ def clean_groupe_contient_album():
         OR groupe_id NOT IN (SELECT id FROM groupe)
         """
     )
+
+def install_requests():
+    utils.install_package("requests")
+
+def uninstall_google():
+    utils.uninstall_package("google")

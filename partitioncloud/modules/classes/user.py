@@ -38,7 +38,6 @@ class User():
         self.accessible_groupes = None
         self.partitions = None
         self.accessible_partitions = None
-        self.max_queries = 0
 
         db = get_db()
 
@@ -66,11 +65,6 @@ class User():
         self.password = data["password"]
         self.access_level = data["access_level"]
         self.color = self.get_color()
-
-        if self.is_admin:
-            self.max_queries = 10
-        else:
-            self.max_queries = current_app.config["MAX_ONLINE_QUERIES"]
 
     @property
     def is_admin(self):

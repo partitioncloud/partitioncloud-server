@@ -69,11 +69,15 @@
       <form id="search-form" action="/albums/search" method="post">
         <input type="search" id="search-bar" required="" placeholder="{{ _('Search') }}" name="query">
         <br>
+        {% if max_queries > 0 %}
         <select id="nb-queries" name="nb-queries" title="{{ _('Number of online searches') }}">
-          {% for i in range(0, g_user.max_queries+1) %}
+          {% for i in range(0, max_queries+1) %}
           <option value="{{ i }}">{{ i }}</option>
           {% endfor %}
         </select>
+        {% else %}
+        <input id="nb-queries" name="nb-queries" type="hidden" value="0"/>
+        {% endif %}
         <input id="search-submit" type="submit" value="Go">
       </form>
       {% endif %}

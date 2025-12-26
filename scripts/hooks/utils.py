@@ -68,3 +68,28 @@ def install_package(package):
 
     print(f"{Fore.RED}Please enter a valid option{Style.RESET_ALL}")
     return install_package(package)
+
+
+def uninstall_package(package):
+    print(f"\nThe following python package can be uninstalled: {Style.BRIGHT}{Fore.YELLOW}{package}{Style.RESET_ALL}")
+    print(f"1. Uninstall with {Style.BRIGHT}pip{Style.RESET_ALL} (automatic)")
+    print(f"2. Do nothing, I will do it later")
+    option = input("Select an option: ")
+    try:
+        choice = int(option)
+
+        if choice == 1:
+            return_value = os.system(f"pip uninstall {package} -qqy")
+            if return_value == 0:
+                return
+            print(f"{Fore.RED}Uninstallation with pip failed{Style.RESET_ALL}")
+            sys.exit(return_value)
+
+        elif choice == 2:
+            return
+
+    except ValueError:
+        pass
+
+    print(f"{Fore.RED}Please enter a valid option{Style.RESET_ALL}")
+    return uninstall_package(package)

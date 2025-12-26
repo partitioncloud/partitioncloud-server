@@ -16,6 +16,7 @@ class LogEntry(Enum):
     DELETE_ACCOUNT = 7
     SERVER_RESTART = 8
     FAILED_LOGIN = 9
+    GOOGLE_ERROR = 10
 
     def from_string(entry: str) -> str:
         mapping = {
@@ -27,7 +28,8 @@ class LogEntry(Enum):
             "PASSWORD_CHANGE": LogEntry.PASSWORD_CHANGE,
             "DELETE_ACCOUNT": LogEntry.DELETE_ACCOUNT,
             "SERVER_RESTART": LogEntry.SERVER_RESTART,
-            "FAILED_LOGIN": LogEntry.FAILED_LOGIN
+            "FAILED_LOGIN": LogEntry.FAILED_LOGIN,
+            "GOOGLE_ERROR": LogEntry.GOOGLE_ERROR
         }
         # Will return KeyError if not available
         return mapping[entry]
@@ -82,6 +84,9 @@ def log(content: list[Union[str, bool, int]], log_type: LogEntry) -> None:
 
         case LogEntry.FAILED_LOGIN: # content = (user.name)
             description = f"Failed login for {content[0]}"
+
+        case LogEntry.GOOGLE_ERROR: # content = (response code, query, response text)
+            description = f"An error ({content[0]}) occurred while querying Google for \"{content[1]}\". Response: {content[2]}"
 
     add_entry(description)
 

@@ -566,6 +566,17 @@ input[type="submit"].red-confirm,
     width: calc(100% - 90px);
 }
 
+#nb-queries[type=hidden] + #search-submit {
+    margin: 3px;
+
+    width: 100%;
+    width: -moz-available;
+    width: -webkit-fill-available;
+    width: stretch;
+
+    position: unset;
+}
+
 
 /** Search results */
 .add-partition-form select {

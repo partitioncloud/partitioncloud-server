@@ -10,11 +10,11 @@ import socket
 import os
 
 import pypdf
-import googlesearch
 from unidecode import unidecode
 
 from .db import get_db
 from .utils import FakeObject
+from . import googlesearch
 
 socket.setdefaulttimeout(5) # Maximum time before we give up on downloading a file (dead url)
 
@@ -72,20 +72,13 @@ def download_search_result(element, instance_path):
 
 def online_search(query, num_queries, instance_path):
     """
-    Renvoie les 3 résultats les plus pertinents depuis google
+    Renvoie les {num_queries} résultats les plus pertinents depuis Google
     """
     db = get_db()
-    query = f"partition filetype:pdf {query}"
     partitions = []
 
     try:
-        results = googlesearch.search(
-            query,
-            num=num_queries,
-            stop=num_queries,
-            pause=0.2
-        )
-        for element in results:
+        for element in googlesearch.search(query, num_queries):
             while True:
                 try:
                     uuid = str(uuid4())

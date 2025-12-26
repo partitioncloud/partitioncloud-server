@@ -15,6 +15,7 @@ from flask_babel import Babel, _
 from .modules.utils import User, Album
 from .modules import albums, auth, partition, admin, groupe, thumbnails, logging, settings
 from .modules.auth import admin_required, login_required
+from .modules.googlesearch import get_possible_queries
 from .modules.db import get_db
 from .modules import permissions
 from .modules import utils
@@ -180,6 +181,7 @@ def inject_default_variables():
         "lang": get_locale(),
         "version": __version__,
         "permissions": permissions,
+        "max_queries": get_possible_queries(g.user.is_admin) if g.user else 0,
         "FakeObject": utils.FakeObject,
         "g_user": g.user
     }

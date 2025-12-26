@@ -1,8 +1,8 @@
 flask
 flask-babel
-google
 colorama
 pillow
 pypdf
 qrcode
+requests
 unidecode

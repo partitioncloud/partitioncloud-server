@@ -16,7 +16,7 @@ from flask_babel import _
 from .auth import login_required
 from .db import get_db
 from .utils import User, Album, Partition
-from . import search, utils, logging
+from . import googlesearch, search, utils, logging
 from . import permissions
 
 
@@ -32,12 +32,15 @@ def index():
     return render_template("albums/index.html")
 
 
-@bp.route("/search", methods=["POST"])
+@bp.route("/search", methods=["GET", "POST"])
 @login_required
 def search_page():
     """
     Résultats de recherche
     """
+    if request.method == "GET":
+        raise utils.InvalidRequest(_("The request has expired"), code=301, redirect="/albums")
+
     if "query" not in request.form or request.form["query"] == "":
         raise utils.InvalidRequest(_("Missing search query"))
 
@@ -53,7 +56,7 @@ def search_page():
     partitions_local = search.local_search(query, partitions_list)
 
     if nb_queries > 0:
-        nb_queries = min(g.user.max_queries, nb_queries)
+        nb_queries = min(nb_queries, googlesearch.get_possible_queries(g.user.is_admin))
         google_results = search.online_search(query, nb_queries, current_app.instance_path)
     else:
         google_results = []

@@ -39,7 +39,9 @@ hooks = [
     ("v1.7.0", [("Install babel", v1_hooks.install_babel)]),
     ("v1.8.2", [("Install pypdf", v1_hooks.install_pypdf)]),
     ("v1.10.3", [("Install unidecode", v1_hooks.install_unidecode)]),
-    ("v1.11.0", [("Delete orphans `groupe_contient_album`", v1_hooks.clean_groupe_contient_album)])
+    ("v1.11.0", [("Delete orphans `groupe_contient_album`", v1_hooks.clean_groupe_contient_album)]),
+    ("v1.11.1", [("Install requests", v1_hooks.install_requests)]),
+    ("v1.11.1", [("Uninstall google", v1_hooks.uninstall_google)])
 ]
 
 
