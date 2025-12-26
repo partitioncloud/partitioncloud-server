@@ -9,9 +9,11 @@
   <option value="{{ album.uuid }}">{{ album.name }}</option>
   {% endfor %}
   {% for groupe in g_user.get_accessible_groupes() %}
+  <optgroup label="{{ groupe.name }}">
     {% for album in groupe.get_albums() %}
-    <option value="{{ album.uuid }}">{{ groupe.name }}/{{ album.name }}</option>
+    <option value="{{ album.uuid }}">{{ album.name }}</option>
     {% endfor %}
+  </optgroup>
   {% endfor %}
 </select>
 {% endset %}
