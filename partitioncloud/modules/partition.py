@@ -57,6 +57,10 @@ def add_attachment(uuid):
     if name == "":
         raise utils.InvalidRequest(_("Missing filename."))
 
+    is_view = False
+    if "is-view" in request.form:
+        is_view = True
+
     filename = request.files["file"].filename
     ext = filename.split(".")[-1]
     if ext not in ["mid", "mp3", "mscz"]:
@@ -68,10 +72,10 @@ def add_attachment(uuid):
         try:
             db.execute(
                 """
-                INSERT INTO attachments (uuid, name, filetype, partition_uuid, user_id)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO attachments (uuid, name, filetype, partition_uuid, user_id, is_view)
+                VALUES (?, ?, ?, ?, ?, ?)
                 """,
-                (attachment_uuid, name, ext, partition.uuid, g.user.id),
+                (attachment_uuid, name, ext, partition.uuid, g.user.id, is_view),
             )
             db.commit()
 

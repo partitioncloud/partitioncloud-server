@@ -10,6 +10,8 @@
     <h2>{{ _("Add an attachment to %(name)s", name=partition.name) }}</h2>
     <form action="/partition/{{ partition.uuid }}/add-attachment" method="post" enctype="multipart/form-data">
         <input type="text" name="name" id="name" placeholder="{{ _('Name') }}"><br/>
+        <input type="checkbox" name="is-view" id="is-view">
+        <label for="is-view">{{ _("In the case of an mscz file, it is suitable to be viewed instead of the pdf.") }}</label>
         {% block input_file %}
           {% set required=true %}
           {% set filetype=".mp3,.mid,.mscz" %}
@@ -34,11 +36,19 @@
 <link rel="stylesheet" href="/static/style/attachments.css" />
 <script type="module" src="/static/score-display/score-display.rolldown.js"></script>
 
-{% set display_view = partition.get_attachments() | selectattr('filetype', 'equalto', 'mscz') | first | default(none) %}
+{% set display_view = partition.get_attachments()
+    | selectattr('filetype', 'equalto', 'mscz')
+    | selectattr('is_view', 'equalto', True)
+    | first
+    | default(none)
+%}
 {% set using_mscz = display_view is not none %}
 
 {% if using_mscz %}
-<score-display src="/partition/attachment/{{ display_view.uuid }}.mscz" type="mscz" is-view>
+<score-display
+    src="/partition/attachment/{{ display_view.uuid }}.mscz"
+    type="mscz"
+>
 {% else %}
 <score-display src="/partition/{{ partition.uuid }}" type="pdf">
 {% endif %}
@@ -51,6 +61,11 @@
     <score-track src="/partition/attachment/{{ attachment.uuid }}.mp3" type="audio">{{ attachment.name }}</score-track>
     {% elif attachment.filetype == "mid" %}
     <score-track src="/partition/attachment/{{ attachment.uuid }}.mid" type="midi">{{ attachment.name }}</score-track>
+    {% elif attachment.filetype == "mscz" and attachment != display_view %}
+    {% if attachment.is_view %}
+    <score-view type="mscz" src="/partition/attachment/{{ attachment.uuid }}.mscz">{{ attachment.name | default("mscz") }}</score-track>
+    {% endif %}
+    <score-track type="mscz/synth:all" src="/partition/attachment/{{ attachment.uuid }}.mscz">{{ attachment.name | default("mscz") }}</score-track>
     {% endif %}
 {% endfor %}
 {% if permissions.check(permissions.has_write_access_partition, g_user, partition) %}

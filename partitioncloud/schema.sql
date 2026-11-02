@@ -73,5 +73,6 @@ CREATE TABLE attachments (
 	name TEXT NOT NULL,
 	filetype TEXT NOT NULL DEFAULT 'mp3',
 	partition_uuid INTEGER NOT NULL,
-	user_id INTEGER NOT NULL
+	user_id INTEGER NOT NULL,
+	is_view BOOLEAN DEFAULT false
 );

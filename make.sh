@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SCORE_DISPLAY_TAG=0bd445a
+SCORE_DISPLAY_TAG=deebe6c
 
 [[ $FLASK_CONFIG_PATH ]] || FLASK_CONFIG_PATH="default_config.py"
 

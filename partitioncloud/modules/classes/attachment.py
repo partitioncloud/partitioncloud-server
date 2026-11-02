@@ -28,6 +28,7 @@ class Attachment():
         self.user_id = data["user_id"]
         self.filetype = data["filetype"]
         self.partition_uuid = data["partition_uuid"]
+        self.is_view = data["is_view"]
 
     def delete(self, instance_path) -> None:
         db = get_db()

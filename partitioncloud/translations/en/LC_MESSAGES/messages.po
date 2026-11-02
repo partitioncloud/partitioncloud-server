@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-12-26 10:04+0100\n"
+"POT-Creation-Date: 2026-11-02 15:00+0100\n"
 "PO-Revision-Date: 2024-01-22 15:38+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -63,7 +63,7 @@ msgstr "Album quitted."
 msgid "Album deleted."
 msgstr "Album deleted."
 
-#: partitioncloud/modules/albums.py:213 partitioncloud/modules/partition.py:133
+#: partitioncloud/modules/albums.py:213 partitioncloud/modules/partition.py:137
 msgid "Missing title"
 msgstr "Missing title"
 
@@ -75,7 +75,7 @@ msgstr "Missing file"
 msgid "Search results expired"
 msgstr "Search results expired"
 
-#: partitioncloud/modules/albums.py:236 partitioncloud/modules/partition.py:145
+#: partitioncloud/modules/albums.py:236 partitioncloud/modules/partition.py:149
 msgid "Invalid PDF file"
 msgstr ""
 
@@ -163,24 +163,24 @@ msgstr "Group deleted."
 msgid "Missing filename."
 msgstr "Missing filename."
 
-#: partitioncloud/modules/partition.py:63
+#: partitioncloud/modules/partition.py:67
 msgid "Unsupported file type."
 msgstr "Unsupported file type."
 
-#: partitioncloud/modules/partition.py:135
+#: partitioncloud/modules/partition.py:139
 msgid "Missing author in request body (can be null)."
 msgstr "Missing author in request body (can be null)."
 
-#: partitioncloud/modules/partition.py:137
+#: partitioncloud/modules/partition.py:141
 msgid "Missing lyrics (can be null)."
 msgstr "Missing lyrics (can be null)."
 
-#: partitioncloud/modules/partition.py:155
+#: partitioncloud/modules/partition.py:159
 #, python-format
 msgid "Successfully modified %(name)s"
 msgstr "Successfully modified %(name)s"
 
-#: partitioncloud/modules/partition.py:171
+#: partitioncloud/modules/partition.py:175
 msgid "Score deleted."
 msgstr "Score deleted."
 
@@ -252,7 +252,7 @@ msgstr "New Album"
 
 #: partitioncloud/templates/base.html:34 partitioncloud/templates/base.html:45
 #: partitioncloud/templates/groupe/index.html:11
-#: partitioncloud/templates/partition/attachments.html:11
+#: partitioncloud/templates/partition/attachments.html:12
 msgid "Name"
 msgstr "Name"
 
@@ -522,7 +522,7 @@ msgstr "lyrics"
 
 #: partitioncloud/templates/components/add_partition.html:16
 #: partitioncloud/templates/groupe/index.html:12
-#: partitioncloud/templates/partition/attachments.html:17
+#: partitioncloud/templates/partition/attachments.html:20
 msgid "Add"
 msgstr "Add"
 
@@ -560,24 +560,32 @@ msgstr "Create one"
 msgid "No available album. %(create)s"
 msgstr "No available album. %(create)s"
 
-#: partitioncloud/templates/partition/attachments.html:5
+#: partitioncloud/templates/partition/attachments.html:6
 #, python-format
 msgid "Attachments of %(name)s"
 msgstr "Attachments of %(name)s"
 
-#: partitioncloud/templates/partition/attachments.html:9
+#: partitioncloud/templates/partition/attachments.html:10
 #, python-format
 msgid "Add an attachment to %(name)s"
 msgstr "Add an attachment to %(name)s"
 
-#: partitioncloud/templates/partition/attachments.html:27
+#: partitioncloud/templates/partition/attachments.html:14
+msgid ""
+"In the case of an mscz file, it is suitable to be viewed instead of the "
+"pdf."
+msgstr ""
+"In the case of an mscz file, it is suitable to be viewed instead of the "
+"pdf."
+
+#: partitioncloud/templates/partition/attachments.html:30
 #, fuzzy
 msgid "No pdf viewer available in this browser. You can use Firefox on Android."
 msgstr ""
 "No pdf viewer available in this browser.\n"
 "        You can use Firefox on Android."
 
-#: partitioncloud/templates/partition/attachments.html:48
+#: partitioncloud/templates/partition/attachments.html:72
 msgid "Add an attachment"
 msgstr "Add an attachment"
 

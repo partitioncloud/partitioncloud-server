@@ -3,7 +3,8 @@
 - [x] fix webmscore path
 - [x] fix background css color
 - [x] fix css
-- [ ] fix is-view
+- [x] fix is-view
+- [x] add database migration step
 - [ ] fix adding and **deleting** attachments
 - [ ] fix Dockerfile
 - [ ] better icons for attachments / grid's score component
