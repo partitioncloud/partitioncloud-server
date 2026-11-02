@@ -1,4 +1,19 @@
+{% from 'components/input_file.html' import input_file %}
 {% extends 'base.html' %}
+
+{% block dialogs %}
+<dialog id="create-attachment">
+    <h2>{{ _("Add an attachment to %(name)s", name=partition.name) }}</h2>
+    <form action="/partition/{{ partition.uuid }}/add-attachment" method="post" enctype="multipart/form-data">
+        <input type="text" name="name" id="name" placeholder="{{ _('Name') }}"><br/>
+        <input type="checkbox" name="is-view" id="is-view">
+        <label for="is-view">{{ _("In the case of an mscz file, it is suitable to be viewed instead of the pdf.") }}</label><br/>
+        {{ input_file(".mp3,.mid,.mscz", required=true) }}
+        <input type="submit" value="{{ _('Add') }}">
+    </form>
+    <a href="#!" class="close-dialog">Close</a>
+</dialog>
+{% endblock %}
 
 {% block content %}
 <h2>{% block title %}{{ _('Details of "%(name)s"', name=partition.name)}}{% endblock %}</h2>
@@ -45,11 +60,7 @@
         <td><a href="/partition/{{ partition.uuid }}">
           <img class="partition-thumbnail" src="/thumbnails/{{ partition.uuid }}.jpg" loading="lazy">
         </a><br/>
-        {% block input_file %}
-          {% set required=false %}
-          {% set filetype=".pdf" %}
-          {% include 'components/input_file.html' %}
-        {% endblock %}
+        {{ input_file(".pdf", required=false) }}
         </td>
       </tr>
       {% if partition.source != "unknown" and partition.source != "upload" %}
@@ -74,17 +85,6 @@
         <td>{{ _("Lyrics") }}</td>
         <td><textarea id="lyrics" name="body" type="text" placeholder="{{ _('Lyrics') }}">{{ partition.body }}</textarea><br/></td>
       </tr>
-      <tr>
-        <td>{{ _("Attachments") }}</td>
-        <td><a href="/partition/{{ partition.uuid }}/attachments">
-          {% if partition.get_attachments() %}
-            {% set number=partition.attachments | length %}
-            {{ _("Yes, %(number)s", number=number) }}
-          {% else %}
-            {{ _("Add one") }}
-          {% endif %}
-        </a></td>
-      </tr>
     </tbody>
   </table>
   <input type="submit" value="{{ _('Update') }}" />
@@ -92,5 +92,37 @@
 <a href="/partition/{{ partition.uuid }}/delete">
   <button class="pc-button" id="delete-partition">{{ _("Delete") }}</button>
 </a>
+
+{% if partition.get_attachments() %}
+<h3 id="partition-attachments">{{ _("Attachments") }}
+  <a href="/partition/{{ partition.uuid }}/attachments">{{ _("Open the player") }}</a>
+</h3> 
+<table>
+  <thead>
+    <tr>
+      <th>{{ _("Name") }}</th>
+      <th>{{ _("Type") }}</th>
+      <th>{{ _("Displayed") }}</th>
+      <th>{{ _("Actions") }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for attachment in partition.get_attachments() %}
+    <tr>
+      <td>{{ attachment.name }}</td>
+      <td>.{{ attachment.filetype }}</td>
+      <td>{% if attachment.filetype == "mscz" and attachment.is_view %}✓{% endif %}</td>
+      <td>
+        <a href="/partition/attachment/{{ attachment.uuid }}.{{ attachment.filetype }}">{{ _("Download") }}</a>
+        <a href="/partition/attachment/{{ attachment.uuid }}/delete">{{ _("Delete") }}</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<br/>
+{% endif %}
+
+<a href="#create-attachment"><button class="pc-button">{{ _("Add an attachment") }}</button></a>
 
 {% endblock %}

@@ -1,3 +1,17 @@
+# Build musescore-web-display (needs node, npm, make, git, curl and tar)
+FROM node:22-slim AS score-display
+
+WORKDIR /app
+
+RUN apt-get update \
+    && apt-get install -y git make curl ca-certificates tar \
+    && rm -rf /var/lib/apt/lists/*
+
+# make.sh reads PORT and INSTANCE_PATH from default_config.py
+COPY make.sh default_config.py ./
+RUN bash make.sh score-display
+
+
 FROM python:3.13-slim
 
 WORKDIR /app
@@ -10,9 +24,6 @@ RUN apt-get update \
 
 COPY requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt gunicorn
-
-# TODO I need to install npm & make in the build container ?
-RUN bash make.sh score-display
 
 # Run as a non-root user. instance/ and backups/ are created here so that
 # new volumes mounted on them are owned by this user
@@ -29,6 +40,7 @@ ENV PARTITIONCLOUD_DOCKER=1
 ENV PARTITIONCLOUD_VERSION="${VERSION}"
 
 COPY --chown=app:app . .
+COPY --from=score-display --chown=app:app /app/partitioncloud/static/score-display partitioncloud/static/score-display
 USER app
 
 # Fonts are downloaded once at build time (make.sh retries at start if it failed)

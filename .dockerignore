@@ -5,3 +5,5 @@
 instance
 backups
 partitioncloud/static/font
+musescore-web-display
+partitioncloud/static/score-display

@@ -112,7 +112,10 @@ def has_write_access_partition(user: User, partition: Union[Partition, FakeObjec
 @admin_bypass
 @requires_login
 def can_delete_attachment(user: User, attachment: Attachment) -> None:
-    raise NotImplementedError
+    partition = Partition(uuid=attachment.partition_uuid)
+    if user.id == partition.user_id:
+        return
+    raise PermError(_("You are not allowed to delete this attachment."))
 
 @admin_bypass
 @requires_login

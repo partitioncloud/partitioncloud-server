@@ -5,24 +5,6 @@
 
 {% block title %}{{ _("Attachments of %(name)s", name=partition.name) }}{% endblock %}
 
-{% block dialogs %}
-<dialog id="create-attachment">
-    <h2>{{ _("Add an attachment to %(name)s", name=partition.name) }}</h2>
-    <form action="/partition/{{ partition.uuid }}/add-attachment" method="post" enctype="multipart/form-data">
-        <input type="text" name="name" id="name" placeholder="{{ _('Name') }}"><br/>
-        <input type="checkbox" name="is-view" id="is-view">
-        <label for="is-view">{{ _("In the case of an mscz file, it is suitable to be viewed instead of the pdf.") }}</label>
-        {% block input_file %}
-          {% set required=true %}
-          {% set filetype=".mp3,.mid,.mscz" %}
-          {% include 'components/input_file.html' %}
-        {% endblock %}
-        <input type="submit" value="{{ _('Add') }}">
-    </form>
-    <a href="#!" class="close-dialog">Close</a>
-</dialog>
-{% endblock %}
-
 {% block content %}
 <noscript>
     <object id="pdf-embed" width="400" height="500" type="application/pdf" data="/partition/{{ partition.uuid }}">
@@ -63,14 +45,11 @@
     <score-track src="/partition/attachment/{{ attachment.uuid }}.mid" type="midi">{{ attachment.name }}</score-track>
     {% elif attachment.filetype == "mscz" and attachment != display_view %}
     {% if attachment.is_view %}
-    <score-view type="mscz" src="/partition/attachment/{{ attachment.uuid }}.mscz">{{ attachment.name | default("mscz") }}</score-track>
+    <score-view type="mscz" src="/partition/attachment/{{ attachment.uuid }}.mscz">{{ attachment.name | default("mscz") }}</score-view>
     {% endif %}
     <score-track type="mscz/synth:all" src="/partition/attachment/{{ attachment.uuid }}.mscz">{{ attachment.name | default("mscz") }}</score-track>
     {% endif %}
 {% endfor %}
-{% if permissions.check(permissions.has_write_access_partition, g_user, partition) %}
-    <score-download href="#create-attachment">{{ _("Add an attachment") }}</score-download>
-{% endif %}
 </score-display>
 
 {% endblock %}

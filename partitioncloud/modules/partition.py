@@ -62,9 +62,12 @@ def add_attachment(uuid):
         is_view = True
 
     filename = request.files["file"].filename
-    ext = filename.split(".")[-1]
+    ext = filename.split(".")[-1].lower()
     if ext not in ["mid", "mp3", "mscz"]:
         raise utils.InvalidRequest(_("Unsupported file type."))
+
+    attachments_dir = os.path.join(current_app.instance_path, "attachments")
+    os.makedirs(attachments_dir, exist_ok=True)
 
     db = get_db()
     while True:
@@ -77,18 +80,20 @@ def add_attachment(uuid):
                 """,
                 (attachment_uuid, name, ext, partition.uuid, g.user.id, is_view),
             )
-            db.commit()
-
-            file = request.files["file"]
-            file.save(os.path.join(
-                current_app.instance_path,
-                "attachments",
-                f"{attachment_uuid}.{ext}"
-            ))
-            break
-
         except db.IntegrityError:
-            pass
+            continue
+
+        # Only commit once the file is on disk, so a failed upload
+        # does not leave a row pointing to a missing file
+        try:
+            request.files["file"].save(
+                os.path.join(attachments_dir, f"{attachment_uuid}.{ext}")
+            )
+        except OSError:
+            db.rollback()
+            raise
+        db.commit()
+        break
 
 
     if "response" in request.args and request.args["response"] == "json":
@@ -96,7 +101,7 @@ def add_attachment(uuid):
             "status": "ok",
             "uuid": attachment_uuid
         }
-    return redirect(f"/partition/{partition.uuid}/attachments")
+    return redirect(f"/partition/{partition.uuid}/details#partition-attachments")
 
 
 @bp.route("/attachment/<uuid>.<filetype>")
@@ -112,6 +117,25 @@ def get_attachment(uuid, filetype):
             f"{uuid}.{attachment.filetype}"
         ), download_name = f"{attachment.name}.{attachment.filetype}"
     )
+
+
+@bp.route("/attachment/<uuid>/delete", methods=["GET", "POST"])
+@login_required
+def delete_attachment(uuid):
+    attachment = Attachment(uuid=uuid)
+
+    permissions.can_delete_attachment(g.user, attachment)
+
+    if request.method == "GET":
+        return render_template(
+            "partition/delete_attachment.html",
+            attachment=attachment
+        )
+
+    attachment.delete(current_app.instance_path)
+
+    flash(_("Attachment deleted."))
+    return redirect(f"/partition/{attachment.partition_uuid}/details")
 
 
 @bp.route("/<uuid>/details", methods=["GET", "POST"])

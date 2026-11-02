@@ -41,7 +41,9 @@ class Attachment():
         )
         db.commit()
 
-        os.remove(f"{instance_path}/attachments/{self.uuid}.{self.filetype}")
+        path = f"{instance_path}/attachments/{self.uuid}.{self.filetype}"
+        if os.path.exists(path):
+            os.remove(path)
 
     def __repr__(self):
         return f"<Attachment {self.name}.{self.filetype}>"

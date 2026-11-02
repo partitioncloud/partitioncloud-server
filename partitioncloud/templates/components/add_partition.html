@@ -1,3 +1,4 @@
+{% from './input_file.html' import input_file %}
 <h2>{{ _("Add a score to %(name)s", name=album.name) }}</h2>
 
 <form action="/albums/{{ album.uuid }}/add-partition" method="post" enctype="multipart/form-data">
@@ -7,11 +8,7 @@
   {% if partition_uuid %}
     <input name="partition-uuid" value="{{ partition_uuid }}" type="hidden">
   {% else %}
-    {% block input_file %}
-      {% set required=true %}
-      {% set filetype=".pdf" %}
-      {% include 'components/input_file.html' %}
-    {% endblock %}
+    {{ input_file(".pdf", required=true) }}
   {% endif %}
   <input type="submit" value="{{ _('Add') }}" />
 </form>

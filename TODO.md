@@ -5,6 +5,6 @@
 - [x] fix css
 - [x] fix is-view
 - [x] add database migration step
-- [ ] fix adding and **deleting** attachments
+- [x] fix adding and **deleting** attachments
 - [ ] fix Dockerfile
 - [ ] better icons for attachments / grid's score component
