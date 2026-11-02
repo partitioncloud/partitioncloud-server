@@ -67,7 +67,7 @@ fonts () {
 
 production () {
     pybabel compile -d partitioncloud/translations/
-    if ! test -f partitioncloud/static/font; then
+    if ! test -d partitioncloud/static/font; then
         fonts
     fi
     FLASK_APP=partitioncloud gunicorn \

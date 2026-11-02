@@ -45,6 +45,10 @@ def format_uuid(uuid):
 
 
 def install_package(package):
+    if os.environ.get("PARTITIONCLOUD_DOCKER"):
+        print(f"Skipping {package}: python packages are managed by the docker image")
+        return
+
     print(f"\nThe following python package needs to be installed: {Style.BRIGHT}{Fore.YELLOW}{package}{Style.RESET_ALL}")
     print(f"1. Install with {Style.BRIGHT}pip{Style.RESET_ALL} (automatic)")
     print(f"2. Install manually (other package manager)")
@@ -71,6 +75,10 @@ def install_package(package):
 
 
 def uninstall_package(package):
+    if os.environ.get("PARTITIONCLOUD_DOCKER"):
+        print(f"Skipping {package}: python packages are managed by the docker image")
+        return
+
     print(f"\nThe following python package can be uninstalled: {Style.BRIGHT}{Fore.YELLOW}{package}{Style.RESET_ALL}")
     print(f"1. Uninstall with {Style.BRIGHT}pip{Style.RESET_ALL} (automatic)")
     print(f"2. Do nothing, I will do it later")
