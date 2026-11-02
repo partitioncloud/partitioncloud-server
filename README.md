@@ -42,14 +42,16 @@ docker build -t partitioncloud .
 ```
 
 Pour mettre à jour, remplacer le conteneur par un nouveau basé sur la dernière image, puis lancer
-les migrations (interactives) avec le même volume, avant de démarrer le nouveau conteneur:
+les migrations (interactives) avec le même volume, avant de démarrer le nouveau conteneur.
+La version des données est enregistrée dans `instance/VERSION`, le serveur refuse de démarrer
+si une migration est nécessaire. Si ce fichier n'existe pas encore, ajouter `--current {current version}`:
 
 ```bash
 docker run --rm -it \
     -v partitioncloud-instance:/app/instance \
     -v partitioncloud-backups:/app/backups \
     ghcr.io/partitioncloud/server:stable \
-    migrate --current {current version} --target {new version}
+    migrate --target {new version}
 ```
 
 L'utilisateur par défaut est `root` avec le mot de passe `root`

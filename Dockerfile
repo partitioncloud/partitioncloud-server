@@ -6,6 +6,7 @@ LABEL org.opencontainers.image.version="${VERSION}"
 
 # Dependencies are managed by the image: migration hooks must not use pip
 ENV PARTITIONCLOUD_DOCKER=1
+ENV PARTITIONCLOUD_VERSION="${VERSION}"
 
 WORKDIR /app
 
