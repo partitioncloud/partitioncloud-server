@@ -170,6 +170,7 @@ input:checked#slide-sidebar~label {
     top: 20px;
     left: var(--sidebar-sz-plus10);
     background-color: var(--color-base);
+    border-radius: 5px;
 
     -moz-transition: left 0.5s ease;
     transition: left 0.5s ease;

@@ -1,4 +1,5 @@
 {% set DISABLE_HEADER=true %}
+{% set DISABLE_FOOTER=true %}
 
 {% extends 'base.html' %}
 
@@ -30,6 +31,7 @@
 </noscript>
 
 <link rel="stylesheet" href="/static/score-display/score-display.css" />
+<link rel="stylesheet" href="/static/style/attachments.css" />
 <script type="module" src="/static/score-display/score-display.rolldown.js"></script>
 
 {% set display_view = partition.get_attachments() | selectattr('filetype', 'equalto', 'mscz') | first | default(none) %}
@@ -51,12 +53,9 @@
     <score-track src="/partition/attachment/{{ attachment.uuid }}.mid" type="midi">{{ attachment.name }}</score-track>
     {% endif %}
 {% endfor %}
+{% if permissions.check(permissions.has_write_access_partition, g_user, partition) %}
+    <score-download href="#create-attachment">{{ _("Add an attachment") }}</score-download>
+{% endif %}
 </score-display>
 
-<br/>
-{% if permissions.check(permissions.has_write_access_partition, g_user, partition) %}
-<div class="centered">
-    <a href="#create-attachment"><button>{{ _("Add an attachment") }}</button></a>
-</div>
-{% endif %}
 {% endblock %}

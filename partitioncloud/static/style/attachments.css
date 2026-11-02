@@ -1,0 +1,13 @@
+#content {
+  background-color: #efefef;
+  height: 100%;
+  margin-bottom: 0;
+}
+
+#content-container {
+  padding: 0;
+}
+
+.slcwd-score-display {
+  height: 100%;
+}

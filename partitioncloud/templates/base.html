@@ -195,7 +195,9 @@
         {% block content %}{% endblock %}
       </section>
     </div>
+    {% if not DISABLE_FOOTER %}
     <div id="footer"><a href="https://github.com/partitioncloud/partitioncloud-server">PartitionCloud</a> {{ version }}</div>
+    {% endif %}
   </div>
 </body>
 <script src="{{ url_for('static', filename='scripts/main.js') }}"></script>
