@@ -15,3 +15,7 @@ instance/
 .venv/
 backups/
 partitioncloud/static/font/
+
+# musescore-web-display
+musescore-web-display
+partitioncloud/static/score-display

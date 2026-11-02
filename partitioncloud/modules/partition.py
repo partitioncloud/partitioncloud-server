@@ -59,7 +59,7 @@ def add_attachment(uuid):
 
     filename = request.files["file"].filename
     ext = filename.split(".")[-1]
-    if ext not in ["mid", "mp3"]:
+    if ext not in ["mid", "mp3", "mscz"]:
         raise utils.InvalidRequest(_("Unsupported file type."))
 
     db = get_db()

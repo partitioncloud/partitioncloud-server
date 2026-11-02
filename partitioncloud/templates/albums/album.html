@@ -90,7 +90,7 @@
       </a>
       <div class="partition-buttons">
         {% if partition.has_attachment %}
-        <a href="/partition/{{ partition.uuid }}/attachments"><div class="partition-action">📎</div></a>
+        <a href="/partition/{{ partition.uuid }}/attachments"><div class="partition-action">🔊</div></a>
         {% endif %}
         {% if permissions.check(permissions.has_write_access_partition, g_user, partition) %}
         <a href="/partition/{{ partition.uuid }}/details"><div class="partition-action">✏️</div></a>

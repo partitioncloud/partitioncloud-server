@@ -214,3 +214,10 @@ def install_requests():
 
 def uninstall_google():
     utils.uninstall_package("google")
+
+"""
+ v1.12.*
+"""
+
+def install_musescore_web_display():
+    os.exec("./make.sh score-display")

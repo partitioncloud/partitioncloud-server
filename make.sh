@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SCORE_DISPLAY_TAG=0bd445a
+
 [[ $FLASK_CONFIG_PATH ]] || FLASK_CONFIG_PATH="default_config.py"
 
 init () {
@@ -65,6 +67,40 @@ fonts () {
         || rm -r partitioncloud/static/font
 }
 
+score-display () {
+    # Download and build "musescore-web-display" from https://github.com/partitioncloud/musescore-web-display
+
+    required_commands=(git make npm curl tar)
+    missing_commands=()
+
+    for cmd in "${required_commands[@]}"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            missing_commands+=("$cmd")
+        fi
+    done
+
+    if ((${#missing_commands[@]} > 0)); then
+        printf 'Error: missing required commands: %s for installing musescore-web-display\n' "${missing_commands[*]}" >&2
+        exit 1
+    fi
+
+    if ! test -d "musescore-web-display"; then
+        git clone https://github.com/partitioncloud/musescore-web-display.git musescore-web-display
+    fi
+
+    cd musescore-web-display
+    git pull
+    git checkout $SCORE_DISPLAY_TAG
+    make target target/score-display.rolldown.no-cdn.js target/style/line-awesome
+    cd -
+
+    score_display=partitioncloud/static/score-display
+    mkdir -p $score_display
+    rm -rf $score_display/*
+    cp -r musescore-web-display/target/* $score_display/
+	mv $score_display/score-display.rolldown.no-cdn.js $score_display/score-display.rolldown.js
+}
+
 production () {
     pybabel compile -d partitioncloud/translations/
     if ! test -f partitioncloud/static/font; then
@@ -89,6 +125,7 @@ usage () {
     echo -e "\t$0 start"
     echo -e "\t$0 production"
     echo -e "\t$0 translations"
+    echo -e "\t$0 score-display"
 }
 
 
