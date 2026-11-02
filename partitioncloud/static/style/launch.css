@@ -24,7 +24,7 @@ body {
     color: var(--color-text);
 }
 
-button {
+.pc-button {
     padding: 10px 20px;
     margin: 5px;
     border-radius: 3px;
@@ -41,12 +41,12 @@ button {
     color: var(--color-base);
 }
 
-button.blue {
+.pc-button.blue {
     background-color: var(--color-blue);
     border-color: var(--color-blue);
 }
 
-button:hover {
+.pc-button:hover {
     background-color: var(--color-crust);
     border-color: var(--color-blue);
     color: var(--color-blue);

@@ -341,7 +341,7 @@ img.partition-thumbnail {
     margin-left: 5px;
 }
 
-#settings-container button {
+#settings-container .pc-button {
     background-color: inherit;
     color: var(--color-text);
     border-style: none;
@@ -357,7 +357,7 @@ img.partition-thumbnail {
     padding-left: 20px; /* Prevent overlay with svg */
 }
 
-#settings-container button:hover {
+#settings-container .pc-button:hover {
     background-color: var(--color-crust);
 }
 
@@ -376,7 +376,7 @@ img.partition-thumbnail {
     transition: width 0.5s ease;
 }
 
-button#logout,
+.pc-button#logout,
 a#delete-album {
     color: var(--color-red);
 }
@@ -501,7 +501,7 @@ textarea {
 }
 
 input[type="submit"],
-button {
+.pc-button {
     padding: 10px 20px;
     border: none;
     border-radius: 3px;
@@ -515,7 +515,7 @@ input[type="submit"] {
     color: var(--color-base);
 }
 
-button {
+.pc-button {
     background-color: var(--color-subtext0);
     color: var(--color-base)
 }
@@ -538,7 +538,7 @@ input[type="file"] {
 
 
 /** Dangerous buttons */
-button#logout:hover,
+.pc-button#logout:hover,
 a#delete-album:hover,
 .red-confirm,
 input[type="submit"].red-confirm,
