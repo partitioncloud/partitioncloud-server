@@ -86,6 +86,8 @@ score-display () {
 
     if ! test -d "musescore-web-display"; then
         git clone https://github.com/partitioncloud/musescore-web-display.git musescore-web-display
+    else
+        cd musescore-web-display && git switch - && cd -
     fi
 
     cd musescore-web-display
@@ -95,10 +97,12 @@ score-display () {
     cd -
 
     score_display=partitioncloud/static/score-display
+    webmscore_version=$(sed -n 's/^WEBMSCORE_VERSION[[:space:]]*[:?]*=[[:space:]]*//p' musescore-web-display/Makefile)
     mkdir -p $score_display
     rm -rf $score_display/*
     cp -r musescore-web-display/target/* $score_display/
 	mv $score_display/score-display.rolldown.no-cdn.js $score_display/score-display.rolldown.js
+    sed -i 's/LIB_WEBMSCORE = "\.\.\/webmscore\//LIB_WEBMSCORE = ".\/webmscore'$webmscore_version'\//' $score_display/score-display.rolldown.js
 }
 
 production () {
