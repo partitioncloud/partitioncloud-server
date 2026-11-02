@@ -21,6 +21,22 @@ def is_newer(v1: str, v2: str) -> bool:
     return get_version(v1) > get_version(v2)
 
 
+def read_version():
+    """Returns the version recorded in the instance folder, None if there is none"""
+    try:
+        with open(os.path.join(config.instance, "VERSION"), encoding="utf-8") as f:
+            return f.read().strip()
+    except FileNotFoundError:
+        return None
+
+
+def write_version(version):
+    """Records the version the instance folder has been migrated to"""
+    os.makedirs(config.instance, exist_ok=True)
+    with open(os.path.join(config.instance, "VERSION"), "w", encoding="utf-8") as f:
+        f.write(f"{version}\n")
+
+
 hooks = [
     ("v1.3.0", [("add SOURCE column", v1_hooks.add_source)]),
     ("v1.2.0", [("create groupe structure", v1_hooks.add_groupes)]),
@@ -121,11 +137,17 @@ def migrate(current, target, skip_backup=False, prog_name="scripts/migration.py"
     """Migrate from one version to another"""
     print(f"Trying to migrate from {current} to {target}")
 
+    if current == target:
+        print(f"{Fore.GREEN}Already up to date{Style.RESET_ALL}")
+        write_version(target)
+        sys.exit(0)
+
     assert is_newer(target, current)
 
     applied_hooks = get_hooks(current, target)
     if len(applied_hooks) == 0:
         print(f"{Fore.GREEN}No hook to apply{Style.RESET_ALL}")
+        write_version(target)
         sys.exit(0)
 
     print("The following hooks will be applied:")
@@ -148,7 +170,34 @@ def migrate(current, target, skip_backup=False, prog_name="scripts/migration.py"
         print("Skipping automatic backup")
 
     apply_hooks(applied_hooks)
+    write_version(target)
     print("Done !")
+
+
+def check(current, target):
+    """Exits with an error if the instance cannot be used as is with version target"""
+    if current is None:
+        print(
+            f"{Fore.RED}Unknown instance version, "
+            f"run the migration with --current{Style.RESET_ALL}"
+        )
+        sys.exit(1)
+
+    if is_newer(current, target):
+        print(
+            f"{Fore.RED}The instance is at {current}, "
+            f"which is newer than {target}{Style.RESET_ALL}"
+        )
+        sys.exit(1)
+
+    applied_hooks = get_hooks(current, target)
+    if len(applied_hooks) > 0:
+        print(
+            f"{Fore.RED}The instance is at {current}, "
+            f"it needs to be migrated to {target}:{Style.RESET_ALL}"
+        )
+        print_hooks(applied_hooks)
+        sys.exit(1)
 
 
 def restore(version):
@@ -198,10 +247,19 @@ if __name__ == "__main__":
         description="Helps you migrate from one version to another",
     )
 
-    parser.add_argument("-c", "--current", help="current version (vx.y.z)", required=True)
+    parser.add_argument(
+        "-c",
+        "--current",
+        help="current version (vx.y.z), read from the instance folder if omitted",
+    )
     parser.add_argument("-t", "--target", help="target version (vx.y.z)")
     parser.add_argument("-i", "--instance", help="instance folder", default="instance")
     parser.add_argument("-s", "--skip-backup", action="store_true")
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="only check that the instance can be used with the target version",
+    )
     parser.add_argument(
         "-r",
         "--restore",
@@ -224,4 +282,12 @@ if __name__ == "__main__":
         if args.target is None:
             print("You need to specify a target version", file=sys.stderr)
             sys.exit(1)
-        migrate(args.current, args.target, skip_backup=args.skip_backup)
+
+        current = args.current or read_version()
+        if args.check:
+            check(current, args.target)
+        elif current is None:
+            print("You need to specify a current version", file=sys.stderr)
+            sys.exit(1)
+        else:
+            migrate(current, args.target, skip_backup=args.skip_backup)
