@@ -58,7 +58,7 @@ def can_delete_groupe(user: User, groupe: Groupe) -> None:
         return
 
     if user not in groupe.get_users():
-        raise PermError(_("You are not a member of this groupe"))
+        raise PermError(_("You are not a member of this group."))
 
     if len(groupe.get_users()) > 1:
         raise PermError(_("You are not alone in this group."))
@@ -106,7 +106,7 @@ def can_delete_partition(user: User, partition: Union[Partition, FakeObject]) ->
 @requires_login
 def has_write_access_partition(user: User, partition: Union[Partition, FakeObject]) -> None:
     if isinstance(partition, SearchResult):
-        raise PermError(_("This is a search result score."))
+        raise PermError(_("A search result is not editable."))
 
     @admin_bypass
     def inner_check(user: User):

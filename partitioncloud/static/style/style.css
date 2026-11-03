@@ -76,8 +76,9 @@ body {
     padding: 0 25px;
 }
 
+/* Room for the fixed footer */
 #content {
-    margin-bottom: 50px;
+    padding-bottom: 50px;
 }
 
 #footer {
@@ -243,13 +244,21 @@ section#users {
     overflow-x: scroll;
 }
 
-.partition {
-    background-color: var(--color-surface0);
-
+.partition-container {
+    position: relative;
     width: 178px;
     margin: 15px 0;
 
+    background-color: var(--color-surface0);
     border-radius: 5px;
+}
+
+.partition-container > a {
+    display: block;
+}
+
+.partition {
+    width: 178px;
 }
 
 img.partition-thumbnail {
@@ -274,18 +283,31 @@ img.partition-thumbnail {
     min-height: 50px;
 }
 
-.partition-action {
-    padding: 7px;
-    margin: 3px;
-    border-radius: 3px;
-    box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.2);
-    background-color: #cdd6f4;
+.partition-buttons {
+    position: absolute;
+    top: 140px;
+    right: 6px;
+    display: flex;
+    gap: 6px;
 }
 
-.partition-buttons {
-    float: right;
+.partition-action {
     display: flex;
-    transform: translateX(-22px) translateY(-115px);
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+
+    border-radius: 5px;
+    border: 1px solid var(--color-overlay0);
+    background-color: var(--color-base);
+    color: var(--color-text);
+}
+
+.partition-action:hover,
+.partition-action:focus-visible {
+    border-color: var(--color-blue);
+    color: var(--color-blue);
 }
 
 .partition-name {
