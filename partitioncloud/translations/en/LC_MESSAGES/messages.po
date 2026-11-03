@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-03 09:34+0100\n"
+"POT-Creation-Date: 2026-11-03 09:46+0100\n"
 "PO-Revision-Date: 2024-01-22 15:38+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -421,6 +421,12 @@ msgstr "Do you really want to delete this album?"
 msgid "Delete"
 msgstr "Delete"
 
+#: partitioncloud/templates/albums/album.html:57
+#: partitioncloud/templates/groupe/index.html:48
+#: partitioncloud/templates/partition/details.html:106
+msgid "Actions"
+msgstr "Actions"
+
 #: partitioncloud/templates/albums/album.html:60
 msgid "Add a score"
 msgstr "Add a score"
@@ -664,10 +670,6 @@ msgstr "Type"
 #: partitioncloud/templates/partition/details.html:105
 msgid "Displayed"
 msgstr "Displayed"
-
-#: partitioncloud/templates/partition/details.html:106
-msgid "Actions"
-msgstr "Actions"
 
 #: partitioncloud/templates/partition/details.html:116
 msgid "Download"

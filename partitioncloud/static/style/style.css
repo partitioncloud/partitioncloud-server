@@ -224,6 +224,10 @@ section#users {
     background-color: var(--color-surface1);
 }
 
+.dropdown[open] {
+    background-color: var(--color-surface2);
+}
+
 
 /** Partitions Grid */
 #partitions-grid {
@@ -422,9 +426,20 @@ a#delete-album,
 }
 
 
-/** Dropdown */
+/** Dropdown: a <details>, so it opens on tap, click and keyboard
+ * (:hover is not triggered by a tap on iOS Safari). */
+.dropdown > summary {
+    display: block;
+    list-style: none;
+    cursor: pointer;
+    border-radius: inherit;
+}
+
+.dropdown > summary::-webkit-details-marker {
+    display: none; /* Safari */
+}
+
 .dropdown-content {
-    display: none;
     position: absolute;
     z-index: 2;
 
@@ -435,11 +450,6 @@ a#delete-album,
     border-radius: 3px;
 
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
-    width: unset;
 }
 
 .dropdown-content>a:hover {

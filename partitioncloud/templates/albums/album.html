@@ -53,8 +53,8 @@
         {% endfor %}
       </section>
     {% endif %}
-    <div class="dropdown dp1">
-      +
+    <details class="dropdown dp1">
+      <summary title="{{ _('Actions') }}" aria-label="{{ _('Actions') }}">+</summary>
       <div class="dropdown-content dp1">
           {% if permissions.check(permissions.has_write_access_album, g_user, album) %}
             <a href="#add-partition">{{ _("Add a score") }}</a>
@@ -72,7 +72,7 @@
             <a id="delete-album" href="#delete">{{ _("Delete") }}</a>
           {% endif %}
       </div>
-    </div>
+    </details>
   </div>
 </header>
 <hr/>

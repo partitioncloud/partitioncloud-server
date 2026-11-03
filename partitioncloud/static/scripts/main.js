@@ -2,7 +2,24 @@
 document.addEventListener('keyup', function(e) {
     if (e.key == "Escape") {
         location.hash="!";
+        closeDropdowns();
     }
+});
+
+
+//* Dropdowns (<details>) are closed by a tap outside or on one of their links */
+function closeDropdowns(except) {
+    document.querySelectorAll("details.dropdown[open]").forEach(function(dropdown) {
+        if (dropdown !== except) {
+            dropdown.open = false;
+        }
+    });
+}
+
+document.addEventListener('click', function(e) {
+    const clicked = e.target.closest("details.dropdown");
+    const on_link = e.target.closest(".dropdown-content a");
+    closeDropdowns(on_link ? undefined : clicked);
 });
 
 
