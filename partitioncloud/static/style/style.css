@@ -13,6 +13,7 @@
 }
 
 body {
+    margin: 0px;
     overflow-x: hidden;
 }
 
@@ -76,8 +77,9 @@ body {
     padding: 0 25px;
 }
 
+/* Room for the fixed footer */
 #content {
-    margin-bottom: 50px;
+    padding-bottom: 50px;
 }
 
 #footer {
@@ -170,6 +172,7 @@ input:checked#slide-sidebar~label {
     top: 20px;
     left: var(--sidebar-sz-plus10);
     background-color: var(--color-base);
+    border-radius: 5px;
 
     -moz-transition: left 0.5s ease;
     transition: left 0.5s ease;
@@ -222,6 +225,10 @@ section#users {
     background-color: var(--color-surface1);
 }
 
+.dropdown[open] {
+    background-color: var(--color-surface2);
+}
+
 
 /** Partitions Grid */
 #partitions-grid {
@@ -242,13 +249,21 @@ section#users {
     overflow-x: scroll;
 }
 
-.partition {
-    background-color: var(--color-surface0);
-
+.partition-container {
+    position: relative;
     width: 178px;
     margin: 15px 0;
 
+    background-color: var(--color-surface0);
     border-radius: 5px;
+}
+
+.partition-container > a {
+    display: block;
+}
+
+.partition {
+    width: 178px;
 }
 
 img.partition-thumbnail {
@@ -273,18 +288,31 @@ img.partition-thumbnail {
     min-height: 50px;
 }
 
-.partition-action {
-    padding: 7px;
-    margin: 3px;
-    border-radius: 3px;
-    box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.2);
-    background-color: #cdd6f4;
+.partition-buttons {
+    position: absolute;
+    top: 140px;
+    right: 6px;
+    display: flex;
+    gap: 6px;
 }
 
-.partition-buttons {
-    float: right;
+.partition-action {
     display: flex;
-    transform: translateX(-22px) translateY(-115px);
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+
+    border-radius: 5px;
+    border: 1px solid var(--color-overlay0);
+    background-color: var(--color-base);
+    color: var(--color-text);
+}
+
+.partition-action:hover,
+.partition-action:focus-visible {
+    border-color: var(--color-blue);
+    color: var(--color-blue);
 }
 
 .partition-name {
@@ -340,7 +368,7 @@ img.partition-thumbnail {
     margin-left: 5px;
 }
 
-#settings-container button {
+#settings-container .pc-button {
     background-color: inherit;
     color: var(--color-text);
     border-style: none;
@@ -356,7 +384,7 @@ img.partition-thumbnail {
     padding-left: 20px; /* Prevent overlay with svg */
 }
 
-#settings-container button:hover {
+#settings-container .pc-button:hover {
     background-color: var(--color-crust);
 }
 
@@ -375,8 +403,9 @@ img.partition-thumbnail {
     transition: width 0.5s ease;
 }
 
-button#logout,
-a#delete-album {
+.pc-button#logout,
+a#delete-album,
+.red-text {
     color: var(--color-red);
 }
 
@@ -398,9 +427,20 @@ a#delete-album {
 }
 
 
-/** Dropdown */
+/** Dropdown: a <details>, so it opens on tap, click and keyboard
+ * (:hover is not triggered by a tap on iOS Safari). */
+.dropdown > summary {
+    display: block;
+    list-style: none;
+    cursor: pointer;
+    border-radius: inherit;
+}
+
+.dropdown > summary::-webkit-details-marker {
+    display: none; /* Safari */
+}
+
 .dropdown-content {
-    display: none;
     position: absolute;
     z-index: 2;
 
@@ -411,11 +451,6 @@ a#delete-album {
     border-radius: 3px;
 
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
-    width: unset;
 }
 
 .dropdown-content>a:hover {
@@ -500,7 +535,7 @@ textarea {
 }
 
 input[type="submit"],
-button {
+.pc-button {
     padding: 10px 20px;
     border: none;
     border-radius: 3px;
@@ -514,7 +549,7 @@ input[type="submit"] {
     color: var(--color-base);
 }
 
-button {
+.pc-button {
     background-color: var(--color-subtext0);
     color: var(--color-base)
 }
@@ -537,7 +572,7 @@ input[type="file"] {
 
 
 /** Dangerous buttons */
-button#logout:hover,
+.pc-button#logout:hover,
 a#delete-album:hover,
 .red-confirm,
 input[type="submit"].red-confirm,

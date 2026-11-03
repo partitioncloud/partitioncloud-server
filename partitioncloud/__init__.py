@@ -88,6 +88,10 @@ def get_version():
             return version
         return version.split("-")[0] + "+" + version.split("-")[1]
     except (FileNotFoundError, subprocess.CalledProcessError):
+        if os.path.exists(f"{app.instance_path}/VERSION"):
+            with open(f"{app.instance_path}/VERSION", "r") as f:
+                return f.read()
+
         # In case git not found or any platform specific weird error
         return "unknown"
 

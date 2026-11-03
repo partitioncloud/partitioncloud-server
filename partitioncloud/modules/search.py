@@ -14,6 +14,7 @@ from unidecode import unidecode
 
 from .db import get_db
 from .utils import FakeObject
+from .classes.search_result import SearchResult
 from . import googlesearch
 
 socket.setdefaulttimeout(5) # Maximum time before we give up on downloading a file (dead url)
@@ -54,12 +55,10 @@ def local_search(query, partitions: List[FakeObject]) -> List[FakeObject]:
 
 
 def download_search_result(element, instance_path):
-    uuid = element["uuid"]
-    url = element["url"]
-    filename = f"{instance_path}/search-partitions/{uuid}.pdf"
+    filename = f"{instance_path}/search-partitions/{element.uuid}.pdf"
 
     try:
-        urllib.request.urlretrieve(url, filename)
+        urllib.request.urlretrieve(element.source_url, filename)
         pypdf.PdfReader(filename)
 
     except (urllib.error.HTTPError, urllib.error.URLError,
@@ -70,7 +69,7 @@ def download_search_result(element, instance_path):
             pass # Create empty file
 
 
-def online_search(query, num_queries, instance_path):
+def online_search(query, num_queries, instance_path) -> List[SearchResult]:
     """
     Renvoie les {num_queries} résultats les plus pertinents depuis Google
     """
@@ -92,11 +91,11 @@ def online_search(query, num_queries, instance_path):
                     db.commit()
 
                     partitions.append(
-                        {
-                            "name": element.split("://")[1].split("/")[0],
-                            "uuid": uuid,
-                            "url": element
-                        }
+                        SearchResult(
+                            element.split("://")[1].split("/")[0],
+                            uuid,
+                            element
+                        )
                     )
                     break
                 except db.IntegrityError:
@@ -119,20 +118,18 @@ def online_search(query, num_queries, instance_path):
         thread.join()
 
     for element in partitions.copy():
-        uuid = element["uuid"]
-        url = element["url"]
-        if os.stat(f"{instance_path}/search-partitions/{uuid}.pdf").st_size == 0:
-            print("An error occured", url)
+        if os.stat(f"{instance_path}/search-partitions/{element.uuid}.pdf").st_size == 0:
+            print("An error occured", element.source_url)
             db.execute(
                 """
                 DELETE FROM search_results
                 WHERE uuid = ?
                 """,
-                (uuid,)
+                (element.uuid,)
             )
             db.commit()
 
-            os.remove(f"{instance_path}/search-partitions/{uuid}.pdf")
+            os.remove(f"{instance_path}/search-partitions/{element.uuid}.pdf")
 
             partitions.remove(element)
 

@@ -10,6 +10,7 @@ from .classes.album import Album
 from .classes.groupe import Groupe
 from .classes.partition import Partition
 from .classes.attachment import Attachment
+from .classes.search_result import SearchResult
 
 class PermError(InvalidRequest):
     def __init__(self, reason: str, redirect: Optional[str]=None):
@@ -57,7 +58,7 @@ def can_delete_groupe(user: User, groupe: Groupe) -> None:
         return
 
     if user not in groupe.get_users():
-        raise PermError(_("You are not a member of this groupe"))
+        raise PermError(_("You are not a member of this group."))
 
     if len(groupe.get_users()) > 1:
         raise PermError(_("You are not alone in this group."))
@@ -102,17 +103,26 @@ def can_delete_partition(user: User, partition: Union[Partition, FakeObject]) ->
         return
     raise PermError(_("You are not allowed to delete this score."))
 
-@admin_bypass
 @requires_login
 def has_write_access_partition(user: User, partition: Union[Partition, FakeObject]) -> None:
-    if user.id == partition.user_id:
-        return
-    raise PermError(_("You don't own this score."))
+    if isinstance(partition, SearchResult):
+        raise PermError(_("A search result is not editable."))
+
+    @admin_bypass
+    def inner_check(user: User):
+        if user.id == partition.user_id:
+            return
+        raise PermError(_("You don't own this score."))
+
+    return inner_check(user)
 
 @admin_bypass
 @requires_login
 def can_delete_attachment(user: User, attachment: Attachment) -> None:
-    raise NotImplementedError
+    partition = Partition(uuid=attachment.partition_uuid)
+    if user.id == partition.user_id:
+        return
+    raise PermError(_("You are not allowed to delete this attachment."))
 
 @admin_bypass
 @requires_login

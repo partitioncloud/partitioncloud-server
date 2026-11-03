@@ -214,3 +214,17 @@ def install_requests():
 
 def uninstall_google():
     utils.uninstall_package("google")
+
+"""
+ v1.12.*
+"""
+
+def install_musescore_web_display():
+    if os.environ.get("PARTITIONCLOUD_DOCKER"):
+        print(f"Skipping score-display installation: it is bundled in the docker image")
+        return
+
+    os.system("./make.sh score-display")
+
+def add_is_view():
+    utils.run_sqlite_command("ALTER TABLE attachments ADD is_view BOOLEAN DEFAULT false")

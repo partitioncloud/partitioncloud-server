@@ -28,6 +28,7 @@ class Attachment():
         self.user_id = data["user_id"]
         self.filetype = data["filetype"]
         self.partition_uuid = data["partition_uuid"]
+        self.is_view = data["is_view"]
 
     def delete(self, instance_path) -> None:
         db = get_db()
@@ -40,7 +41,9 @@ class Attachment():
         )
         db.commit()
 
-        os.remove(f"{instance_path}/attachments/{self.uuid}.{self.filetype}")
+        path = f"{instance_path}/attachments/{self.uuid}.{self.filetype}"
+        if os.path.exists(path):
+            os.remove(path)
 
     def __repr__(self):
         return f"<Attachment {self.name}.{self.filetype}>"

@@ -1,67 +1,51 @@
 {% set DISABLE_HEADER=true %}
+{% set DISABLE_FOOTER=true %}
 
 {% extends 'base.html' %}
 
 {% block title %}{{ _("Attachments of %(name)s", name=partition.name) }}{% endblock %}
 
-{% block dialogs %}
-<dialog id="create-attachment">
-    <h2>{{ _("Add an attachment to %(name)s", name=partition.name) }}</h2>
-    <form action="/partition/{{ partition.uuid }}/add-attachment" method="post" enctype="multipart/form-data">
-        <input type="text" name="name" id="name" placeholder="{{ _('Name') }}"><br/>
-        {% block input_file %}
-          {% set required=true %}
-          {% set filetype=".mp3,.mid" %}
-          {% include 'components/input_file.html' %}
-        {% endblock %}
-        <input type="submit" value="{{ _('Add') }}">
-    </form>
-    <a href="#!" class="close-dialog">Close</a>
-</dialog>
-{% endblock %}
-
 {% block content %}
-<object id="pdf-embed" width="400" height="500" type="application/pdf" data="/partition/{{ partition.uuid }}">
-    <p>
-        {{ _("No pdf viewer available in this browser.
-        You can use Firefox on Android.") }}
-    </p>
-</object>
+<noscript>
+    <object id="pdf-embed" width="400" height="500" type="application/pdf" data="/partition/{{ partition.uuid }}">
+        <p>
+            {{ _("No pdf viewer available in this browser. You can use Firefox on Android.") }}
+        </p>
+    </object>
+</noscript>
 
-<script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.5.0"></script>
-<midi-visualizer type="staff" id="midi-visualizer"></midi-visualizer>
+<link rel="stylesheet" href="/static/score-display/score-display.css" />
+<link rel="stylesheet" href="/static/style/attachments.css" />
+<script type="module" src="/static/score-display/score-display.rolldown.js"></script>
 
+{% set attachments = partition.get_attachments() %}
+{% set display_view = attachments
+    | selectattr('filetype', 'equalto', 'mscz')
+    | selectattr('is_view')
+    | first
+    | default(none)
+%}
+{% set using_mscz = display_view is not none %}
 
-{% if partition.get_attachments() | length > 0 %}
-<div id="attachments">
-    <table>
-        <tbody>
-        {% for attachment in partition.get_attachments() %}
-        <tr>
-            {% if attachment.filetype == "mp3" %}
-            <td><audio controls src="/partition/attachment/{{ attachment.uuid }}.mp3"></td>
-            <td>🎙️ {{ attachment.name }}</td>
-            {% elif attachment.filetype == "mid" %}
-
-            <td><midi-player
-                    src="/partition/attachment/{{ attachment.uuid }}.mid"
-                    sound-font visualizer="#midi-visualizer" data-js-focus-visible>
-                </midi-player>
-                <noscript>{{ _("JavaScript is mandatory to read MIDI files") }}</noscript>
-            </td>
-            <td>🎵 {{ attachment.name }}</td>
-            {% endif %}
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
+{% if using_mscz %}
+<score-display src="/partition/attachment/{{ display_view.uuid }}.mscz" type="mscz" is-view>
+    <score-track type="mscz/synth:all">Tutti</score-track>
+    <score-view src="/partition/{{ partition.uuid }}" type="pdf">PDF</score-view>
+{% else %}
+<score-display src="/partition/{{ partition.uuid }}" type="pdf">
 {% endif %}
+{% for attachment in attachments %}
+  {% if attachment.filetype == "mp3" %}
+    <score-track src="/partition/attachment/{{ attachment.uuid }}.mp3" type="audio">{{ attachment.name }}</score-track>
+  {% elif attachment.filetype == "mid" %}
+    <score-track src="/partition/attachment/{{ attachment.uuid }}.mid" type="midi">{{ attachment.name }}</score-track>
+  {% elif attachment.filetype == "mscz" and not (using_mscz and attachment.uuid == display_view.uuid) %}
+    {% if attachment.is_view %}
+    <score-view type="mscz" src="/partition/attachment/{{ attachment.uuid }}.mscz">{{ attachment.name | default("mscz") }}</score-view>
+    {% endif %}
+    <score-track type="mscz/synth:all" src="/partition/attachment/{{ attachment.uuid }}.mscz">{{ attachment.name | default("mscz") }}</score-track>
+  {% endif %}
+{% endfor %}
+</score-display>
 
-<br/>
-{% if permissions.check(permissions.has_write_access_partition, g_user, partition) %}
-<div class="centered">
-    <a href="#create-attachment"><button>{{ _("Add an attachment") }}</button></a>
-</div>
-{% endif %}
 {% endblock %}

@@ -8,7 +8,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:description" content="{{ self.title() }}" />
   <meta property="og:image" content="/static/icons/512.png" />
-  
+
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#eff1f5">
   <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#1e1e2e">
 
@@ -142,7 +142,7 @@
       <div id="settings-container">
         {% if g_user %}
           <a href="{{ url_for('auth.logout') }}">
-            <button id="logout">
+            <button id="logout" class="pc-button">
               <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path>
@@ -153,7 +153,7 @@
             </button>
           </a><br/>
           {% if g_user.is_admin %}
-            <a href="/admin"><button>
+            <a href="/admin"><button class="pc-button">
               <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
               <path d="M12 21a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3a12 12 0 0 0 8.5 3c.568 1.933 .635 3.957 .223 5.89"></path>
@@ -176,9 +176,9 @@
           </div></a>
         {% else %}
           {% if not config.DISABLE_REGISTER %}
-            <a href="{{ url_for('auth.register') }}"><button>{{ _("Create account") }}</button></a>
+            <a href="{{ url_for('auth.register') }}"><button class="pc-button">{{ _("Create account") }}</button></a>
           {% endif %}
-          <a href="{{ url_for('auth.login') }}"><button>{{ _("Log in") }}</button></a>
+          <a href="{{ url_for('auth.login') }}"><button class="pc-button">{{ _("Log in") }}</button></a>
         {% endif %}
       </div>
     </div>
@@ -195,7 +195,9 @@
         {% block content %}{% endblock %}
       </section>
     </div>
+    {% if not DISABLE_FOOTER %}
     <div id="footer"><a href="https://github.com/partitioncloud/partitioncloud-server">PartitionCloud</a> {{ version }}</div>
+    {% endif %}
   </div>
 </body>
 <script src="{{ url_for('static', filename='scripts/main.js') }}"></script>

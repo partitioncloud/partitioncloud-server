@@ -47,7 +47,7 @@ def get_all_partitions() -> List[FakeObject]:
     partitions = db.execute(
         """
         SELECT p.*,
-            (CASE WHEN MAX(a.uuid) IS NOT NULL THEN 1 ELSE 0 END) AS has_attachment
+            (CASE WHEN MAX(a.uuid) IS NOT NULL THEN 1 ELSE 0 END) AS has_attachments
         FROM partition AS p
             JOIN contient_partition ON contient_partition.partition_uuid = p.uuid
             JOIN album ON album.id = album_id

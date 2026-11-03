@@ -5,18 +5,21 @@ import os
 from ..db import get_db
 from .user import User
 from .attachment import Attachment
+from .abstract_partition import AbstractPartition
 
 
 
-class Partition():
+class Partition(AbstractPartition):
     def __init__(self, uuid=None):
         db = get_db()
         if uuid is not None:
             self.uuid = uuid
             data = db.execute(
                 """
-                SELECT * FROM partition
-                WHERE uuid = ?
+                SELECT p.*,
+                    EXISTS (SELECT 1 FROM attachments a WHERE a.partition_uuid = p.uuid) AS has_attachments
+                    FROM partition AS p
+                WHERE p.uuid = ?
                 """,
                 (self.uuid,)
             ).fetchone()
@@ -27,6 +30,7 @@ class Partition():
             self.body = data["body"]
             self.user_id = data["user_id"]
             self.source = data["source"]
+            self.has_attachments = data["has_attachments"]
             self.attachments = None
         else:
             raise LookupError
@@ -136,6 +140,14 @@ class Partition():
             self.attachments = [Attachment(data=i) for i in data]
 
         return self.attachments
+
+    @property
+    def thumbnail(self) -> str:
+        return f"/thumbnails/{self.uuid}.jpg"
+
+    @property
+    def pdf_url(self) -> str:
+        return f"/partition/{self.uuid}"
 
     def __repr__(self):
         return f"<Partition '{self.name}'>"

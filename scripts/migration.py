@@ -57,7 +57,9 @@ hooks = [
     ("v1.10.3", [("Install unidecode", v1_hooks.install_unidecode)]),
     ("v1.11.0", [("Delete orphans `groupe_contient_album`", v1_hooks.clean_groupe_contient_album)]),
     ("v1.11.1", [("Install requests", v1_hooks.install_requests)]),
-    ("v1.11.1", [("Uninstall google", v1_hooks.uninstall_google)])
+    ("v1.11.1", [("Uninstall google", v1_hooks.uninstall_google)]),
+    ("v1.12.0", [("Download and build musescore-web-display", v1_hooks.install_musescore_web_display)]),
+    ("v1.12.0", [("Update database schema: add attachment:is_view", v1_hooks.add_is_view)])
 ]
 
 

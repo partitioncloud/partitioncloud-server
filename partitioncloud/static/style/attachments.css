@@ -1,0 +1,18 @@
+#content {
+  background-color: #efefef;
+  height: 100%;
+  padding-bottom: 0;
+}
+
+#content-container {
+  padding: 0;
+}
+
+.slcwd-score-display {
+  height: 100vh;
+  height: 100dvh; /* the visible height on mobile, URL bar excluded */
+}
+
+.slcwd-track-name,.slcwd-track-label {
+  color: black;
+}

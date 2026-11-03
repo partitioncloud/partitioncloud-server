@@ -1,3 +1,4 @@
+{% macro input_file(filetype, required=true) %}
 <div class="file-area">
   <input name="file" type="file" accept="{{ filetype }}" {% if required %}required=""{% endif %}>
   <div class="inner-file-area">
@@ -5,3 +6,4 @@
     <div class="default">{{ _("Select or drag & drop your file") }} ({{ filetype }}).</div>
   </div>
 </div>
+{% endmacro %}

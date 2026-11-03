@@ -1,0 +1,24 @@
+{% from 'components/partition_action.html' import partition_action %}
+{% macro partition_container(partition) %}
+<div class="partition-container">
+    <a href="{{ partition.pdf_url }}">
+        <div class="partition" id="partition-{{ partition.uuid }}">
+        <img class="partition-thumbnail" src="{{ partition.thumbnail }}" loading="lazy">
+        <div class="partition-description">
+            <div class="partition-name">{{ partition.name }}</div>
+            {% if partition.author %}
+            <div class="partition-author">{{ partition.author }}</div>
+            {% endif %}
+        </div>
+        </div>
+    </a>
+    <div class="partition-buttons">
+    {% if partition.has_attachments %}
+        {{ partition_action("/partition/" ~ partition.uuid ~ "/attachments", _("Attachments"), "attachments") }}
+    {% endif %}
+    {% if permissions.check(permissions.has_write_access_partition, g_user, partition) %}
+        {{ partition_action("/partition/" ~ partition.uuid ~ "/details", _("Edit"), "edit") }}
+    {% endif %}
+    </div>
+</div>
+{% endmacro %}
