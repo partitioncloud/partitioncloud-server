@@ -377,7 +377,8 @@ img.partition-thumbnail {
 }
 
 .pc-button#logout,
-a#delete-album {
+a#delete-album,
+.red-text {
     color: var(--color-red);
 }
 

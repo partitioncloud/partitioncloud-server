@@ -6,5 +6,6 @@
 - [x] fix is-view
 - [x] add database migration step
 - [x] fix adding and **deleting** attachments
-- [ ] fix Dockerfile
+- [x] fix Dockerfile
+- [x] fix first mscz not visible
 - [ ] better icons for attachments / grid's score component

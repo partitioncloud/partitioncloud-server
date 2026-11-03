@@ -1,3 +1,4 @@
+{% from 'components/partition_container.html' import partition_container with context %}
 {% extends 'base.html' %}
 
 
@@ -22,20 +23,7 @@
 <div id="partitions-grid">
   {% for partition in partitions %}
   <div class="partition-container">
-    <a href="/partition/{{ partition.uuid }}">
-      <div class="partition" id="partition-{{ partition.uuid }}">
-        <img class="partition-thumbnail" src="/thumbnails/{{ partition.uuid }}.jpg" loading="lazy">
-        <div class="partition-description">
-          <div class="partition-name">{{ partition.name }}</div>
-          <div class="partition-author">{{ partition.author }}</div>
-        </div>
-      </div>
-    </a>
-    <div class="partition-buttons">
-      {% if partition.has_attachment %}
-      <a href="/partition/{{ partition.uuid }}/attachments"><div class="partition-action">🔊</div></a>
-      {% endif %}
-    </div>
+    {{ partition_container(partition) }}
     <form action="/albums/add-partition" class="add-partition-form" method="post">
       {{ select_album }}
       <input type="hidden" value="{{ partition.uuid }}" name="partition-uuid">
@@ -51,14 +39,7 @@
 <div id="partitions-grid">
   {% for partition in google_results %}
   <div class="partition-container">
-    <a href="/partition/search/{{ partition.uuid }}">
-      <div class="partition" id="partition-{{ partition.uuid }}">
-        <img class="partition-thumbnail" src="/thumbnails/search/{{ partition.uuid }}.jpg" loading="lazy">
-        <div class="partition-description">
-          <div class="partition-name">{{ partition.name }}</div>
-        </div>
-      </div>
-    </a>
+    {{ partition_container(partition) }}
     <form action="/albums/add-partition" class="add-partition-form" method="post">
       {{ select_album }}
       <input type="hidden" value="{{ partition.uuid }}" name="partition-uuid">

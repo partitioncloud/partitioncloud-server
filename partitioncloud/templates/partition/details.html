@@ -96,7 +96,7 @@
 {% if partition.get_attachments() %}
 <h3 id="partition-attachments">{{ _("Attachments") }}
   <a href="/partition/{{ partition.uuid }}/attachments">{{ _("Open the player") }}</a>
-</h3> 
+</h3>
 <table>
   <thead>
     <tr>
@@ -114,7 +114,7 @@
       <td>{% if attachment.filetype == "mscz" and attachment.is_view %}✓{% endif %}</td>
       <td>
         <a href="/partition/attachment/{{ attachment.uuid }}.{{ attachment.filetype }}">{{ _("Download") }}</a>
-        <a href="/partition/attachment/{{ attachment.uuid }}/delete">{{ _("Delete") }}</a>
+        <a class="red-text" href="/partition/attachment/{{ attachment.uuid }}/delete">{{ _("Delete") }}</a>
       </td>
     </tr>
     {% endfor %}

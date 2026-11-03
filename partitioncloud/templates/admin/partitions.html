@@ -19,7 +19,7 @@
       </div>
     </a>
     <div class="partition-buttons">
-      {% if partition.has_attachment %}
+      {% if partition.has_attachments %}
       <a href="/partition/{{ partition.uuid }}/attachments"><div class="partition-action">🔊</div></a>
       {% endif %}
       <a href="/partition/{{ partition.uuid }}/details"><div class="edit-button partition-action">🔍</div></a>

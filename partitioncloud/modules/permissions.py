@@ -10,6 +10,7 @@ from .classes.album import Album
 from .classes.groupe import Groupe
 from .classes.partition import Partition
 from .classes.attachment import Attachment
+from .classes.search_result import SearchResult
 
 class PermError(InvalidRequest):
     def __init__(self, reason: str, redirect: Optional[str]=None):
@@ -102,12 +103,18 @@ def can_delete_partition(user: User, partition: Union[Partition, FakeObject]) ->
         return
     raise PermError(_("You are not allowed to delete this score."))
 
-@admin_bypass
 @requires_login
 def has_write_access_partition(user: User, partition: Union[Partition, FakeObject]) -> None:
-    if user.id == partition.user_id:
-        return
-    raise PermError(_("You don't own this score."))
+    if isinstance(partition, SearchResult):
+        raise PermError(_("This is a search result score."))
+
+    @admin_bypass
+    def inner_check(user: User):
+        if user.id == partition.user_id:
+            return
+        raise PermError(_("You don't own this score."))
+
+    return inner_check(user)
 
 @admin_bypass
 @requires_login
