@@ -18,37 +18,33 @@
 <link rel="stylesheet" href="/static/style/attachments.css" />
 <script type="module" src="/static/score-display/score-display.rolldown.js"></script>
 
-{% set display_view = partition.get_attachments()
+{% set attachments = partition.get_attachments() %}
+{% set display_view = attachments
     | selectattr('filetype', 'equalto', 'mscz')
-    | selectattr('is_view', 'equalto', True)
+    | selectattr('is_view')
     | first
     | default(none)
 %}
 {% set using_mscz = display_view is not none %}
 
 {% if using_mscz %}
-<score-display
-    src="/partition/attachment/{{ display_view.uuid }}.mscz"
-    type="mscz"
->
+<score-display src="/partition/attachment/{{ display_view.uuid }}.mscz" type="mscz" is-view>
+    <score-track type="mscz/synth:all">Tutti</score-track>
+    <score-view src="/partition/{{ partition.uuid }}" type="pdf">PDF</score-view>
 {% else %}
 <score-display src="/partition/{{ partition.uuid }}" type="pdf">
 {% endif %}
-{% if using_mscz %}
-    <score-track type="mscz/synth:all">Tutti</score-track>
-    <score-view src="/partition/{{ partition.uuid }}" type="pdf">PDF</score-view>
-{% endif %}
-{% for attachment in partition.get_attachments() %}
-    {% if attachment.filetype == "mp3" %}
+{% for attachment in attachments %}
+  {% if attachment.filetype == "mp3" %}
     <score-track src="/partition/attachment/{{ attachment.uuid }}.mp3" type="audio">{{ attachment.name }}</score-track>
-    {% elif attachment.filetype == "mid" %}
+  {% elif attachment.filetype == "mid" %}
     <score-track src="/partition/attachment/{{ attachment.uuid }}.mid" type="midi">{{ attachment.name }}</score-track>
-    {% elif attachment.filetype == "mscz" and attachment != display_view %}
+  {% elif attachment.filetype == "mscz" and not (using_mscz and attachment.uuid == display_view.uuid) %}
     {% if attachment.is_view %}
     <score-view type="mscz" src="/partition/attachment/{{ attachment.uuid }}.mscz">{{ attachment.name | default("mscz") }}</score-view>
     {% endif %}
     <score-track type="mscz/synth:all" src="/partition/attachment/{{ attachment.uuid }}.mscz">{{ attachment.name | default("mscz") }}</score-track>
-    {% endif %}
+  {% endif %}
 {% endfor %}
 </score-display>
 
