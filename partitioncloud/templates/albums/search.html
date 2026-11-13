@@ -22,7 +22,7 @@
 <h3>{{ _("Results in current database") }}</h3>
 <div id="partitions-grid">
   {% for partition in partitions %}
-  <div class="partition-container">
+  <div class="search-partition-container">
     {{ partition_container(partition) }}
     <form action="/albums/add-partition" class="add-partition-form" method="post">
       {{ select_album }}
@@ -38,7 +38,7 @@
 <h3>{{ _("Online search results") }}</h3>
 <div id="partitions-grid">
   {% for partition in google_results %}
-  <div class="partition-container">
+  <div class="search-partition-container">
     {{ partition_container(partition) }}
     <form action="/albums/add-partition" class="add-partition-form" method="post">
       {{ select_album }}
