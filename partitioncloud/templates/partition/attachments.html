@@ -43,7 +43,11 @@
 {% else %}
 <score-display src="/partition/{{ partition.uuid }}" type="pdf">
 {% endif %}
+  <score-download href="/partition/{{ partition.uuid }}">{{ _("Download PDF") }}</score-download>
 {% for attachment in attachments %}
+  <score-download href="/partition/attachment/{{ attachment.uuid }}.{{ attachment.filetype }}">
+    {{ _("Download %(file)s", file=attachment.name ~ "." ~ attachment.filetype) }}
+  </score-download>
   {% if attachment.filetype == "mp3" %}
     <score-track src="/partition/attachment/{{ attachment.uuid }}.mp3" type="audio">{{ attachment.name }}</score-track>
   {% elif attachment.filetype == "mid" %}

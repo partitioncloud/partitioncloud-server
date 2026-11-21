@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-21 12:16+0100\n"
+"POT-Creation-Date: 2026-11-21 15:46+0100\n"
 "PO-Revision-Date: 2024-01-22 15:24+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -629,6 +629,15 @@ msgid "No pdf viewer available in this browser. You can use Firefox on Android."
 msgstr ""
 "Impossible d'afficher le pdf dans ce navigateur.\n"
 "        Il est conseillé d'utiliser Firefox sur Android."
+
+#: partitioncloud/templates/partition/attachments.html:46
+msgid "Download PDF"
+msgstr "Télécharger le PDF"
+
+#: partitioncloud/templates/partition/attachments.html:49
+#, python-format
+msgid "Download %(file)s"
+msgstr "Télécharger %(file)s"
 
 #: partitioncloud/templates/partition/delete.html:8
 msgid "Do you really want to delete this score?"
