@@ -3,10 +3,24 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <meta property="og:title" content="PartitionCloud" />
+  {%- set base_url = config["BASE_URL"].rstrip("/") %}
+  {%- set desc = _("Store, share and browse your sheet music collections with PartitionCloud.") %}
+  <meta name="description" content="{{ desc }}" />
+  <link rel="canonical" href="{{ base_url }}/launch" />
+  <meta property="og:site_name" content="PartitionCloud" />
   <meta property="og:type" content="website" />
-  <meta property="og:description" content="PartitionCloud launch page">
-  <meta property="og:image" content="/static/images/light-preview.png" />
+  <meta property="og:title" content="PartitionCloud" />
+  <meta property="og:description" content="{{ desc }}" />
+  <meta property="og:url" content="{{ base_url }}/launch" />
+  <meta property="og:image" content="{{ base_url }}/static/images/light-preview.png" />
+  <meta property="og:image:width" content="1820" />
+  <meta property="og:image:height" content="1027" />
+  <meta property="og:image:alt" content="{{ _('Preview of the PartitionCloud interface') }}" />
+  <meta property="og:locale" content="{{ {"fr": "fr_FR", "en": "en_US"}.get(lang, lang) }}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PartitionCloud" />
+  <meta name="twitter:description" content="{{ desc }}" />
+  <meta name="twitter:image" content="{{ base_url }}/static/images/light-preview.png" />
 
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#eff1f5">
   <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#1e1e2e">

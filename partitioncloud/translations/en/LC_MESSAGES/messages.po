@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-11-03 09:46+0100\n"
+"POT-Creation-Date: 2026-11-21 12:16+0100\n"
 "PO-Revision-Date: 2024-01-22 15:38+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: partitioncloud/__init__.py:161
+#: partitioncloud/__init__.py:165
 #, python-format
 msgid "Created user %(username)s"
 msgstr "Created user %(username)s"
 
-#: partitioncloud/__init__.py:164
+#: partitioncloud/__init__.py:168
 #, python-format
 msgid "This album does not exists, but user %(username)s has been created"
 msgstr "This album does not exists, but user %(username)s has been created"
@@ -253,85 +253,94 @@ msgstr "Password and its confirmation differ."
 msgid "Successfully updated password."
 msgstr "Successfully updated password."
 
-#: partitioncloud/templates/base.html:32
+#: partitioncloud/templates/base.html:9 partitioncloud/templates/launch.html:7
+msgid "Store, share and browse your sheet music collections with PartitionCloud."
+msgstr "Store, share and browse your sheet music collections with PartitionCloud."
+
+#: partitioncloud/templates/base.html:20
+#: partitioncloud/templates/launch.html:18
+msgid "Preview of the PartitionCloud interface"
+msgstr "Preview of the PartitionCloud interface"
+
+#: partitioncloud/templates/base.html:48
 msgid "New Album"
 msgstr "New Album"
 
-#: partitioncloud/templates/base.html:34 partitioncloud/templates/base.html:45
-#: partitioncloud/templates/groupe/index.html:11
+#: partitioncloud/templates/base.html:50 partitioncloud/templates/base.html:61
+#: partitioncloud/templates/groupe/index.html:12
 #: partitioncloud/templates/partition/details.html:8
 #: partitioncloud/templates/partition/details.html:103
 msgid "Name"
 msgstr "Name"
 
-#: partitioncloud/templates/base.html:35 partitioncloud/templates/base.html:46
+#: partitioncloud/templates/base.html:51 partitioncloud/templates/base.html:62
 msgid "Create"
 msgstr "Create"
 
-#: partitioncloud/templates/base.html:39
+#: partitioncloud/templates/base.html:55
 msgid "I want to create a collection of albums."
 msgstr "I want to create a collection of albums."
 
-#: partitioncloud/templates/base.html:39
+#: partitioncloud/templates/base.html:55
 msgid "Create group"
 msgstr "Create group"
 
-#: partitioncloud/templates/base.html:43
+#: partitioncloud/templates/base.html:59
 msgid "Create new group"
 msgstr "Create new group"
 
-#: partitioncloud/templates/base.html:70
+#: partitioncloud/templates/base.html:86
 msgid "Search"
 msgstr "Search"
 
-#: partitioncloud/templates/base.html:73
+#: partitioncloud/templates/base.html:89
 msgid "Number of online searches"
 msgstr "Number of online searches"
 
 #: partitioncloud/templates/admin/index.html:23
-#: partitioncloud/templates/base.html:84
+#: partitioncloud/templates/base.html:100
 #: partitioncloud/templates/partition/details.html:47
 msgid "Albums"
 msgstr "Albums"
 
-#: partitioncloud/templates/base.html:88
+#: partitioncloud/templates/base.html:104
 msgid "New album"
 msgstr "New album"
 
-#: partitioncloud/templates/base.html:105
+#: partitioncloud/templates/base.html:121
 msgid "No albums"
 msgstr "No albums"
 
-#: partitioncloud/templates/base.html:124
+#: partitioncloud/templates/base.html:140
 msgid "No album available"
 msgstr "No album available"
 
-#: partitioncloud/templates/base.html:138
+#: partitioncloud/templates/base.html:154
 msgid "Log in to see your albums"
 msgstr "Log in to see your albums"
 
-#: partitioncloud/templates/base.html:152
+#: partitioncloud/templates/base.html:168
 msgid "Log out"
 msgstr "Log out"
 
-#: partitioncloud/templates/base.html:167
+#: partitioncloud/templates/base.html:183
 msgid "Admin Panel"
 msgstr "Admin Panel"
 
 #: partitioncloud/templates/auth/register.html:5
 #: partitioncloud/templates/auth/register.html:20
-#: partitioncloud/templates/base.html:179
+#: partitioncloud/templates/base.html:195
 msgid "Create account"
 msgstr "Create account"
 
 #: partitioncloud/templates/auth/login.html:5
 #: partitioncloud/templates/auth/login.html:10
-#: partitioncloud/templates/base.html:181
-#: partitioncloud/templates/launch.html:32
+#: partitioncloud/templates/base.html:197
+#: partitioncloud/templates/launch.html:46
 msgid "Log in"
 msgstr "Log in"
 
-#: partitioncloud/templates/launch.html:39
+#: partitioncloud/templates/launch.html:53
 msgid ""
 "PartitionCloud is an open-source score library server, to help you in all"
 " your musical activities"
@@ -339,15 +348,15 @@ msgstr ""
 "PartitionCloud is an open-source score library server, to help you in all"
 " your musical activities"
 
-#: partitioncloud/templates/launch.html:44
+#: partitioncloud/templates/launch.html:58
 msgid "Let's go !"
 msgstr "Let's go !"
 
-#: partitioncloud/templates/launch.html:50
+#: partitioncloud/templates/launch.html:64
 msgid "Check code"
 msgstr "Check code"
 
-#: partitioncloud/templates/launch.html:61
+#: partitioncloud/templates/launch.html:75
 #, python-format
 msgid ""
 "This instance is used by %(users)s users with a total of %(scores)s "
@@ -391,7 +400,7 @@ msgid "Scores list"
 msgstr "Scores list"
 
 #: partitioncloud/templates/admin/partitions.html:16
-#: partitioncloud/templates/albums/album.html:87
+#: partitioncloud/templates/albums/album.html:88
 msgid "No available scores"
 msgstr "No available scores"
 
@@ -399,20 +408,24 @@ msgstr "No available scores"
 msgid "New score"
 msgstr "New score"
 
-#: partitioncloud/templates/albums/album.html:16
+#: partitioncloud/templates/albums/album.html:5
+msgid "Album of scores shared on PartitionCloud"
+msgstr "Album of scores shared on PartitionCloud"
+
+#: partitioncloud/templates/albums/album.html:17
 msgid "Delete l'album"
 msgstr "Delete album"
 
-#: partitioncloud/templates/albums/album.html:17
+#: partitioncloud/templates/albums/album.html:18
 #: partitioncloud/templates/albums/delete-album.html:6
 msgid "Do you really want to delete this album?"
 msgstr "Do you really want to delete this album?"
 
-#: partitioncloud/templates/albums/album.html:20
-#: partitioncloud/templates/albums/album.html:72
+#: partitioncloud/templates/albums/album.html:21
+#: partitioncloud/templates/albums/album.html:73
 #: partitioncloud/templates/albums/delete-album.html:8
-#: partitioncloud/templates/groupe/index.html:23
-#: partitioncloud/templates/groupe/index.html:63
+#: partitioncloud/templates/groupe/index.html:24
+#: partitioncloud/templates/groupe/index.html:64
 #: partitioncloud/templates/partition/delete.html:10
 #: partitioncloud/templates/partition/delete_attachment.html:10
 #: partitioncloud/templates/partition/details.html:93
@@ -421,33 +434,33 @@ msgstr "Do you really want to delete this album?"
 msgid "Delete"
 msgstr "Delete"
 
-#: partitioncloud/templates/albums/album.html:57
-#: partitioncloud/templates/groupe/index.html:48
+#: partitioncloud/templates/albums/album.html:58
+#: partitioncloud/templates/groupe/index.html:49
 #: partitioncloud/templates/partition/details.html:106
 msgid "Actions"
 msgstr "Actions"
 
-#: partitioncloud/templates/albums/album.html:60
+#: partitioncloud/templates/albums/album.html:61
 msgid "Add a score"
 msgstr "Add a score"
 
-#: partitioncloud/templates/albums/album.html:62
-#: partitioncloud/templates/groupe/index.html:53
+#: partitioncloud/templates/albums/album.html:63
+#: partitioncloud/templates/groupe/index.html:54
 msgid "Share"
 msgstr "Share"
 
-#: partitioncloud/templates/albums/album.html:64
-#: partitioncloud/templates/groupe/index.html:55
+#: partitioncloud/templates/albums/album.html:65
+#: partitioncloud/templates/groupe/index.html:56
 msgid "Download as zip"
 msgstr "Download as zip"
 
-#: partitioncloud/templates/albums/album.html:67
-#: partitioncloud/templates/groupe/index.html:58
+#: partitioncloud/templates/albums/album.html:68
+#: partitioncloud/templates/groupe/index.html:59
 msgid "Join"
 msgstr "Join"
 
-#: partitioncloud/templates/albums/album.html:69
-#: partitioncloud/templates/groupe/index.html:60
+#: partitioncloud/templates/albums/album.html:70
+#: partitioncloud/templates/groupe/index.html:61
 msgid "Quit"
 msgstr "Quit"
 
@@ -539,7 +552,7 @@ msgid "lyrics"
 msgstr "lyrics"
 
 #: partitioncloud/templates/components/add_partition.html:13
-#: partitioncloud/templates/groupe/index.html:12
+#: partitioncloud/templates/groupe/index.html:13
 #: partitioncloud/templates/partition/details.html:12
 msgid "Add"
 msgstr "Add"
@@ -561,28 +574,32 @@ msgstr "Attachments"
 msgid "Edit"
 msgstr "Edit"
 
-#: partitioncloud/templates/groupe/index.html:9
+#: partitioncloud/templates/groupe/index.html:4
+msgid "Group of albums on PartitionCloud"
+msgstr "Group of albums on PartitionCloud"
+
+#: partitioncloud/templates/groupe/index.html:10
 #, python-format
 msgid "Add an album to group %(name)s"
 msgstr "Add an album to group %(name)s"
 
-#: partitioncloud/templates/groupe/index.html:19
+#: partitioncloud/templates/groupe/index.html:20
 msgid "Delete group"
 msgstr "Delete group"
 
-#: partitioncloud/templates/groupe/index.html:20
+#: partitioncloud/templates/groupe/index.html:21
 msgid "Do you really want to delete this group and the albums it contains?"
 msgstr "Do you really want to delete this group and the albums it contains?"
 
-#: partitioncloud/templates/groupe/index.html:51
+#: partitioncloud/templates/groupe/index.html:52
 msgid "Add an album"
 msgstr "Add an album"
 
-#: partitioncloud/templates/groupe/index.html:83
+#: partitioncloud/templates/groupe/index.html:84
 msgid "Create one"
 msgstr "Create one"
 
-#: partitioncloud/templates/groupe/index.html:86
+#: partitioncloud/templates/groupe/index.html:87
 #, python-format
 msgid "No available album. %(create)s"
 msgstr "No available album. %(create)s"
@@ -592,7 +609,11 @@ msgstr "No available album. %(create)s"
 msgid "Attachments of %(name)s"
 msgstr "Attachments of %(name)s"
 
-#: partitioncloud/templates/partition/attachments.html:12
+#: partitioncloud/templates/partition/attachments.html:8
+msgid "Score and attachments on PartitionCloud"
+msgstr "Score and attachments on PartitionCloud"
+
+#: partitioncloud/templates/partition/attachments.html:21
 msgid "No pdf viewer available in this browser. You can use Firefox on Android."
 msgstr ""
 "No pdf viewer available in this browser.\n"

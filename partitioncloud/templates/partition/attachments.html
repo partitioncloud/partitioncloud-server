@@ -4,6 +4,15 @@
 {% extends 'base.html' %}
 
 {% block title %}{{ _("Attachments of %(name)s", name=partition.name) }}{% endblock %}
+{% block og_title %}{{ partition.name }}{% if partition.author %} - {{ partition.author }}{% endif %} - PartitionCloud{% endblock %}
+{% block og_description %}{{ _("Score and attachments on PartitionCloud") }}{% endblock %}
+{% block og_image %}{{ partition.thumbnail }}{% endblock %}
+{% block og_image_size %}
+  <meta property="og:image:width" content="356" />
+  <meta property="og:image:height" content="356" />
+  <meta property="og:image:alt" content="{{ partition.name }}" />
+{% endblock %}
+{% block twitter_card %}summary{% endblock %}
 
 {% block content %}
 <noscript>
